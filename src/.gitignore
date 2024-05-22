@@ -1,0 +1,9 @@
+## gitignore for python
+vector_store
+__pycache__/
+*.pyc
+*.wav
+*.pt
+*.pth
+
+
