@@ -196,12 +196,12 @@ class ApkDownloader:
         print("----------------------------------------------------------------------------------------------------")
 
         try:
-            # User directory/ASAP path
-            file_path = os.getcwd()
-            
-            # set target file path
-            target_file_path = os.path.join(file_path, '../../docs/target.txt')
-            
+
+            # set target current file path
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            parent_dir = os.path.dirname(script_dir)
+            target_file_path = os.path.join(parent_dir, 'docs', 'target.txt')
+
             if not os.path.exists(target_file_path):
                 print(f"Error: Target file not found at {target_file_path}")
                 return
