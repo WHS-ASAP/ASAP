@@ -118,6 +118,7 @@ class ApkDownloader:
 
     # Get the package name from the HackerOne scope URL
     async def get_package_name(self, scope_url):
+        
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
             page = await browser.new_page()
@@ -151,42 +152,81 @@ class ApkDownloader:
             return None
 
     async def run(self):
-        # User directory/ASAP path
-        file_path = os.getcwd()
         
-        # set target file path
-        target_file_path = os.path.join(file_path, 'src/docs/target.txt')
-        
-        if not os.path.exists(target_file_path):
-            print(f"Error: Target file not found at {target_file_path}")
-            return
-        
-        with open(target_file_path, 'r') as file:
-            targets = [line.strip() for line in file.readlines()]
+        print("------------------------------------------APK Downloader--------------------------------------------")
+        print("|---APK Downloader, if you want to download apk, please enter the target in /src/docs/target.txt---|")
+        print("|But if you don't write anything in target.txt, the program will search hackerone and download apk.|")
+        print("----------------------------------------------------------------------------------------------------")
 
-        if not targets:
-            print("No targets found in target.txt. Searching hackerone for targets.")
-            targets = await self.search_hackerone()
+        try:
+            # User directory/ASAP path
+            file_path = os.getcwd()
+            
+            # set target file path
+            target_file_path = os.path.join(file_path, 'docs/target.txt')
+            
+            if not os.path.exists(target_file_path):
+                print(f"Error: Target file not found at {target_file_path}")
+                return
+            
+            with open(target_file_path, 'r') as file:
+                targets = [line.strip() for line in file.readlines()]
+
             if not targets:
-                print("Sorry Our program can't find any targets in hackerone because of the change in the website structure. Please write the target in target.txt.")
+                print("No targets found in target.txt. Searching hackerone for targets.")
+                targets = await self.search_hackerone()
+                if not targets:
+                    print("Sorry Our program can't find any targets in hackerone because of the change in the website structure. Please write the target in target.txt.")
 
-        print(f"Downloading {len(targets)} APKs : {targets}...")
-        download_tasks = [self.download_apk(target) for target in targets]
-        await asyncio.gather(*download_tasks)
+            print(f"Downloading {len(targets)} APKs : {targets}...")
+            download_tasks = [self.download_apk(target) for target in targets]
+            await asyncio.gather(*download_tasks)
 
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            print("Trying to install browsers with playwright install")
+            os.system("python -m playwright install") # if not installed, install browsers with playwright 
+            print("Please rerun the script after the installation is complete.")    
+
+    async def test(self):
+        
+        print("------------------------------------------APK Downloader--------------------------------------------")
+        print("|---APK Downloader, if you want to download apk, please enter the target in /src/docs/target.txt---|")
+        print("|But if you don't write anything in target.txt, the program will search hackerone and download apk.|")
+        print("----------------------------------------------------------------------------------------------------")
+
+        try:
+            # User directory/ASAP path
+            file_path = os.getcwd()
+            
+            # set target file path
+            target_file_path = os.path.join(file_path, '../../docs/target.txt')
+            
+            if not os.path.exists(target_file_path):
+                print(f"Error: Target file not found at {target_file_path}")
+                return
+            
+            with open(target_file_path, 'r') as file:
+                targets = [line.strip() for line in file.readlines()]
+
+            if not targets:
+                print("No targets found in target.txt. Searching hackerone for targets.")
+                targets = await self.search_hackerone()
+                if not targets:
+                    print("Sorry Our program can't find any targets in hackerone because of the change in the website structure. Please write the target in target.txt.")
+
+            print(f"Downloading {len(targets)} APKs : {targets}...")
+            download_tasks = [self.download_apk(target) for target in targets]
+            await asyncio.gather(*download_tasks)
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            print("Trying to install browsers with playwright install")
+            os.system("python -m playwright install") # if not installed, install browsers with playwright 
+            print("Please rerun the script after the installation is complete.")  
 
 
 if __name__ == "__main__":
-    print("------------------------------------------APK Downloader-------------------------------------------")
-    print("|---APK Downloader, if you want to download apk, please enter the target in /src/docs/target.txt---|")
-    print("|But if you don't write anything in target.txt, the program will search hackerone and download apk.|")
-    print("-----------------------------------------------------------------------------------------------------")
-
-    try:
-        downloader = ApkDownloader()
-        asyncio.run(downloader.run())
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        print("Trying to install browsers with playwright install")
-        os.system("python -m playwright install") # if not installed, install browsers with playwright 
-        print("Please rerun the script after the installation is complete.")
+    
+    downloader = ApkDownloader()
+    asyncio.run(downloader.test())
