@@ -1,0 +1,32 @@
+1. jadx-cli로 java source directory들 java-src에 존재
+2. Androidmanifest 검사 -> provider - android:exported="true" 이면 해당 provider의 android:name 출력해주기
+3. 모든 .java 확장자 검사 -> 4가지 검사
+
+1) sql injection
+
+2) api_key
+
+- 하드 코딩으로 api_key = "value" 혹은 key = "value" 이런식으로 하드코딩된 걸 탐색하면 됨
+
+3. webview
+   : WebView는 안드로이드 애플리케이션 내에서 웹 콘텐츠를 표시할 수 있는 컴포넌트. 즉 기본적으로 웹 브라우저처럼 동작..
+
+- webView.addJavascriptInterface(new JavaScriptInterface(), "Android"); 이런거 에서 악의적으로 사용될 수 있음
+- webView.loadUrl의 검증?
+- webView.loadData에서의 xss 발생 가능성?
+- webView.getSettings().setAllowFileAccess(true); 와 같이 WebView가 로컬 파일에 접근할 수 있도록 설정된 경우...?
+
+4. deeplink
+   : 컨텐츠나 기능을 애플리케이션 내에서 직접 열수 있도록 하는 URL인데 예시로,, app_name://content?id=1111 처럼 특정 아이템 상세 페이지 열 수 있음
+
+- Open redirect -> 악성 URL이 리다이렉션될 때 발생할 수 있다. 즉 검증없이 외부 URL로 리다이렉션 되면 피싱 등에 사용될 수 있다.
+  app_name://redirect?url=http://malicious.com 에서 파라미터가 검증없이 사용될 때?
+- Unvalidated Input -> myapp://search?query=<script>alert('XSS');</script>와 같이 검색 쿼리 입력이 검증되지 않으면,,
+- Sensitive Data Exposure -> DeepLink를 통해서 민감한 데이터가 노출될 수 있다. 적절한 인증 및 인가 절차 없이 민감한 정보를 열 수 잇는 링크가 생성되면 문제가 된다.
+  : app_name://user/profile?id=1111가 인증 없이 접근 가능할 때 / 즉 user 본인이 아닌 다른 사람이 저렇게 접근 가능하면 문제가 됨
+- Improper Intent Handling -> 잘못된 인텐트 처리로 인해 다른 앱에서 DeepLink를 통한 액티비티를 실행할 수 있다. : 인텐트 필터가 잘못 설정되어 악성 앱이 DeepLink를 트리거할 수 있는 경우
+
+5. Firebase
+   :
+
+6. log

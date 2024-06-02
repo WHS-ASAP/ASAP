@@ -5,6 +5,10 @@ from tqdm import tqdm
 from bs4 import BeautifulSoup
 import urllib.request
 from playwright.async_api import async_playwright
+import ssl
+import platform
+
+context = ssl._create_unverified_context()
 
 class ApkDownloader:
     def __init__(self):
@@ -28,7 +32,7 @@ class ApkDownloader:
         for attempt in range(max_retries):
             try:
                 req = urllib.request.Request(download_url, headers=self.headers)
-                with urllib.request.urlopen(req) as response:
+                with urllib.request.urlopen(req, context=context) as response:
                     if response.status == 200:
                         if not os.path.exists('apk_dir'):
                             os.makedirs('apk_dir')
@@ -163,14 +167,14 @@ class ApkDownloader:
             file_path = os.getcwd()
             
             # set target file path
-            target_file_path = os.path.join(file_path, 'docs/target.txt')
-            
+            target_file_path = os.path.join(file_path, 'src/docs/target.txt')
+            print(target_file_path)
             if not os.path.exists(target_file_path):
                 print(f"Error: Target file not found at {target_file_path}")
-                return
-            
-            with open(target_file_path, 'r') as file:
-                targets = [line.strip() for line in file.readlines()]
+                
+            else:
+                with open(target_file_path, 'r') as file:
+                    targets = [line.strip() for line in file.readlines()]
 
             if not targets:
                 print("No targets found in target.txt. Searching hackerone for targets.")
@@ -222,7 +226,11 @@ class ApkDownloader:
         except Exception as e:
             print(f"An error occurred: {e}")
             print("Trying to install browsers with playwright install")
-            os.system("python -m playwright install") # if not installed, install browsers with playwright 
+
+            if platform.system() == 'Windows':
+                os.system("python -m playwright install")
+            else:
+                os.system("python3 -m playwright install") # if not installed, install browsers with playwright 
             print("Please rerun the script after the installation is complete.")  
 
 
