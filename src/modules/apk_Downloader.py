@@ -75,54 +75,51 @@ class ApkDownloader:
                     print(f"Exceeded maximum retries. Could not download {package_name}.")
 
     # Search for APKs on HackerOne
-    async def search_hackerone(self):
+    async def search_hackerone(self, search_start_index=0, search_maxresults=10):
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
             page = await browser.new_page()
             await page.goto("https://hackerone.com/opportunities/all/search?asset_types=GOOGLE_PLAY_APP_ID&ordering=Newest+programs")
             await page.wait_for_timeout(5000)  # Wait for the JavaScript to load the content
 
-            content = await page.content()
-            soup = BeautifulSoup(content, 'html.parser')
-            await browser.close()
-
             package_lst = []
-            panels = soup.find_all('div', class_='Panel-module_u1-panel__javlC')
-            index = 0
-            # length of package_lst : 10
-            while len(package_lst) < 10 and index < len(panels):
-                panel = panels[index]
-                footer = panel.find('footer', class_='flex flex-col justify-center px-md pb-md md:px-lg md:pb-lg h-3xl')
-                if footer:
-                    link = footer.find('a', class_='Button-module_u1-button__OJmLM Button-module_u1-button--fill__dIsoD Button-module_u1-button--secondary__T13hl Button-module_u1-button--rounded-all__h9prY')
-                    if link:
-                        scope_url = "https://hackerone.com" + link['href']
-                        # print("before: ", scope_url)
-                        if "?type=team" in scope_url:
-                            scope_url = scope_url.replace("?type=team", "/policy_scopes")
-                        # print("after: ", scope_url)
-                        package_name = await self.get_package_name(scope_url)
-                        
-                        # print(package_name)
+            index = search_start_index
 
-                        # remove https://play.google.com/store/apps/details?id if it exists (processing)
-                        if package_name and 'https://play.google.com/store/apps/details?id=' in package_name:
-                            package_name = package_name.replace('https://play.google.com/store/apps/details?id=', '')
-
-                        # check if the package name is valid
-                        if package_name and ('.' in package_name and len(package_name.split('.')) > 1 and len(package_name) < 40):
-                            print(f"Adding package name '{package_name}' to the list. Progress: {len(package_lst) + 1}/10")
-                            package_lst.append(package_name)
-                        else:
-                            print(f"Package name '{package_name}' is invalid. Skipping. You may need to search manually.")
+            while len(package_lst) < search_maxresults:
+                content = await page.content()
+                soup = BeautifulSoup(content, 'html.parser')
+                panels = soup.find_all('div', class_='Panel-module_u1-panel__javlC')
                 
-                index += 1 # next panel(next app)
+                while index < len(panels) and len(package_lst) < search_maxresults:
+                    panel = panels[index]
+                    footer = panel.find('footer', class_='flex flex-col justify-center px-md pb-md md:px-lg md:pb-lg h-3xl')
+                    if footer:
+                        link = footer.find('a', class_='Button-module_u1-button__OJmLM Button-module_u1-button--fill__dIsoD Button-module_u1-button--secondary__T13hl Button-module_u1-button--rounded-all__h9prY')
+                        if link:
+                            scope_url = "https://hackerone.com" + link['href']
+                            if "?type=team" in scope_url:
+                                scope_url = scope_url.replace("?type=team", "/policy_scopes")
+                            package_name = await self.get_package_name(scope_url)
 
+                            if package_name and 'https://play.google.com/store/apps/details?id=' in package_name:
+                                package_name = package_name.replace('https://play.google.com/store/apps/details?id=', '')
+
+                            if package_name and ('.' in package_name and len(package_name.split('.')) > 1 and len(package_name) < 40):
+                                print(f"Adding package name '{package_name}' to the list. Progress: {len(package_lst) + 1}/{search_maxresults}")
+                                package_lst.append(package_name)
+                            else:
+                                print(f"Package name '{package_name}' is invalid. Skipping. You may need to search manually.")
+                    
+                    index += 1
+
+                await page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
+                await asyncio.sleep(2)  # Wait for more panels to load
+
+            await browser.close()
             return package_lst
 
     # Get the package name from the HackerOne scope URL
     async def get_package_name(self, scope_url):
-        
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
             page = await browser.new_page()
@@ -136,12 +133,10 @@ class ApkDownloader:
             asset_rows = soup.find_all('tr', class_='sc-fqkvVR spec-asset-row daisy-table__row')
             for row in asset_rows:
                 if row.find('td', class_='daisy-table__cell', string='Android: Play Store'):
-                    # print("!!!!!!! find!!!!")
                     cell = row.find('td', class_='daisy-table__cell', style='max-width: 400px;')
                     if cell:
                         strong_tag = cell.find('strong')
                         if strong_tag and strong_tag.has_attr('title'):
-                            # print("Find package name: ", strong_tag['title'])
                             return strong_tag['title']
                         else:
                             div_tag = cell.find('div', class_='interactive-markdown break-word markdownable daisy-helper-text')
@@ -156,7 +151,6 @@ class ApkDownloader:
             return None
 
     async def run(self):
-        
         print("------------------------------------------APK Downloader--------------------------------------------")
         print("|---APK Downloader, if you want to download apk, please enter the target in /src/docs/target.txt---|")
         print("|But if you don't write anything in target.txt, the program will search hackerone and download apk.|")
@@ -178,7 +172,9 @@ class ApkDownloader:
 
             if not targets:
                 print("No targets found in target.txt. Searching hackerone for targets.")
-                targets = await self.search_hackerone()
+                search_start_index = int(input("Enter the start index for searching hackerone: "))
+                search_maxresults = int(input("Enter the maximum number of results to search for: "))
+                targets = await self.search_hackerone(search_start_index=search_start_index, search_maxresults=search_maxresults)
                 if not targets:
                     print("Sorry Our program can't find any targets in hackerone because of the change in the website structure. Please write the target in target.txt.")
 
@@ -193,14 +189,12 @@ class ApkDownloader:
             print("Please rerun the script after the installation is complete.")    
 
     async def test(self):
-        
         print("------------------------------------------APK Downloader--------------------------------------------")
         print("|---APK Downloader, if you want to download apk, please enter the target in /src/docs/target.txt---|")
         print("|But if you don't write anything in target.txt, the program will search hackerone and download apk.|")
         print("----------------------------------------------------------------------------------------------------")
 
         try:
-
             # set target current file path
             script_dir = os.path.dirname(os.path.abspath(__file__))
             parent_dir = os.path.dirname(script_dir)
@@ -215,7 +209,9 @@ class ApkDownloader:
 
             if not targets:
                 print("No targets found in target.txt. Searching hackerone for targets.")
-                targets = await self.search_hackerone()
+                search_start_index = int(input("Enter the start index for searching hackerone: "))
+                search_maxresults = int(input("Enter the maximum number of results to search for: "))
+                targets = await self.search_hackerone(search_start_index=search_start_index, search_maxresults=search_maxresults)
                 if not targets:
                     print("Sorry Our program can't find any targets in hackerone because of the change in the website structure. Please write the target in target.txt.")
 
@@ -235,6 +231,5 @@ class ApkDownloader:
 
 
 if __name__ == "__main__":
-    
     downloader = ApkDownloader()
     asyncio.run(downloader.test())
