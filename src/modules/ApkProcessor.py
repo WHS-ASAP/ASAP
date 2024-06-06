@@ -20,6 +20,10 @@ class ApkProcessor:
         apk_name = os.path.basename(apk_path).replace('.apk', '')
         java_output_dir = os.path.join(self.java_dir, apk_name)
         
+        if os.path.exists(java_output_dir):
+            print(f"{java_output_dir} already exists, skipping decompilation.")
+            return java_output_dir
+        
         if not os.path.exists(java_output_dir):
             os.makedirs(java_output_dir)
         
