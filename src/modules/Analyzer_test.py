@@ -1,6 +1,6 @@
 import os
 import sys
-from modules.hardcoding_pattern import ApiKeyAnalyzer, FirebaseDatabaseAnalyzer
+from hardcoding_pattern import ApiKeyAnalyzer, FirebaseDatabaseAnalyzer
 
 class Analyzer:
     def __init__(self, java_dir='java_src'):
