@@ -1,7 +1,7 @@
 import os
-from modules.Analyzer import Analyzer
-from modules.apk_Downloader import ApkDownloader
-from modules.ApkProcessor import ApkProcessor
+from Analyzer import Analyzer
+from apk_Downloader import ApkDownloader
+from ApkProcessor import ApkProcessor
 import asyncio
 
 async def main():

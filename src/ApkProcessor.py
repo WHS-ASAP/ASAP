@@ -1,6 +1,9 @@
 import os
 import subprocess
 import platform
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 class ApkProcessor:
     def __init__(self, apk_dir='apk_dir', java_dir='java_src'):
@@ -9,9 +12,9 @@ class ApkProcessor:
 
         # Set the path according to the system
         if platform.system() == 'Windows':
-            self.jadx_path = os.path.join('src', 'tools', 'jadx', 'bin', 'jadx.bat')
+            self.jadx_path = os.path.join('tools', 'jadx', 'bin', 'jadx.bat')
         else:
-            self.jadx_path = os.path.join('src', 'tools', 'jadx', 'bin', 'jadx')
+            self.jadx_path = os.path.join('tools', 'jadx', 'bin', 'jadx')
 
         if not os.path.exists(self.java_dir):
             os.makedirs(self.java_dir)

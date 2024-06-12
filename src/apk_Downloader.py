@@ -161,7 +161,7 @@ class ApkDownloader:
             file_path = os.getcwd()
             
             # set target file path
-            target_file_path = os.path.join(file_path, 'src/docs/target.txt')
+            target_file_path = os.path.join(file_path, 'docs/target.txt')
             print(target_file_path)
             if not os.path.exists(target_file_path):
                 print(f"Error: Target file not found at {target_file_path}")
@@ -198,7 +198,7 @@ class ApkDownloader:
             # set target current file path
             script_dir = os.path.dirname(os.path.abspath(__file__))
             parent_dir = os.path.dirname(script_dir)
-            target_file_path = os.path.join(parent_dir, 'docs', 'target.txt')
+            target_file_path = os.path.join('docs', 'target.txt')
 
             if not os.path.exists(target_file_path):
                 print(f"Error: Target file not found at {target_file_path}")

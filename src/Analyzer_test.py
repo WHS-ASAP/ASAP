@@ -1,16 +1,14 @@
 import os
 import sys
-from modules.Firebase import ApiKeyAnalyzer, FirebaseDatabaseAnalyzer
-from DeepLink import DeepLinkAnalyzer
+from modules.Firebase import FirebaseDatabaseAnalyzer
+from modules.DeepLink import DeepLinkAnalyzer
+from views.web_generator import save_findings_as_html
 
-# 'views' 디렉토리를 모듈 검색 경로에 추가
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../views')))
-from web_generator import save_findings_as_html
 
-class Analyzer:
+class Analyzer_test:
     def __init__(self, java_dir='java_src'):
         self.java_dir = java_dir
-        self.analyzers = [ApiKeyAnalyzer(), FirebaseDatabaseAnalyzer(), DeepLinkAnalyzer()]
+        self.analyzers = [FirebaseDatabaseAnalyzer(), DeepLinkAnalyzer()]
 
     def analyze_file(self, file_path):
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
@@ -46,5 +44,5 @@ class Analyzer:
             save_findings_as_html(all_findings)
 
 if __name__ == "__main__":
-    analyzer = Analyzer()
+    analyzer = Analyzer_test()
     analyzer.run()

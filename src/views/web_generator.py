@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-def save_findings_as_html(all_findings, output_dir='Analyze_Web', asset_dir='src/asset'):
+def save_findings_as_html(all_findings, output_dir='Analyze_Web', asset_dir='asset'):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
