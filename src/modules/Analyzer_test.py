@@ -1,6 +1,6 @@
 import os
 import sys
-from hardcoding_pattern import ApiKeyAnalyzer, FirebaseDatabaseAnalyzer
+from modules.Firebase import ApiKeyAnalyzer, FirebaseDatabaseAnalyzer
 from DeepLink import DeepLinkAnalyzer
 
 # 'views' 디렉토리를 모듈 검색 경로에 추가
