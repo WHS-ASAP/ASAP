@@ -1,3 +1,0 @@
-eu.coolblue.shop
-de.bmw.connected.mobile20.row
-test2
