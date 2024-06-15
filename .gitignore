@@ -3,3 +3,4 @@ apk_dir/
 java_src/
 Analyze_Web/
 docs/target.txt
+tools/jadx/lib/jadx-dev-all.jar
