@@ -2,4 +2,4 @@
 apk_dir/
 java_src/
 Analyze_Web/
-src/tools/jadx/lib/
+tools/jadx/lib/
