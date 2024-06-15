@@ -8,16 +8,21 @@ from views.web_generator import save_findings_as_html
 class Analyzer_test:
     def __init__(self, java_dir='java_src'):
         self.java_dir = java_dir
-        self.analyzers = [FirebaseDatabaseAnalyzer(), DeepLinkAnalyzer()]
+        # 각 분석기에 적용할 파일 확장자를 지정할 수 있도록 확장자 정보를 포함
+        self.analyzers = [
+            (FirebaseDatabaseAnalyzer(), ['.xml']),
+            (DeepLinkAnalyzer(), ['.java', '.xml']),
+        ]
 
     def analyze_file(self, file_path):
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
             content = file.read()
             findings = []
-            for analyzer in self.analyzers:
-                result = analyzer.run(content)
-                if result:
-                    findings.append((file_path, result))
+            for analyzer, extensions in self.analyzers:
+                if any(file_path.endswith(ext) for ext in extensions):  # 파일 확장자가 분석기에 적합한지 확인
+                    result = analyzer.run(content)
+                    if result:
+                        findings.append((file_path, result))
             return findings
 
     def run(self):
