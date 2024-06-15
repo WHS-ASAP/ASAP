@@ -6,4 +6,4 @@ __pycache__/
 *.pt
 *.pth
 docs/target.txt
-tools/jadx/lib/
+tools/jadx/lib/jadx-dev-all.jar
