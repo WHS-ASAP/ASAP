@@ -7,4 +7,3 @@ target.txt 파일에 원하는 앱들을 입력할 때는 아래와 같은 방�
 com.asap <br>
 com.scanningApp <br>
 ...
-1111
