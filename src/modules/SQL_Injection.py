@@ -6,8 +6,8 @@ class SQLInjectionAnalyzer:
         self.provider_pattern = re.compile(r"extends ContentProvider", re.IGNORECASE)
         # exeSQL, rawQuery 사용 패턴
         self.sql_injection_pattern_1 = re.compile(r"(\bexecSQL\b|\brawQuery\b)\(.*?['\"].*?['\"].*?\)", re.IGNORECASE)
-        # 인젝션 가능할만한 문구 다섯가지 패턴 추가  ex1. )' +   ex2. = ?
-        self.sql_injection_pattern_2 = re.compile(r"\)\"\s*\+|\)'\s*\+|\"\s*\+|'\s*\+|\=\s*\?", re.IGNORECASE)
+        # 인젝션 가능할만한 문구 세가지 패턴 추가  ex1. ' +   ex2. = ?
+        self.sql_injection_pattern_2 = re.compile(r"\"\s*\+|'\s*\+|\=\s*\?", re.IGNORECASE)
         # 사용자 입력 검증 및 이스케이프 처리문 
         self.input_validation_pattern = re.compile(r"Pattern\.matches\(.*?\)|.*?\.replaceAll\(.*?\)|.*?\.replace\(.*?\)", re.IGNORECASE)
         # ORM 라이브러리
