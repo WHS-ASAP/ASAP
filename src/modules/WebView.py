@@ -91,17 +91,15 @@ class WebviewAnalyzer:
         activity_path=""
         path=""
         whole_path=""
-        #webview_results=[]
         if "<manifest" in content and name_string is not None:
-            activity_path=name_string.replace('.','\\')+".java"
+            activity_path=name_string.replace('.','/')+".java"
             path=os.path.dirname(name_string)
             package=content.split("package=")[1].split('"')[1] #xml 파싱 모듈
-            whole_path = f"{os.getcwd()}\\java_src\\{package}\\sources\\{activity_path}"
+            whole_path = f"{os.getcwd()}/java_src/{package}/sources/{activity_path}"
             #print(f"Whole_path {Whole_path}")
             if f"{path}" in content:
-                print(f"activity_path {activity_path}")
-                print(name_string)
-                print(path)
+                #print(f"activity_path {activity_path}")
+                #print(name_string)
                 return name_string, self.analyze_activity(whole_path)
             else:
                 print("no webview activity found")
