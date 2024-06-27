@@ -1,65 +1,72 @@
 import os
-import sys
+import xml.etree.ElementTree as ET
 from modules.Hardcoded import HardCodedAnalyzer
 from modules.DeepLink import DeepLinkAnalyzer
 from modules.SQL_Injection import SQLInjectionAnalyzer
 from modules.WebView import WebViewAnalyzer
-from modules.Crypto import CryptoAnalyzer
 from views.web_generator import save_findings_as_html
 
-
 class Analyzer_test:
-    def __init__(self, java_dir='java_src'):
+    def __init__(self, java_dir='java_src', smali_dir='smali_src'):
         self.java_dir = java_dir
-        # 각 분석기에 적용할 파일 확장자를 지정할 수 있도록 확장자 정보를 포함
+        self.smali_dir = smali_dir
+
         self.analyzers = [
             (HardCodedAnalyzer(), ['.xml']),
-            (DeepLinkAnalyzer(), ['.java', '.xml']),
             (SQLInjectionAnalyzer(self.java_dir), ['.java', '.xml']),
             (WebViewAnalyzer(), ['.java', '.xml']),
-            (CryptoAnalyzer(), ['.java']),
+        ]
+        self.smali_analyzers = [
+            (DeepLinkAnalyzer(), ['.smali', '.xml']),
         ]
 
-    def analyze_file(self, file_path):
+    def analyze_file(self, file_path, analyzers, smali_dir=None):
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+            
             content = file.read()
             findings = []
-            for analyzer, extensions in self.analyzers:
-                if any(file_path.endswith(ext) for ext in extensions):  # 파일 확장자가 분석기에 적합한지 확인
-                    result = analyzer.run(content)
+            for analyzer, extensions in analyzers:
+                if any(file_path.endswith(ext) for ext in extensions):
+                    if isinstance(analyzer, DeepLinkAnalyzer) and smali_dir:
+                        result = analyzer.run(content, smali_dir)
+                    else:
+                        result = analyzer.run(content)
                     if result:
                         findings.append((file_path, result))
             return findings
 
     def run(self):
-            if not os.path.exists(self.java_dir):
-                print(f"Error: Java source directory '{self.java_dir}' not found.")
-                return
+        if not os.path.exists(self.java_dir):
+            print(f"Error: Java source directory '{self.java_dir}' not found.")
+            return
+    
+        if not os.path.exists(self.smali_dir):
+            print(f"Error: smali source directory '{self.smali_dir}' not found.")
+            return
 
-            all_findings = {}
-            header = ["File", "Issue"]
-            
-            # 임시, 기본적으로 봐야하는 xml 파일들,, 사실 이부분을 사용자가 커스텀해서 사용하면 좋은데, target_xml.txt 이렇게 파일을 만들어서 사용자가 원하는 xml 파일을 넣어서 사용하면 좋을듯
-            xml_lst = ["AndroidManifest.xml", "strings.xml"]
+        all_findings = {}
+        header = ["File", "Issue"]
+        
+        target_xml_files = ["AndroidManifest.xml", "strings.xml"]
 
-            for root, dirs, files in os.walk(self.java_dir):
+        def process_directory(directory, analyzers, target_files, smali_dir=None):
+            for root, dirs, files in os.walk(directory):
                 for file in files:
-                    if file.endswith(".java") or file.endswith(".xml"):
-                        if file not in xml_lst:
-                            continue
+                    if any(file.endswith(ext) for _, exts in analyzers for ext in exts) and (not target_files or file in target_files):
                         file_path = os.path.join(root, file)
-                        # print(file_path)
-                        findings = self.analyze_file(file_path)
+                        findings = self.analyze_file(file_path, analyzers, smali_dir)
                         if findings:
-                            # 최상위 패키지 이름을 추출
-                            package_name = root.replace(self.java_dir, '').strip(os.sep).split(os.sep)[0]
+                            package_name = root.replace(directory, '').strip(os.sep).split(os.sep)[0]
                             if package_name not in all_findings:
                                 all_findings[package_name] = []
                             for finding in findings:
                                 all_findings[package_name].append({header[0]: finding[0], header[1]: finding[1]})
 
-            if all_findings:
-                save_findings_as_html(all_findings)
+        process_directory(self.java_dir, self.analyzers, target_xml_files)
+        process_directory(self.smali_dir, self.smali_analyzers, ["AndroidManifest.xml"], smali_dir=self.smali_dir)
+
+        if all_findings:
+            save_findings_as_html(all_findings)
 
 if __name__ == "__main__":
     analyzer = Analyzer_test()
