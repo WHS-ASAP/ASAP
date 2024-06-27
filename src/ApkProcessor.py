@@ -50,7 +50,7 @@ class ApkProcessor:
                 if platform.system() == 'Windows':
                      subprocess.run([self.apktool_path, 'd', apk_path, '-o', smali_output_dir, '-f'], check=True)
                 else:
-                    subprocess.run(['java', '-jar', self.apktool_path, 'd', apk_path, '-o', smali_output_dir ], check=True)
+                    subprocess.run(['java', '-jar', self.apktool_path, 'd', apk_path, '-o', smali_output_dir, '-f'], check=True)
             except subprocess.CalledProcessError as e:
                 print(f"Error during extracting smali code for {apk_name} with apktool: {e}")
             except Exception as e:

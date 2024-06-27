@@ -131,7 +131,7 @@ class WebViewAnalyzer:
             #print(f"Activity_path {activity_path}")
             base_path = os.getcwd()
             whole_path = os.path.join(base_path, "java_src", package, "sources", activity_path)
-            print(f"Whole_path {whole_path}")
+            # print(f"Whole_path {whole_path}")
             if os.path.exists(whole_path):
                 result=self.analyze_activity(whole_path)
                 #print(f"activity_path {activity_path} result {result}")
