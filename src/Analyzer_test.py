@@ -1,6 +1,6 @@
 import os
 import sys
-from modules.Firebase import FirebaseDatabaseAnalyzer
+from modules.Hardcoded import HardCodedAnalyzer
 from modules.DeepLink import DeepLinkAnalyzer
 from modules.SQL_Injection import SQLInjectionAnalyzer
 from views.web_generator import save_findings_as_html
@@ -11,7 +11,7 @@ class Analyzer_test:
         self.java_dir = java_dir
         # 각 분석기에 적용할 파일 확장자를 지정할 수 있도록 확장자 정보를 포함
         self.analyzers = [
-            (FirebaseDatabaseAnalyzer(), ['.xml']),
+            (HardCodedAnalyzer(), ['.xml']),
             (DeepLinkAnalyzer(), ['.java', '.xml']),
             (SQLInjectionAnalyzer(self.java_dir), ['.java', '.xml']),
         ]
@@ -28,27 +28,34 @@ class Analyzer_test:
             return findings
 
     def run(self):
-        if not os.path.exists(self.java_dir):
-            print(f"Error: Java source directory '{self.java_dir}' not found.")
-            return
+            if not os.path.exists(self.java_dir):
+                print(f"Error: Java source directory '{self.java_dir}' not found.")
+                return
 
-        all_findings = {}
-        header = ["File", "Issue"]
-        for root, dirs, files in os.walk(self.java_dir):
-            for file in files:
-                if file.endswith(".java") or file.endswith(".xml"):
-                    file_path = os.path.join(root, file)
-                    findings = self.analyze_file(file_path)
-                    if findings:
-                        # 최상위 패키지 이름을 추출
-                        package_name = root.replace(self.java_dir, '').strip(os.sep).split(os.sep)[0]
-                        if package_name not in all_findings:
-                            all_findings[package_name] = []
-                        for finding in findings:
-                            all_findings[package_name].append({header[0]: finding[0], header[1]: finding[1]})
+            all_findings = {}
+            header = ["File", "Issue"]
+            
+            # 임시, 기본적으로 봐야하는 xml 파일들,, 사실 이부분을 사용자가 커스텀해서 사용하면 좋은데, target_xml.txt 이렇게 파일을 만들어서 사용자가 원하는 xml 파일을 넣어서 사용하면 좋을듯
+            xml_lst = ["AndroidManifest.xml", "strings.xml"]
 
-        if all_findings:
-            save_findings_as_html(all_findings)
+            for root, dirs, files in os.walk(self.java_dir):
+                for file in files:
+                    if file.endswith(".java") or file.endswith(".xml"):
+                        if file not in xml_lst:
+                            continue
+                        file_path = os.path.join(root, file)
+                        # print(file_path)
+                        findings = self.analyze_file(file_path)
+                        if findings:
+                            # 최상위 패키지 이름을 추출
+                            package_name = root.replace(self.java_dir, '').strip(os.sep).split(os.sep)[0]
+                            if package_name not in all_findings:
+                                all_findings[package_name] = []
+                            for finding in findings:
+                                all_findings[package_name].append({header[0]: finding[0], header[1]: finding[1]})
+
+            if all_findings:
+                save_findings_as_html(all_findings)
 
 if __name__ == "__main__":
     analyzer = Analyzer_test()
