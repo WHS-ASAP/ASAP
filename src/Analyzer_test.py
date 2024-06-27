@@ -2,6 +2,7 @@ import os
 import sys
 from modules.Firebase import FirebaseDatabaseAnalyzer
 from modules.DeepLink import DeepLinkAnalyzer
+from modules.Hardcoded import HardCodedAnalyzer
 from views.web_generator import save_findings_as_html
 
 
@@ -12,6 +13,7 @@ class Analyzer_test:
         self.analyzers = [
             (FirebaseDatabaseAnalyzer(), ['.xml']),
             (DeepLinkAnalyzer(), ['.java', '.xml']),
+            (HardCodedAnalyzer(), ['.xml']),
         ]
 
     def analyze_file(self, file_path):
