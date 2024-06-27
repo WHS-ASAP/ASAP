@@ -4,6 +4,7 @@ from modules.Hardcoded import HardCodedAnalyzer
 from modules.DeepLink import DeepLinkAnalyzer
 from modules.SQL_Injection import SQLInjectionAnalyzer
 from modules.WebView import WebviewAnalyzer
+from modules.Crypto import CryptoAnalyzer
 from views.web_generator import save_findings_as_html
 
 
@@ -16,6 +17,7 @@ class Analyzer_test:
             (DeepLinkAnalyzer(), ['.java', '.xml']),
             (SQLInjectionAnalyzer(self.java_dir), ['.java', '.xml']),
             (WebviewAnalyzer(), ['.java', '.xml']),
+            (CryptoAnalyzer(), ['.java']),
         ]
 
     def analyze_file(self, file_path):
