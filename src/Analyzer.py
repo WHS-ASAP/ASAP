@@ -2,13 +2,14 @@ import os
 import sys
 from modules.Firebase import FirebaseDatabaseAnalyzer
 from modules.DeepLink import DeepLinkAnalyzer
+from modules.Hardcoded import HardCodedAnalyzer
 from views.web_generator import save_findings_as_html
 
 
 class Analyzer:
     def __init__(self, java_dir='java_src'):
         self.java_dir = java_dir
-        self.analyzers = [FirebaseDatabaseAnalyzer(), DeepLinkAnalyzer()]
+        self.analyzers = [FirebaseDatabaseAnalyzer(), DeepLinkAnalyzer(), HardCodedAnalyzer()]
 
     def analyze_file(self, file_path):
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
