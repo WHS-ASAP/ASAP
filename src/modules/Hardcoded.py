@@ -55,7 +55,10 @@ class HardCodedAnalyzer:
             data = "Firebase access Enable"
             print(data)
         elif res.status_code == 423:
-            data = "Firebase access disable"
+            data = "Firebase access Disable"
+            print(data)
+        elif res.status_code == 403:
+            data = "Firebase access Permission Denied"
             print(data)
         else:
             data = "Firebase access Error"
@@ -75,6 +78,7 @@ class HardCodedAnalyzer:
                     HardCoded_results.append(firebase_res)                                     
                 else:
                     HardCoded_results.append(f'name: {name}, value: {value}')
+        print(HardCoded_results)
         return HardCoded_results if HardCoded_results else None
 
 if __name__ == "__main__":
