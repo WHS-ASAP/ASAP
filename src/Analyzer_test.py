@@ -68,7 +68,7 @@ class Analyzer_test:
         all_findings = {}
         header = ["File", "Issue", "Result"]
 
-        # 1. SQLInjectionAnalyzer는 모든 .java 및 .xml 파일을 검사
+        # 1. SQLInjectionAnalyzer는 모든 .java 파일 검사
         self.process_directory(all_findings, header, self.java_dir, [(self.sql_injection_analyzer, ['.java'])])
 
         # 2. 다른 분석기들은 특정 xml 파일만 검사
