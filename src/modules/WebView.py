@@ -7,23 +7,15 @@ class WebViewAnalyzer:
 
     def __init__(self):
         self.java_dir = 'java_src'
-        #xml에서 view관련 액티비티, export=true인지 확인
-        #activity줄에서 webview가 있는지 확인
+        #xml에서 export=true인 액티비티 확인
         self.activity_pattern = re.compile(r'activity[^<>]*exported="true"[^<>]* ',re.IGNORECASE)# webview라고 안 적혀있을 수도
-#testFragment
-#파일 내용으로 webview가 포함되어있는지, 찾은 경우 해당 파일 이름 반환
 
         #adb shell am start -n 앱 패키지/activity명 --es key value
         self.getExtra_pattern=re.compile(r"get[^()\n]*Extra",re.IGNORECASE)#getExtras와 getStringExtra 저 옵션을 쓰려면 intent와 함께 이 조건을 충족해야함.
-        self.intent_pattern=re.compile(r"getIntent",re.IGNORECASE)
-
-        #파일 로드 혹은 url로드
-        self.url_pattern1=re.compile(r"http://",re.IGNORECASE)
-        self.url_pattern2=re.compile(r"https://",re.IGNORECASE)
-        self.uri_pattern=re.compile(r"file://",re.IGNORECASE)
+        self.getintent_pattern=re.compile(r"getIntent",re.IGNORECASE)
+        self.parseIntent_pattern=re.compile(r"parseIntent",re.IGNORECASE)
 
         self.loadurl_pattern=re.compile(r"loadurl",re.IGNORECASE)
-        self.parse_pattern=re.compile(r"parse",re.IGNORECASE)
         #self.putExtra_pattern=re.compile(r"put[^()]*Extra",re.IGNORECASE) #intent.putExtra("key","value")
         #file
         self.loadData_pattern=re.compile(r"loadData[^)\n]*text/html",re.IGNORECASE) #임의의 text/html, 보통 if else로 loadurl과 같이 있음.
@@ -43,9 +35,7 @@ class WebViewAnalyzer:
         self.setAllowContentAccess_pattern=re.compile(r'setAllowContentAccess',re.IGNORECASE) #content://data/data/com.package.name/app_webview 접근 가능. android 10이상에서는 비활성화, 일단 있으면 가능성있음. 9버전 있으니까!
     #manifest
         
-    def exported_activity(self, content):#and
-        #activity<> 안에서 webview와 name=true가 공존하는지 확인
-        #webwiew가 있는 activity인지 확인. 그러면 exported true인 것만 뽑아서 activity에서 webview 검사
+    def exported_activity(self, content):
         matches=[]
         matches=self.activity_pattern.findall(content)
         #print(f"matches {matches}")
@@ -57,10 +47,6 @@ class WebViewAnalyzer:
             name_string = name_extract.group(1)
             result.append(name_string)
             #print(f"result {result}")
-        """if matches:
-            patterns=re.compile(r'android:name="([^"]*)"',re.IGNORECASE)
-            name_extract=patterns.search(matches[0])
-            name_string = name_extract.group(1)"""
         #print(f"result {result}")
         return result
 
@@ -72,11 +58,11 @@ class WebViewAnalyzer:
                 webview_result=[]
                 #print(f"activity {activity}")
                 #intent인자
-                intent_exist=self.getExtra_pattern.findall(sources) or self.intent_pattern.findall(sources)
+                intent_exist=self.getExtra_pattern.findall(sources) or self.getintent_pattern.findall(sources) or self.parseIntent_pattern.findall(sources)
     
                 #urlredirect 가능한 함수 adb shell am start -n 앱 패키지/activity명 --es key url
 
-                loadUrlmatches=self.loadurl_pattern.findall(sources) or self.parse_pattern.findall(sources) or self.shouldOverrideUrlLoading_pattern.findall(sources)
+                loadUrlmatches=self.loadurl_pattern.findall(sources) or self.shouldOverrideUrlLoading_pattern.findall(sources)
                 #fileaccess 가능한 함수
                 fileaccessmatches=self.setAllowFileAccessFromFileURLs_pattern.findall(sources) or self.allowuniversalaccess_pattern.findall(sources) or self.setallowFileaccess_pattern.findall(sources)
                 
@@ -87,11 +73,6 @@ class WebViewAnalyzer:
                 #fileload 가능한 함수-추가요소(file://l.html)
                 fileaccessvuln_exist=loadUrlmatches and enabledjsvuln and fileaccessmatches
 
-                #print(f"webvievuln_exist {webviewmatches}, enabledjsvuln {enabledjsvuln}, fileaccessvuln {fileaccessvuln_exist}")
-                #webview_results.append(webviewmatches)
-                #enabledjs_results.append(enabledjsvuln)
-                #fileaccess_results.append(fileaccessvuln_exist)
-                #print(f"webview_results {webview_results}")
                 if intent_exist:
                     webview_result.extend(intent_exist)
                 if loadUrlmatches:
@@ -104,12 +85,10 @@ class WebViewAnalyzer:
                     pass
                 if enabledjsvuln:
                     result.extend(enabledjsvuln)
-                    #result.extend("and javascript enabled")
                 else:
                     pass
                 if fileaccessvuln_exist:
                     result.extend(fileaccessvuln_exist)
-                    #result.extend("and file access enabled")
                 else:
                     pass
                 return result
@@ -134,13 +113,11 @@ class WebViewAnalyzer:
             print(f"Whole_path {whole_path}")
             if os.path.exists(whole_path):
                 result=self.analyze_activity(whole_path)
-                #print(f"activity_path {activity_path} result {result}")
                 result_dict={
                 "activity":activity,
                 "webview":self.analyze_activity(whole_path)
                 }
                 if result:
-                    #print(f"found {result}")
                     return result_dict
                 else:
                     pass
