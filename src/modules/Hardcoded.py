@@ -1,4 +1,5 @@
 import re
+import requests as r
 
 data = {
     re.compile(r'<string name="(.*?)">(https://[a-zA-Z0-9.-]+.firebaseio\.com)</string>', re.IGNORECASE),
@@ -48,16 +49,33 @@ class HardCodedAnalyzer:
     def __init__(self):
         pass
 
+    def _firebase_Parsing(self, content):
+        res = r.get(content + '/.json')
+        if res.status_code == 200:
+            data = "Firebase access Enable"
+            print(data)
+        elif res.status_code == 423:
+            data = "Firebase access disable"
+            print(data)
+        else:
+            data = "Firebase access Error"
+            print(data)
+        return data
+
     def run(self, file_content):
-        results = []
+        HardCoded_results = []
+        firebase_res = ''
         for pattern in data:
             matches = pattern.finditer(file_content.lower())
             for match in matches:
                 name = match.group(1)
                 value = match.group(2)
-                results.append(f'name: {name}, value: {value}')
-        return results if results else None
-
+                if name in 'firebase_database_url':
+                    firebase_res = f'{value} : {self._firebase_Parsing(value)}'
+                    HardCoded_results.append(firebase_res)                                     
+                else:
+                    HardCoded_results.append(f'name: {name}, value: {value}')
+        return HardCoded_results if HardCoded_results else None
 
 if __name__ == "__main__":
     pass
