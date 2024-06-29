@@ -11,14 +11,14 @@ class ApkProcessor:
         self.java_dir = java_dir
         self.smali_dir = smali_dir
 
+        self.apktool_path = os.path.join('tools', 'apktool', 'apktool_2.9.3.jar')
         # Set the path according to the system
         if platform.system() == 'Windows':
             self.jadx_path = os.path.join('tools', 'jadx', 'bin', 'jadx.bat')
-            self.apktool_path = os.path.join('tools', 'apktool', 'apktool.bat')
+            
         else:
             self.jadx_path = os.path.join('tools', 'jadx', 'bin', 'jadx')
-            self.apktool_path = os.path.join('tools', 'apktool', 'apktool_2.9.3.jar')
-
+           
         if not os.path.exists(self.java_dir):
             os.makedirs(self.java_dir)
         if not os.path.exists(self.smali_dir):
@@ -47,10 +47,7 @@ class ApkProcessor:
             os.makedirs(smali_output_dir)
             print(f"Extracting smali code for {apk_name} using apktool...")
             try:
-                if platform.system() == 'Windows':
-                     subprocess.run([self.apktool_path, 'd', apk_path, '-o', smali_output_dir, '-f'], check=True)
-                else:
-                    subprocess.run(['java', '-jar', self.apktool_path, 'd', apk_path, '-o', smali_output_dir, '-f'], check=True)
+                subprocess.run(['java', '-jar', self.apktool_path, 'd', apk_path, '-o', smali_output_dir, '-f'], check=True)
             except subprocess.CalledProcessError as e:
                 print(f"Error during extracting smali code for {apk_name} with apktool: {e}")
             except Exception as e:
