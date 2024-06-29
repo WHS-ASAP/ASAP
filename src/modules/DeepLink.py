@@ -3,12 +3,16 @@ import xml.etree.ElementTree as ET
 from itertools import product
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+
+
+
+
 class DeepLinkAnalyzer:
     def __init__(self):
         self.android_ns = 'http://schemas.android.com/apk/res/android'
 
     def analyze_manifest(self, file_content):
-        deeplink_results = []
+        deeplink_results = set()
         schemes_deeplink = set()
         try:
             root = ET.fromstring(file_content)
@@ -55,9 +59,9 @@ class DeepLinkAnalyzer:
                     if port:
                         uri += f":{port}"
                     uri += f"{path}"
-                    deeplink_results.append(uri)
+                    deeplink_results.add(uri)
 
-        return deeplink_results, schemes_deeplink
+        return list(deeplink_results),  schemes_deeplink
 
     def parse_smali_file(self, file_path):
         file_path = os.path.normpath(file_path)
@@ -158,8 +162,16 @@ class DeepLinkAnalyzer:
                     break
 
         return {
-            "UriParses": list(UriParses)
+            "params": list(params),
+            "addURIs": list(addURIs),
+            "addJsIf": list(addJsIf),
+            "UriParses": list(UriParses),
+            "method": list(methods),
         }
+
+
+
+
 
     def run(self, manifest_content, smali_dir):
         try:
