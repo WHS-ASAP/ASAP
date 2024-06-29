@@ -78,7 +78,6 @@ class HardCodedAnalyzer:
                     HardCoded_results.append(firebase_res)                                     
                 else:
                     HardCoded_results.append(f'name: {name}, value: {value}')
-        print(HardCoded_results)
         return HardCoded_results if HardCoded_results else None
 
 if __name__ == "__main__":

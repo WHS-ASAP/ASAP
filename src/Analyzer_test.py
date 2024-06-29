@@ -6,6 +6,8 @@ from modules.WebView import WebViewAnalyzer
 from modules.Hardcoded import HardCodedAnalyzer
 from modules.SQL_Injection import SQLInjectionAnalyzer
 from modules.Permission import PermissionAnalyzer
+from modules.Crypto import CryptoAnalyzer
+from modules.utils import FilePathCheck
 from views.web_generator import save_findings_as_html
 
 class Analyzer_test:
@@ -13,7 +15,11 @@ class Analyzer_test:
         self.java_dir = java_dir
         self.smali_dir = smali_dir
 
-        self.sql_injection_analyzer = SQLInjectionAnalyzer(self.java_dir)
+        self.java_analyzer = [
+            (SQLInjectionAnalyzer(), ['.java']),
+            (CryptoAnalyzer(), ['.java']),
+        ]
+
         self.normal_analyzer = [
             (HardCodedAnalyzer(), ['.xml']),
             (WebViewAnalyzer(), ['.java', '.xml']),
@@ -27,12 +33,17 @@ class Analyzer_test:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
             content = file.read()
             findings = []
+            result = []
             for analyzer, extensions in analyzers:
                 if any(file_path.endswith(ext) for ext in extensions):
                     if isinstance(analyzer, DeepLinkAnalyzer) and smali_dir:
                         if "original" in file_path:
                             continue
                         result = analyzer.run(content, smali_dir)
+                    elif isinstance(analyzer, CryptoAnalyzer):
+                        file_checker = FilePathCheck(file_path)
+                        if file_checker.validate():
+                            result = analyzer.run(content)
                     else:
                         result = analyzer.run(content)
                     if result:
@@ -68,8 +79,8 @@ class Analyzer_test:
         all_findings = {}
         header = ["File", "Issue", "Result"]
 
-        # 1. SQLInjectionAnalyzer는 모든 .java 파일 검사
-        self.process_directory(all_findings, header, self.java_dir, [(self.sql_injection_analyzer, ['.java'])])
+        # 1. SQLInjectionAnalyzer, CryptoAnalyzer는 모든 .java 파일 검사
+        self.process_directory(all_findings, header, self.java_dir, self.java_analyzer)
 
         # 2. 다른 분석기들은 특정 xml 파일만 검사
         target_xml_files = ["AndroidManifest.xml", "strings.xml"]

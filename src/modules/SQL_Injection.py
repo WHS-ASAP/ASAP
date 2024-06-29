@@ -1,8 +1,7 @@
 import re
 
 class SQLInjectionAnalyzer:
-    def __init__(self, java_dir):
-        self.java_dir = java_dir
+    def __init__(self):
         self.provider_pattern = re.compile(r"extends ContentProvider", re.IGNORECASE)
         # exeSQL, rawQuery 사용 패턴
         self.sql_injection_pattern_1 = re.compile(r"(\bexecSQL\b|\brawQuery\b)\(.*?['\"].*?['\"].*?\)", re.IGNORECASE)
