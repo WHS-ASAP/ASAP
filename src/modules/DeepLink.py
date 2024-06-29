@@ -11,13 +11,18 @@ class DeepLinkAnalyzer:
     def __init__(self):
         self.android_ns = 'http://schemas.android.com/apk/res/android'
 
-    def analyze_manifest(self, file_content):
+    def analyze_manifest(self, file_content, smali_dir):
         deeplink_results = set()
         schemes_deeplink = set()
         try:
             root = ET.fromstring(file_content)
         except ET.ParseError as e:
             return deeplink_results, schemes_deeplink
+        
+        package_name = root.attrib.get('package', '').strip()
+
+        
+        strings_file_path = self.locate_strings_xml(smali_dir, package_name)
 
         for intent_filter in root.findall(".//intent-filter"):
             schemes = []
@@ -26,6 +31,14 @@ class DeepLinkAnalyzer:
             all_paths = []
             for data in intent_filter.findall("data"):
                 scheme = data.get(f'{{{self.android_ns}}}scheme')
+                if scheme and scheme.startswith('@string/'):
+                    scheme_resource = scheme.split('@string/')[1]
+                    if strings_file_path:
+                        scheme_value = self.load_strings_xml(strings_file_path, scheme_resource)
+                        if scheme_value:
+                            scheme = scheme_value
+                        else:
+                            print(f"Warning: String resource '{scheme_resource}' not found in strings.xml")
                 host = data.get(f'{{{self.android_ns}}}host')
                 port = data.get(f'{{{self.android_ns}}}port')
                 path = data.get(f'{{{self.android_ns}}}path')
@@ -63,6 +76,28 @@ class DeepLinkAnalyzer:
 
         return list(deeplink_results),  schemes_deeplink
 
+    def locate_strings_xml(self, smali_dir, package_name):
+     
+        values_dir = os.path.join(smali_dir, package_name, 'res', 'values')
+        strings_file_path = os.path.join(values_dir, 'strings.xml')
+        
+        if os.path.exists(strings_file_path):
+            return strings_file_path
+        else:
+            print(f"Warning: strings.xml file not found in {values_dir}")
+            return None
+        
+    def load_strings_xml(self, strings_file_path, scheme_resource):
+        try:
+            tree = ET.parse(strings_file_path)
+            root = tree.getroot()
+            for string_element in root.findall('string'):
+                name = string_element.attrib['name']
+                if name == scheme_resource:
+                    return string_element.text.strip()
+        except ET.ParseError as e:
+            print(f"Error parsing strings.xml: {e}")
+    
     def parse_smali_file(self, file_path):
         file_path = os.path.normpath(file_path)
         try:
@@ -175,7 +210,7 @@ class DeepLinkAnalyzer:
 
     def run(self, manifest_content, smali_dir):
         try:
-            deeplink_results, manifest_schemes = self.analyze_manifest(manifest_content)
+            deeplink_results, manifest_schemes = self.analyze_manifest(manifest_content, smali_dir)
         except Exception as e:
             print(f"Error analyzing manifest: {e}")
             deeplink_results, manifest_schemes = [], set()
@@ -186,9 +221,13 @@ class DeepLinkAnalyzer:
             print(f"Error analyzing smali directory: {e}")
             smali_results = {}
 
-        if not deeplink_results and not smali_results:
-            return None
-        return {
-            "manifest": deeplink_results,
-            "smali": smali_results
+        formatted_results = {
+            "manifest": [f"{item}" for item in deeplink_results],
+            "Scheme UriParses": [f"{item}" for item in smali_results.get("UriParses", [])],
+            "host, path": [f"{item}" for item in smali_results.get("addURIs", [])],
+            "params": [f"{item}" for item in smali_results.get("params", [])],
+            "JavascriptInterface method": [f"{item}" for item in smali_results.get("method", [])],
+            "addJavascriptInterface": [f"{item}" for item in smali_results.get("addJsIf", [])],
         }
+
+        return formatted_results
