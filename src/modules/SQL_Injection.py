@@ -27,6 +27,16 @@ class SQLInjectionAnalyzer:
         except UnicodeDecodeError:
             return False
 
+    def extract_line(self, content):
+        # 파일 내에서 SQL Injection 관련 코드 추출
+        lines = content.split('\n')
+        result = []
+        for line_num, line in enumerate(lines, start=1):
+            if self.sql_injection_pattern_1.search(line) and self.sql_injection_pattern_2.search(line):
+                if not self.input_validation_pattern.search(line) and not self.orm_pattern.search(line) and not self.prepared_statement_pattern.search(line) and not self.additional_pattern.search(line):
+                    result.append((line_num, line))
+        return result
+    
     def is_external_package(self, content):
         # 외부 패키지를 사용하는지 검사
         return self.external_package_pattern.search(content) is not None
@@ -35,12 +45,12 @@ class SQLInjectionAnalyzer:
         # 파일에서 SQL 취약점을 검사
         findings = []
         if not self.is_external_package(content):
-            matches = self.sql_injection_pattern_1.findall(content) and self.sql_injection_pattern_2.findall(content)
+            matches = self.extract_line(content)
             if matches:
-                # SQL Injection을 예방하는 코드가 있나 검사
-                if not self.input_validation_pattern.search(content) and not self.orm_pattern.search(content) and not self.prepared_statement_pattern.search(content) and not self.additional_pattern.search(content):
-                    findings.append("Potential SQL Injection vulnerabilities found")
+                findings.append(matches)
         return findings
 
     def run(self, content):
         return self.analyze_file(content)
+if __name__ == "__main__":
+    pass
