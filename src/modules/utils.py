@@ -1,6 +1,7 @@
 import os
 import re
 
+
 class FilePathCheck:
     def __init__(self, file_path):
         self.file_path = file_path

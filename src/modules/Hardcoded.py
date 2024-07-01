@@ -55,12 +55,13 @@ class HardCodedAnalyzer:
         if self.url != '':
             fire_res = self.firebase_connect(self.url, self.child)
         return results, fire_res
-
+      
     def run(self, content):
         results, fire_res = self.analyzer(content)
         if results and fire_res:
             return results, fire_res
         return None
+
 
 if __name__ == "__main__":
     pass
