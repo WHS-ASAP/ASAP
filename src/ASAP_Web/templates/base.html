@@ -1,18 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <title>ASAP</title>
-  </head>
-  <body>
-    <header>
-      <h1>ASAP</h1>
-    </header>
-    <main>{% block content %}{% endblock %}</main>
-    <footer>
-      <p>&copy; 2024 ASAP Project</p>
-    </footer>
-  </body>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="{{ url_for('static', filename='js/header.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/intro_modal_button.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/result_bar.js') }}" defer></script>
+</head>
+<body>
+    <main-header
+        title="ASAP"
+        home-link="{{ url_for('main.index') }}"
+        github-link="https://github.com"
+        image-src="{{ url_for('static', filename='asset/info.jpg') }}"
+    ></main-header>
+    <div class="content-container" style="display: flex; flex-grow: 1">
+        <side-bar
+            packages='[
+                {% for package in packages %}
+                {"name": "{{ package }}", "link": "{{ url_for('main.package_results', package_name=package) }}"}{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ]'
+        ></side-bar>
+        <main class="main-content">
+            <intro-modal-button
+                buttons='[
+                    {"label": "DeepLink", "src": "../static/modal/DeepLink.html"},
+                    {"label": "Log", "src": "../static/modal/Log_E.html"},
+                    {"label": "Permission", "src": "../static/modal/Permission.html"},
+                    {"label": "SQL Injection", "src": "../static/modal/SqlInjection.html"},
+                    {"label": "WebView", "src": "../static/modal/WebView.html"},
+                    {"label": "Hardcoded", "src": "../static/modal/Hardcoded.html"},
+                    {"label": "Crypto", "src": "../static/modal/Crypto.html"}
+                ]'
+            ></intro-modal-button>
+            <div class="col-lg-6 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Bar chart</h4>
+                        <canvas id="barChart" style="height:230px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <footer>© 2024 ASAP Project</footer>
+</body>
 </html>

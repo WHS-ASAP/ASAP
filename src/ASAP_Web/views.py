@@ -1,10 +1,6 @@
 import sys
 import os
-
-# sys.path.append(os.path.dirname(os.path.abspath(__file__)).rsplit('/', 1)[0])
-
-from flask import Blueprint, render_template
-# from ASAP_Web.database import db, Result
+from flask import Blueprint, render_template, jsonify
 from database import db, Result
 
 main = Blueprint('main', __name__)
@@ -23,3 +19,12 @@ def package_results(package_name):
 def module_results(package_name, analyzer):
     results = Result.query.filter_by(package_name=package_name, analyzer=analyzer).all()
     return render_template('module_results.html', package_name=package_name, analyzer=analyzer, results=results)
+
+@main.route('/api/vulnerability-counts')
+def get_vulnerability_counts():
+    counts = db.session.query(Result.package_name, db.func.count(Result.id)).group_by(Result.package_name).all()
+    data = {
+        'packages': [result[0] for result in counts],
+        'counts': [result[1] for result in counts]
+    }
+    return jsonify(data)

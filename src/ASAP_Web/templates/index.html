@@ -1,10 +1,7 @@
 {% extends 'base.html' %}
-
 {% block content %}
-    <h2>Package List</h2>
-    <ul>
-        {% for package in packages %}
-            <li><a href="{{ url_for('main.package_results', package_name=package) }}">{{ package }}</a></li>
-        {% endfor %}
-    </ul>
+  <div class="dashboard">
+    <h2>Welcome to ASAP Dashboard</h2>
+    <p>Select a package to view details on the vulnerabilities found.</p>
+  </div>
 {% endblock %}

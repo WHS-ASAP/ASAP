@@ -1,0 +1,111 @@
+/* 전체 페이지 컨테이너 스타일 */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Nanum Gothic", sans-serif;
+}
+
+/* 헤더, 사이드바, 메인, 푸터 구조를 위한 스타일 */
+header,
+footer {
+  padding: 1rem;
+  text-align: center;
+  background-color: #f8f9fa;
+}
+
+#sidebar {
+  min-width: 200px;
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* 메인 내용과 사이드바를 수평 정렬하기 */
+.content-area {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.dashboard {
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* 기본적인 간격과 스타일링 */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+li a:hover {
+  background-color: #f4f4f4;
+}
+
+.header-container {
+  /* div 태그에 class로 전달할 것임 */
+  /* div 태그 내에 h1 태그 들어올거고 해당 글자 폰트는 Arial, sans-serif */
+  /* div 태그에서 아래쪽 테두리를 2px 검정색으로 그림 */
+  font-family: Arial, sans-serif;
+  border-bottom: 2px solid black;
+  height: 100px;
+  display: flex;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.left-header {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: auto;
+  background-position: center;
+  background-size: cover;
+}
+
+.right-header {
+  background-position: center;
+  background-size: cover;
+}
+
+.content-container {
+  display: flex;
+  min-height: 100vh; /* 전체 높이를 차지 */
+}
+
+.sidebar {
+  padding: 20px;
+  display: flex;
+}
+
+.main-content {
+  flex-grow: 1; /* 남은 공간을 모두 차지 */
+  padding: 20px 20px 0px 0px;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #f4f4f4;
+}
+
+.github-button img {
+  width: 38px;
+  height: 40px;
+}
