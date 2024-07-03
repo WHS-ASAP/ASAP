@@ -40,6 +40,7 @@ class AnalyzerTest:
             content = file.read()
             findings = []
             for analyzer, extensions in analyzers:
+                result = []
                 if any(file_path.endswith(ext) for ext in extensions):
                     if isinstance(analyzer, DeepLinkAnalyzer) and smali_dir:
                         if "original" in file_path:
