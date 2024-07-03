@@ -31,19 +31,20 @@ pip install -r requirements.txt
 
 ## ASAP Tool Guide
 
+
 ## References
 
 ## Contributor
-+ PM: YeEun Lee
-+ JungAhn Jang
-+ SeoA Myung
-+ YeBean Kim
-+ YunSung Lee
-+ YuWon Sul
++ PM: Yeeun Lee
++ Jungahn Jang
++ Seoa Myung
++ Yebean Kim
++ Yunsung Lee
++ Yuwon Sul
 
 ---
-+ Mentor: JuWon Kim
-+ PL: SungGwang Park
++ Mentor: Joowon Kim (@arrester)
++ PL: Sunggwang Park
 ---
 
 ## Acknowledgement
