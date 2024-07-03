@@ -35,16 +35,17 @@ pip install -r requirements.txt
 ## References
 
 ## Contributor
-+ PM: Yeeun Lee
-+ Jungahn Jang
-+ Seoa Myung
-+ Yebean Kim
-+ Yunsung Lee
-+ Yuwon Sul
++ PM: Yeeun Lee ([@Yenniiii](https://github.com/Yenniiii))
++ Jeongahn Jang ([@jeongahn](https://github.com/jeongahn))
++ Seoa Myung ([@SeoA0703](https://github.com/SeoA0703))
++ Woohyun Son ([@emerards](https://github.com/emerards))
++ Yebean Kim ([@kimyebean](https://github.com/kimyebean))
++ Yunsung Lee ([@hansowon](https://github.com/hansowon))
++ Yuwon Sul ([@AR3CIA](https://github.com/AR3CIA))
 
 ---
 + Mentor: Joowon Kim ([@arrester](https://github.com/arrester))
-+ PL: Sunggwang Park
++ PL: Sunggwang Park ([@n0paew](https://github.com/n0paew))
 ---
 
 ## Acknowledgement
