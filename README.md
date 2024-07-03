@@ -1,5 +1,5 @@
 # ASAP
-This WhiteHat School Project is an **open-source**, analysis tool to support for App Vulnerability Manual Analysis Hackers and App Developers.  
+This WhiteHat School Project is an *open-source*, analysis tool to support for App Vulnerability Manual Analysis Hackers and App Developers.  
 
 The ASAP tool basically provides possible locations for vulnerabilities in code obtained using the jadx decompiler. 
 
