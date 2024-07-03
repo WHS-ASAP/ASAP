@@ -35,15 +35,21 @@ GIF or 알맞는 사진 자료 첨부
 ## References
 
 ## Contributor
- > WebView
+
 + PM: Yeeun Lee ([@Yenniiii](https://github.com/Yenniiii))
    > WebView
 + Jeongahn Jang ([@jeongahn](https://github.com/jeongahn))
+   > 
 + Seoa Myung ([@SeoA0703](https://github.com/SeoA0703))
+   > Permission
 + Woohyun Son ([@emerards](https://github.com/emerards))
+   > SQL_Injection
 + Yebean Kim ([@kimyebean](https://github.com/kimyebean))
+   > Crypto
 + Yunsung Lee ([@hansowon](https://github.com/hansowon))
+   > DeepLink
 + Yuwon Sul ([@AR3CIA](https://github.com/AR3CIA))
+   > HardCoded
 
 ---
 + Mentor: Joowon Kim ([@arrester](https://github.com/arrester))
