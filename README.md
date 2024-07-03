@@ -28,3 +28,8 @@ pip install -r requirements.txt
 ## ASAP Tool Guide
 
 ## References
+
+## Acknowledgement
+This work was supported by Korea Information Technology Research Institute (KITRI) 2nd WhiteHat School (WHS) Program.
+
+[Project Name: AAP in Security (ASAP) Project]
