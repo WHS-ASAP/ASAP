@@ -7,9 +7,9 @@ ASAP only supports static analysis.
 
 ---
 The ASAP Project supports: 
-*l
--i
-+st
+ * l
+ - i
+ + st
 
 ## Install
 
