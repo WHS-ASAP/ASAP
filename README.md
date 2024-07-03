@@ -33,6 +33,19 @@ pip install -r requirements.txt
 
 ## References
 
+## Contributor
++ PM: YeEun Lee
++ JungAhn Jang
++ SeoA Myung
++ YeBean Kim
++ YunSung Lee
++ YuWon Sul
+
+---
++ Mentor: JuWon Kim
++ PL: SungGwang Park
+---
+
 ## Acknowledgement
 This work was supported by Korea Information Technology Research Institute (KITRI) 2nd WhiteHat School (WHS) Program.
 
