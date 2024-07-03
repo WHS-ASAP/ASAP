@@ -35,7 +35,7 @@ GIF or 알맞는 사진 자료 첨부
 ## References
 
 ## Contributor
-+ PM: Yeeun Lee ([@Yenniiii](https://github.com/Yenniiii))
++ PM: Yeeun Lee ([@Yenniiii](https://github.com/Yenniiii)) > WebView
 + Jeongahn Jang ([@jeongahn](https://github.com/jeongahn))
 + Seoa Myung ([@SeoA0703](https://github.com/SeoA0703))
 + Woohyun Son ([@emerards](https://github.com/emerards))
