@@ -16,7 +16,7 @@ Scope of Vulnerabilities in ASAP:
    + Crypto
    + LogE (부연설명 추가)
 ---
-
+ > WebView
 
 
 ## Getting Started
@@ -35,7 +35,7 @@ GIF or 알맞는 사진 자료 첨부
 ## References
 
 ## Contributor
-+ PM: Yeeun Lee ([@Yenniiii](https://github.com/Yenniiii)) > WebView
++ PM: Yeeun Lee ([@Yenniiii](https://github.com/Yenniiii))
 + Jeongahn Jang ([@jeongahn](https://github.com/jeongahn))
 + Seoa Myung ([@SeoA0703](https://github.com/SeoA0703))
 + Woohyun Son ([@emerards](https://github.com/emerards))
