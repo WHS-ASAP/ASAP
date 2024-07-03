@@ -43,7 +43,7 @@ pip install -r requirements.txt
 + Yuwon Sul
 
 ---
-+ Mentor: Joowon Kim (@arrester)
++ Mentor: Joowon Kim ([@arrester](https://github.com/arrester))
 + PL: Sunggwang Park
 ---
 
