@@ -6,7 +6,7 @@ The ASAP tool basically provides possible locations for vulnerabilities in code 
 ASAP only supports static analysis. 
 
 ---
-Scope of Vulnerabilities in ASAP Tools: 
+Scope of Vulnerabilities in ASAP: 
    + WebView
    + DeepLink
    + SQL_Injection
