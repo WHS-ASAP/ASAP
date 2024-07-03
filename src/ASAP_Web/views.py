@@ -1,5 +1,3 @@
-import sys
-import os
 from flask import Blueprint, render_template, jsonify
 from database import db, Result
 
@@ -26,5 +24,24 @@ def get_vulnerability_counts():
     data = {
         'packages': [result[0] for result in counts],
         'counts': [result[1] for result in counts]
+    }
+    return jsonify(data)
+
+@main.route('/api/vulnerability-trend')
+def get_vulnerability_trend():
+    results = db.session.query(Result.package_name, Result.vuln_type, db.func.count(Result.id)).group_by(Result.package_name, Result.vuln_type).all()
+    data = {}
+    for package_name, vuln_type, count in results:
+        if package_name not in data:
+            data[package_name] = {}
+        data[package_name][vuln_type] = count
+    return jsonify(data)
+
+@main.route('/api/vulnerability-by-type')
+def get_vulnerability_by_type():
+    results = db.session.query(Result.vuln_type, db.func.count(Result.id)).group_by(Result.vuln_type).all()
+    data = {
+        'vuln_types': [result[0] for result in results],
+        'counts': [result[1] for result in results]
     }
     return jsonify(data)

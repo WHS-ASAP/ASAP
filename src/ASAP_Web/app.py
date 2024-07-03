@@ -8,7 +8,6 @@ def create_app():
     # src/instance 경로에 데이터베이스 파일 생성
     base_dir = os.path.abspath(os.path.dirname(__file__))
     instance_path = os.path.join(base_dir, '..', 'instance')
-    print(instance_path)
     if not os.path.exists(instance_path):
         os.makedirs(instance_path)
     else:

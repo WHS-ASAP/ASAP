@@ -41,6 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
             backgroundColor: colors,
             borderColor: colors,
             borderWidth: 1,
+            barThickness: 30, // Adjust the bar thickness as needed
+            borderRadius: {
+              topRight: 12,
+              bottomRight: 12,
+            }, // Apply radius to the right side
           },
         ],
       };
@@ -50,6 +55,42 @@ document.addEventListener("DOMContentLoaded", function () {
         scales: {
           x: {
             beginAtZero: true,
+            ticks: {
+              color: "#014a17", // Color for x-axis labels
+              font: {
+                family: "verdana, fantasy", // Font for x-axis labels
+              },
+            },
+            title: {
+              color: "#014a17", // Color for x-axis title (if any)
+              font: {
+                family: "verdana, fantasy", // Font for x-axis labels
+              },
+            },
+          },
+          y: {
+            ticks: {
+              color: "#014a17", // Color for y-axis labels
+              font: {
+                family: "verdana, fantasy", // Font for x-axis labels
+              },
+            },
+            title: {
+              color: "#014a17", // Color for y-axis title (if any)
+              font: {
+                family: "verdana, fantasy", // Font for x-axis labels
+              },
+            },
+          },
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: "#014a17", // Color for legend labels
+              font: {
+                family: "verdana, fantasy", // Font for x-axis labels
+              },
+            },
           },
         },
       };
