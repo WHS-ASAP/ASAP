@@ -3,6 +3,10 @@ import xml.etree.ElementTree as ET
 from itertools import product
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+
+
+
+
 class DeepLinkAnalyzer:
     def __init__(self):
         self.android_ns = 'http://schemas.android.com/apk/res/android'
@@ -10,10 +14,9 @@ class DeepLinkAnalyzer:
     def analyze_manifest(self, file_content, smali_dir):
         deeplink_results = set()
         schemes_deeplink = set()
-        
         try:
             root = ET.fromstring(file_content)
-        except ET.ParseError:
+        except ET.ParseError as e:
             return deeplink_results, schemes_deeplink
         
         package_name = root.attrib.get('package', '').strip()
@@ -21,10 +24,9 @@ class DeepLinkAnalyzer:
 
         for intent_filter in root.findall(".//intent-filter"):
             schemes, hosts, ports, all_paths = [], [], [], []
-
             for data in intent_filter.findall("data"):
                 scheme = self.resolve_scheme(data.get(f'{{{self.android_ns}}}scheme'), strings_file_path)
-                host = data.get(f'{{{self.android_ns}}}host')
+                host = self.resolve_host(data.get(f'{{{self.android_ns}}}host'), strings_file_path)
                 port = data.get(f'{{{self.android_ns}}}port')
                 paths = [
                     data.get(f'{{{self.android_ns}}}path'),
@@ -33,7 +35,6 @@ class DeepLinkAnalyzer:
                     data.get(f'{{{self.android_ns}}}pathAdvancedPattern'),
                     data.get(f'{{{self.android_ns}}}pathSuffix')
                 ]
-
                 if scheme and scheme not in ["http", "https"]:
                     schemes.append(scheme)
                     schemes_deeplink.add(scheme)
@@ -50,11 +51,11 @@ class DeepLinkAnalyzer:
                     uri = f"{scheme}://{host}"
                     if port:
                         uri += f":{port}"
-                    uri += path
+                    if path :
+                        uri += f"{path}"
                     deeplink_results.add(uri)
 
-        return list(deeplink_results), schemes_deeplink
-
+        return list(deeplink_results),  schemes_deeplink
     def resolve_scheme(self, scheme, strings_file_path):
         if scheme and scheme.startswith('@string/') and strings_file_path:
             scheme_resource = scheme.split('@string/')[1]
@@ -63,26 +64,40 @@ class DeepLinkAnalyzer:
                 return scheme_value
             print(f"Warning: String resource '{scheme_resource}' not found in strings.xml")
         return scheme
-
+    
+    def resolve_host(self, host, strings_file_path):
+        if host and host.startswith('@string/') and strings_file_path:
+            host_resource = host.split('@string/')[1]
+            host_value = self.load_strings_xml(strings_file_path, host_resource)
+            if host_value:
+                return host_value
+            print(f"Warning: String resource '{host_resource}' not found in strings.xml")
+        return host
+    
     def locate_strings_xml(self, smali_dir, package_name):
-        strings_file_path = os.path.join(smali_dir, package_name, 'res', 'values', 'strings.xml')
+     
+        values_dir = os.path.join(smali_dir, package_name, 'res', 'values')
+        strings_file_path = os.path.join(values_dir, 'strings.xml')
+        
         if os.path.exists(strings_file_path):
             return strings_file_path
-        print(f"Warning: strings.xml file not found in {os.path.dirname(strings_file_path)}")
-        return None
-
+        else:
+            print(f"Warning: strings.xml file not found in {values_dir}")
+            return None
+        
     def load_strings_xml(self, strings_file_path, scheme_resource):
         try:
             tree = ET.parse(strings_file_path)
             root = tree.getroot()
             for string_element in root.findall('string'):
-                if string_element.attrib['name'] == scheme_resource:
+                name = string_element.attrib['name']
+                if name == scheme_resource:
                     return string_element.text.strip()
         except ET.ParseError as e:
             print(f"Error parsing strings.xml: {e}")
-        return None
-
+    
     def parse_smali_file(self, file_path):
+
         try:
             with open(file_path, encoding="utf-8") as f:
                 lines = f.readlines()
@@ -93,42 +108,45 @@ class DeepLinkAnalyzer:
         local_register = {}
         param, addURI, UriParse = set(), set(), set()
 
-
         for line in lines:
             line = line.strip()
             if not line:
                 continue
 
             words = line.split()
-   
 
             try:
                 if "const-string" in line:
-                    local_register[words[1][:-1]] = words[2].strip('"')
+                    local_register[words[1][:-1]] = words[2].split("\"")[1]
                 elif "getQueryParameter(" in line:
-                    var = self.extract_var(line)
+                    if "}" not in line:
+                        continue
+                    var = line.split("}")[0].split()[-1]
                     if var in local_register:
                         param.add(local_register[var])
                 elif "addURI(" in line:
-                    var_list = self.extract_vars(line)
-                    if all(v in local_register for v in var_list[1:3]):
-                        addURI.add(f"{local_register[var_list[1]]}/{local_register[var_list[2]]}")
+                    var_list = line.split("{")[1].split("}")[0].split(", ")
+                    if var_list[1] in local_register and var_list[2] in local_register:
+                        host = local_register[var_list[1]]
+                        path = local_register[var_list[2]]
+                        addURI.add(host + "/" + path)
                 elif "Uri;->parse(" in line:
-                    var = self.extract_var(line)
+                    var = line.split("{")[1].split("}")[0]
                     if var in local_register:
                         UriParse.add(local_register[var])
+
             except Exception as e:
                 print(f"Error processing line in {file_path}: {e}")
                 continue
 
         return list(param), list(addURI), list(UriParse)
-
+    
     def extract_var(self, line):
         return line.split("}")[0].split()[-1]
 
     def extract_vars(self, line):
         return line.split("{")[1].split("}")[0].split(", ")
-
+    
     def parse_smali_directory(self, directory, manifest_schemes):
         params, addURIs, UriParses, tmpUriParse = set(), set(), set(), set()
 
@@ -162,20 +180,29 @@ class DeepLinkAnalyzer:
             deeplink_results, manifest_schemes = self.analyze_manifest(manifest_content, smali_dir)
         except Exception as e:
             print(f"Error analyzing manifest: {e}")
+            deeplink_results, manifest_schemes = [], set()
+
+        if not deeplink_results or not manifest_schemes :
             return
+        else :
+            try:
+                smali_results = self.parse_smali_directory(smali_dir, manifest_schemes)
+            except Exception as e:
+                print(f"Error analyzing smali directory: {e}")
+                smali_results = {}
 
-        if not deeplink_results or not manifest_schemes:
-            return
-
-        try:
-            smali_results = self.parse_smali_directory(smali_dir, manifest_schemes)
-        except Exception as e:
-            print(f"Error analyzing smali directory: {e}")
-            smali_results = {}
-
-        return {
-            "Scheme": [f"{item}" for item in deeplink_results],
-            "UriParses": [f"{item}" for item in smali_results.get("UriParses", [])],
-            "Addable host, path": [f"{item}" for item in smali_results.get("addURIs", [])],
-            "Addable params": [f"{item}" for item in smali_results.get("params", [])],
+        formatted_results = {
+            "scheme:": [f"{item}" for item in deeplink_results],
         }
+
+        if smali_results.get("UriParses"):
+            formatted_results["UriParses"] = [f"{item}" for item in smali_results["UriParses"]]
+        
+        if smali_results.get("params"):
+            formatted_results["addable params"] = [f"{item}" for item in smali_results["params"]]
+
+        if smali_results.get("addURIs"):
+            formatted_results["addable host, path"] = [f"{item}" for item in smali_results["addURIs"]]
+            
+        return formatted_results
+
