@@ -5,6 +5,7 @@ The ASAP tool basically provides possible locations for vulnerabilities in code 
 
 ASAP only supports static analysis. 
 
+
 ---
 Scope of Vulnerabilities in ASAP: 
    + WebView
@@ -14,6 +15,9 @@ Scope of Vulnerabilities in ASAP:
    + Permission
    + Crypto
    + LogE (부연설명 추가)
+---
+
+
 
 ## Getting Started
 
