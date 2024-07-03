@@ -37,19 +37,19 @@ GIF or 알맞는 사진 자료 첨부
 ## Contributor
 
 + PM: Yeeun Lee ([@Yenniiii](https://github.com/Yenniiii))
-   > WebView
+   > Develop WebView module
 + Jeongahn Jang ([@jeongahn](https://github.com/jeongahn))
-   > 
+   > Full-Stack(develop web), Development Manager(contribute all of modules)
 + Seoa Myung ([@SeoA0703](https://github.com/SeoA0703))
-   > Permission
+   > Develop Permission module
 + Woohyun Son ([@emerards](https://github.com/emerards))
-   > SQL_Injection
+   > Develop SQL_Injection
 + Yebean Kim ([@kimyebean](https://github.com/kimyebean))
-   > Crypto
+   > Develop Crypto module
 + Yunsung Lee ([@hansowon](https://github.com/hansowon))
-   > DeepLink
+   > Develop DeepLink module
 + Yuwon Sul ([@AR3CIA](https://github.com/AR3CIA))
-   > HardCoded
+   > Develop HardCoded module
 
 ---
 + Mentor: Joowon Kim ([@arrester](https://github.com/arrester))
