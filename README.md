@@ -30,7 +30,7 @@ pip install -r requirements.txt
 ```
 
 ## ASAP Tool Guide
-
+GIF or 알맞는 사진 자료 첨부
 
 ## References
 
