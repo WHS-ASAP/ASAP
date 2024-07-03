@@ -5,7 +5,7 @@ The ASAP tool basically provides possible locations for vulnerabilities in code 
 
 ASAP only supports static analysis. 
 
-
+---
 The ASAP Project supports: 
 *l
 -i
