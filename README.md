@@ -15,7 +15,7 @@ Scope of Vulnerabilities in ASAP:
    + Crypto
    + LogE (부연설명 추가)
 
-## Install
+## Getting Started
 
 ```
 cd ASAP
@@ -24,5 +24,7 @@ cd ASAP
 ```
 pip install -r requirements.txt
 ```
+
+## ASAP Tool Guide
 
 ## References
