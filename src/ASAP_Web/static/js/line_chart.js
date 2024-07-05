@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
               },
             },
             y: {
+              beginAtZero: true,
               title: {
                 display: true,
                 text: "Count",

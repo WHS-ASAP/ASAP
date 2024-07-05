@@ -13,76 +13,13 @@
     <script src="{{ url_for('static', filename='js/line_chart.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/doughnut_chart.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/packages.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/history_table.js') }}" defer></script>
   </head>
   <body>
     <div class="container-scroller">
-      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-        <div
-          class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center"
-        >
-          <a class="navbar-brand brand-logo" href="{{ url_for('main.index') }}">
-            <img
-              src="{{ url_for('static', filename='asset/logo.svg') }}"
-              alt="logo"
-              class="logo-dark"
-            />
-            <img
-              src="{{ url_for('static', filename='asset/logo.svg') }}"
-              alt="logo-light"
-              class="logo-light"
-            />
-          </a>
-          <a class="navbar-brand brand-logo-mini" href="{{ url_for('main.index') }}">
-            <img src="{{ url_for('static', filename='asset/logo.svg') }}" alt="logo" />
-          </a>
-        </div>
-        <div class="navbar-menu-wrapper d-flex align-items-center">
-          <h5 class="mb-0 font-weight-medium d-none d-lg-flex">ASAP</h5>
-          <ul class="navbar-nav navbar-nav-right">
-            <!-- Add GitHub link icon here if needed -->
-          </ul>
-        </div>
-      </nav>
-
+      {% include 'components/header.html' %}
       <div class="container-fluid page-body-wrapper">
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-          <ul class="nav">
-            <li class="nav-item navbar-brand-mini-wrapper">
-              <a class="nav-link navbar-brand brand-logo-mini" href="{{ url_for('main.index') }}"
-                ><img src="asset/logo-mini.svg" alt="logo"
-              /></a>
-            </li>
-            <li class="nav-item nav-category">
-              <span class="nav-link">Dashboard</span>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('main.index') }}">
-                <span class="menu-title">Dashboard</span>
-                <i class="icon-screen-desktop menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item nav-category"><span class="nav-link">SCAN</span></li>
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                data-bs-toggle="collapse"
-                href="#ui-basic"
-                aria-expanded="false"
-                aria-controls="ui-basic"
-              >
-                <span class="menu-title">Scanning apk</span>
-                <i class="icon-layers menu-icon"></i>
-              </a>
-            </li>
-            <li class="nav-item nav-category"><span class="nav-link">Package List</span></li>
-              <package-list packages='[
-                {% for package in packages %}
-                {"name": "{{ package }}", "link": "{{ url_for('main.package_results', package_name=package) }}"}{% if not loop.last %},{% endif %}
-                {% endfor %}
-              ]'></package-list>
-            <li class="nav-item"></li>
-          </ul>
-        </nav>
+        {% include 'components/sidebar.html' %}
         <div class="main-panel">
           <div class="content-wrapper">
             <div class="row">
@@ -101,6 +38,18 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col-md-12 grid-margin stretch-card">
+                {% include 'components/historytable.html' %}
+              </div>
+            </div>
+            <footer class="footer">
+              <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted text-center text-sm-left d-block d-sm-inline-block"
+                  >ASAP version 1.0 © 2024</span
+                >
+              </div>
+            </footer>
           </div>
         </div>
       </div>

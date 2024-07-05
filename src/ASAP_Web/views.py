@@ -45,3 +45,29 @@ def get_vulnerability_by_type():
         'counts': [result[1] for result in results]
     }
     return jsonify(data)
+
+@main.route('/api/history_table')
+def history_table():
+    packages = db.session.query(Result.package_name).distinct().all()
+
+    package_data = []
+    for package in packages:
+        package_name = package[0]
+        # 가장 높은 위험도를 가진 결과를 가져옵니다.
+        highest_risk_result = db.session.query(Result).filter_by(package_name=package_name).order_by(
+            db.case(
+                (Result.risk == 'High', 1),
+                (Result.risk == 'Medium', 2),
+                (Result.risk == 'Low', 3)
+            )
+        ).first()
+        if highest_risk_result:
+            package_data.append({
+                'package_name': highest_risk_result.package_name,
+                'platform': 'apk',
+                'type': 'auto',
+                'created_at': highest_risk_result.timestamp,
+                'risk': highest_risk_result.risk
+            })
+
+    return jsonify(package_data)

@@ -19463,6 +19463,12 @@ code {
   color: white;
 }
 
+.badge-caution {
+  border: 1px solid #ff9800; 
+  background: #ff9800;
+  color: white;
+}
+
 .badge-light {
   border: 1px solid #f8f9fa;
   background: #f8f9fa;
@@ -24871,6 +24877,10 @@ dl li {
 .jsgrid .table-borderless.jsgrid-table {
   border: none;
 }
+.table tbody tr:hover {
+  background-color: #f0f0f02b; /* 회색 배경색 */
+  cursor: pointer; /* 마우스를 올렸을 때 커서 모양 변경 */
+}
 .table.table-borderless tr,
 .jsgrid .table-borderless.jsgrid-table tr,
 .table.table-borderless td,
@@ -29977,6 +29987,11 @@ div.tagsinput span.tag a {
     -ms-flex-positive: 1;
     flex-grow: 1;
   }
+}
+.navbar .navbar-menu-wrapper .navbar-nav-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .navbar .navbar-menu-wrapper .navbar-nav-right {
   margin-left: auto;

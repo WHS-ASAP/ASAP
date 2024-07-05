@@ -67,7 +67,7 @@ class AnalyzerTest:
             for file in files:
                 file_path = os.path.join(root, file)
                 if any(file.endswith(ext) for _, exts in analyzers for ext in exts):
-                    if target_files and file not in target_files:
+                    if target_files and file not in target_files and file.endswith('.xml'):
                         continue
                     self.analyze_file(file_path, analyzers, now_time
                                       , directory if any(ext == '.smali' for _, exts in analyzers for ext in exts) else None, package_name)
