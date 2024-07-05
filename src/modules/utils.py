@@ -30,15 +30,14 @@ class FilePathCheck:
 
 class string_list:
     analysis_regex = {
-        r"([^A-Z0-9]|^)(AKIA|A3T|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{12,}",
-        r"//s3-[a-z0-9-]+\.amazonaws\.com/[a-z0-9._-]+",
-        r"//s3\.amazonaws\.com/[a-z0-9._-]+",
+        r"//s3-[a-z0-9-]+\.amazonaws\.com/[a-z0-9._-]+", # AWS Access Key ID
+        r"//s3\.amazonaws\.com/[a-z0-9._-]+", # AWS S3 Bucket 
         r"[a-z0-9.-]+\.s3-[a-z0-9-]\.amazonaws\.com",
         r"[a-z0-9.-]+\.s3-website[.-](eu|ap|us|ca|sa|cn)",
         r"[a-z0-9.-]+\.s3\.amazonaws\.com",
         r"amzn\.mws\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         r"(?:\s|=|:|\"|^)AKC[a-zA-Z0-9]{10,}",
-        r"bearer\s[a-zA-Z0-9_\-:\.=]+",
+        r"bearer\s[a-zA-Z0-9_\-:\.=]+", #https://developer.twitter.com/en/docs/authentication/oauth-2-0/bearer-tokens 에 따라 개발자를 위한 것이므로 제3자에게 공개되어서는 안 됩니다.
         r"AKIA[0-9A-Z]{16}",
         r"(?<=://)[a-zA-Z0-9]+:[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
         r"cloudinary://[0-9]{15}:[0-9A-Za-z]+@[a-z]+",
@@ -70,8 +69,8 @@ class string_list:
         r"sk_live_[0-9a-zA-Z]{24}",
         r"rk_live_[0-9a-zA-Z]{24}",
         r"SK[0-9a-fA-F]{32}",
-        r"twiter.*[1-9][0-9]+-[0-9a-zA-Z]{40}",
+        r"twiter.*[1-9][0-9]+-[0-9a-zA-Z]{40}", # https://developer.twitter.com/en/docs/authentication/oauth-2-0/bearer-tokens 에 따라 개발자를 위한 것이므로 제3자에게 공개되어서는 안 됩니다.
         r"twiter(.{0,20})?['\"][0-9a-z]{18,25}",
-        r"twiter(.{0,20})?['\"][0-9a-z]{35,44}"
-        r"\.child\("    
+        r"twiter(.{0,20})?['\"][0-9a-z]{35,44}",
+        r"\.child\(" 
     }

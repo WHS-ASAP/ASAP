@@ -1,6 +1,8 @@
 import re
 import requests as r
 from modules.utils import string_list
+# from utils import string_list
+# import time
 
 class HardCodedAnalyzer:
     def __init__(self):
@@ -24,14 +26,12 @@ class HardCodedAnalyzer:
     def analyzer(self, content):
         self.xml_results = {}
         url = ''
-        uri = ''
         xml_pattern = r'<string\s+name=(\".*?\")>(.*?)</string>'
         lines = content.split('\n')
         for line in lines:
             for pattern in self.string:
                 res = re.search(pattern, line,re.I)
                 if res:
-                    print(res.group(), pattern)
                     try:
                         if "</string>" in line:
                             self.xml_match = re.search(xml_pattern, line, re.I)
@@ -47,8 +47,8 @@ class HardCodedAnalyzer:
                         if "child(" in res.group():
                             child_match = re.search(r'child\(["\']([^"\']+)["\']\)', line)
                             if child_match:
-                                uri = f'{url}/{child_match}/.json'
-                                self.xml_results[url] = self.firebase_connect(uri).strip()
+                                child = child_match.group(1)
+                                self.xml_results['firebase_child'] = child
                         else:
                             self.xml_results['java'] = line.lstrip()
         return self.xml_results
