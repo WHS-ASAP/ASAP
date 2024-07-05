@@ -50,21 +50,20 @@ class WebViewAnalyzer:
 
         for line_num, line in enumerate(lines):
             if self.getExtra_pattern.findall(line) or self.getintent_pattern.findall(line) or self.parseIntent_pattern.findall(line):
-                intent_result = (line_num, line.strip())
+                intent_result = (line.strip())
             
             if (self.loadurl_pattern.findall(line) or self.shouldOverrideUrlLoading_pattern.findall(line)) and not self.metadata_pattern.findall(line):
-                if intent_result:
+                if intent_result and intent_result[0] != line_num: #line_num이 같으면 출력하지 않음
                     webview_result.append(intent_result)
-                    intent_result = [] 
-                webview_result.append((line_num, line.strip()))
+                    intent_result = ()
 
             if self.setAllowFileAccessFromFileURLs_pattern.findall(line) or self.allowuniversalaccess_pattern.findall(line) or self.setallowFileaccess_pattern.search(line):
                 if webview_result:
-                    fileaccess_result.append((line_num, line.strip()))
+                    fileaccess_result.append((line.strip()))
             
             if self.setjavascriptenabled_pattern.findall(line) or self.javascriptinterface_pattern.findall(line):
                 if webview_result:
-                    js_result.append((line_num, line.strip()))
+                    js_result.append((line.strip()))
 
         return webview_result, js_result, fileaccess_result
 
@@ -90,12 +89,6 @@ class WebViewAnalyzer:
                         }
                         self.output.append(result_dict)
             else:
-                print(f"Path not found: {whole_path}")
+                pass
 
         return self.output
-
-# Example usage:
-# analyzer = WebViewAnalyzer()
-# content = open('AndroidManifest.xml', 'r', encoding='utf-8').read()
-# analyzer.run(content)
-# print(analyzer.output)
