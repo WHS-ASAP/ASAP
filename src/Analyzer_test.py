@@ -6,6 +6,7 @@ from modules.Hardcoded import HardCodedAnalyzer
 from modules.SQL_Injection import SQLInjectionAnalyzer
 from modules.Permission import PermissionAnalyzer
 from modules.Crypto import CryptoAnalyzer
+from modules.LogE import LogAnalyzer
 from modules.utils import FilePathCheck
 from ASAP_Web import create_app
 from ASAP_Web.database import db, save_finding_to_db
@@ -13,12 +14,12 @@ from ASAP_Web.database import db, save_finding_to_db
 app = create_app()
 
 # make dictionary Analyzer - vuln_type
-vuln_types = {"SQLInjectionAnalyzer": "SQL_Injection", "LogEAnalyzer": "LogE", "HardCodedAnalyzer": "Hardcoded",
+vuln_types = {"SQLInjectionAnalyzer": "SQL_Injection", "LogAnalyzer": "LogE", "HardCodedAnalyzer": "Hardcoded",
               "DeepLinkAnalyzer": "DeepLink", "WebViewAnalyzer": "WebView", "CryptoAnalyzer": "Crypto", 
               "PermissionAnalyzer": "Permission"}
 
 # 기준: 결과값과 취약점까지의 거리/해커원 cvss 기준 / 해커원에서 관련 사례들의 risk책정값  
-risk_levels = {"SQLInjectionAnalyzer": "High", "LogEAnalyzer": "High", "HardCodedAnalyzer": "High",
+risk_levels = {"SQLInjectionAnalyzer": "High", "LogAnalyzer": "High", "HardCodedAnalyzer": "High",
                 "DeepLinkAnalyzer": "Medium", "WebViewAnalyzer": "Medium", "CryptoAnalyzer": "Medium", 
                 "PermissionAnalyzer": "Low"}
 
@@ -30,7 +31,7 @@ class AnalyzerTest:
         self.smali_dir = smali_dir
 
         self.analyzers = {
-            'java': [(SQLInjectionAnalyzer(), ['.java']), (CryptoAnalyzer(), ['.java'])],
+            'java': [(SQLInjectionAnalyzer(), ['.java']), (CryptoAnalyzer(), ['.java']), (LogAnalyzer(), ['.java'])],
             'xml': [(PermissionAnalyzer(), ['.xml']), (WebViewAnalyzer(), ['.xml']), (HardCodedAnalyzer(), ['.xml', '.java'])],
             'smali': [(DeepLinkAnalyzer(), ['.smali', '.xml'])]
         }
@@ -67,7 +68,8 @@ class AnalyzerTest:
             for file in files:
                 file_path = os.path.join(root, file)
                 if any(file.endswith(ext) for _, exts in analyzers for ext in exts):
-                    if target_files and file not in target_files and file.endswith('.xml'):
+                    # if target_files and file not in target_files and file.endswith('.xml'):
+                    if target_files and file not in target_files:
                         continue
                     self.analyze_file(file_path, analyzers, now_time
                                       , directory if any(ext == '.smali' for _, exts in analyzers for ext in exts) else None, package_name)
