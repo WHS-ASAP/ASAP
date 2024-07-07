@@ -27,8 +27,8 @@
   </div>
 </div>
 <h2>Results for {{ package_name }}</h2>
-{% set result_str=result.result %} {% set result_str=result_str.strip('{}[]').replace('[]','') %} {%
-set result_str=result_str.replace("'","") %} {% set result_str=result_str.split(",")%}
+{% set result_str=result.result %}
+{% set result_str=result_str.strip('{}') %} 
 <div class="table-responsive border rounded p-1 shadow">
   <table class="table">
     <tb>
@@ -37,13 +37,36 @@ set result_str=result_str.replace("'","") %} {% set result_str=result_str.split(
         <th><strong>Vulnerable Point</strong></th>
       </tr>
     </tb>
-    {% for item in result_str %} {%set item=item.split(": ")%}
-    <tbody>
-      <tr>
-        <th>{{ item[0] }}</th>
-        <td>{{ item[1] }}</td>
-      </tr>
-    </tbody>
-    {% endfor %}
+      {%set result_str =result_str.split("','")%}
+      {% for item in result_str %}
+        {%set item = item.split(":")%}
+        {%set activity=item[1].split(", 'webview_lines'")%}
+        {%set webview_lines=item[2].split("'javascript_lines'")%}
+        {%set javascript_enabled=item[3].split(", 'fileaccess_lines")%}
+        {%set fileaccess_lines=item[4].split("}")%}
+        <tbody>
+          <tr>
+            <th>activity</th>
+            <td>{{ activity[0] }}</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th>webview_lines</th>
+            <td>{{ webview_lines[0] }}</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th>javascript_enabled</th>
+            <td>{{ javascript_enabled[0] }}</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th>fileaccess_enabled</th>
+            <td>{{fileaccess_lines[0] }}</td>
+          </tr>
+      {% endfor %}
   </table>
 </div>

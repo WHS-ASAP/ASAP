@@ -47,15 +47,19 @@ class WebViewAnalyzer:
         js_result = []
         fileaccess_result = []
         intent_result = []
+        intent_line = -1
 
         for line_num, line in enumerate(lines):
             if self.getExtra_pattern.findall(line) or self.getintent_pattern.findall(line) or self.parseIntent_pattern.findall(line):
-                intent_result = (line.strip())
-            
+                intent_result.append(line.strip())
+                intent_line = line_num
             if (self.loadurl_pattern.findall(line) or self.shouldOverrideUrlLoading_pattern.findall(line)) and not self.metadata_pattern.findall(line):
-                if intent_result and intent_result[0] != line_num: #line_num이 같으면 출력하지 않음
+                if intent_result and intent_line!=line_num:
                     webview_result.append(intent_result)
-                    intent_result = ()
+                    webview_result.append(line.strip())
+                elif intent_result and intent_line==line_num:
+                    webview_result.append(line.strip())
+
 
             if self.setAllowFileAccessFromFileURLs_pattern.findall(line) or self.allowuniversalaccess_pattern.findall(line) or self.setallowFileaccess_pattern.search(line):
                 if webview_result:
@@ -88,6 +92,7 @@ class WebViewAnalyzer:
                             "fileaccess_lines": fileaccess_lines
                         }
                         self.output.append(result_dict)
+                        print(self.output)
             else:
                 pass
 
