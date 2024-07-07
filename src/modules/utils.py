@@ -31,7 +31,6 @@ class FilePathCheck:
 
 class string_list:
     analysis_regex = {
-        r"([^A-Z0-9]|^)(AKIA|A3T|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{12,}",
         r"//s3-[a-z0-9-]+\.amazonaws\.com/[a-z0-9._-]+",
         r"//s3\.amazonaws\.com/[a-z0-9._-]+",
         r"[a-z0-9.-]+\.s3-[a-z0-9-]\.amazonaws\.com",
@@ -73,6 +72,6 @@ class string_list:
         r"SK[0-9a-fA-F]{32}",
         r"twiter.*[1-9][0-9]+-[0-9a-zA-Z]{40}",
         r"twiter(.{0,20})?['\"][0-9a-z]{18,25}",
-        r"twiter(.{0,20})?['\"][0-9a-z]{35,44}"
+        r"twiter(.{0,20})?['\"][0-9a-z]{35,44}",
         r"\.child\("    
     }
