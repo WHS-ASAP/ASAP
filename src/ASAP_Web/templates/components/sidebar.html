@@ -1,0 +1,34 @@
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+  <ul class="nav">
+    <li class="nav-item navbar-brand-mini-wrapper">
+      <a class="nav-link navbar-brand brand-logo-mini" href="{{ url_for('main.index') }}"
+        ><img src="asset/logo-mini.svg" alt="logo"
+      /></a>
+    </li>
+    <li class="nav-item nav-category">
+      <span class="nav-link">Dashboard</span>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('main.index') }}">
+        <span class="menu-title">Dashboard</span>
+        <i class="icon-screen-desktop menu-icon"></i>
+      </a>
+    </li>
+    <li class="nav-item nav-category"><span class="nav-link">SCAN (Coming Soon)</span></li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        data-bs-toggle="collapse"
+        href="#ui-basic"
+        aria-expanded="false"
+        aria-controls="ui-basic"
+      >
+        <span class="menu-title">Scanning apk</span>
+        <i class="icon-layers menu-icon"></i>
+      </a>
+    </li>
+    <li class="nav-item nav-category"><span class="nav-link">Package List</span></li>
+    <package-list></package-list>
+    <li class="nav-item"></li>
+  </ul>
+</nav>

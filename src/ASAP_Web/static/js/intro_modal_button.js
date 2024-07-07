@@ -31,7 +31,7 @@ class IntroModalButton extends HTMLElement {
           padding: 20px;
           margin: 5px;
           cursor: pointer;
-          color: #4a4f4a;
+          color: #014a17;
           font-family: verdana, fantasy;
           width: 180px; /* Fixed width */
           height: 60px; /* Fixed height */

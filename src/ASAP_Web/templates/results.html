@@ -1,23 +1,159 @@
-<table>
-  <thead>
-    <tr>
-      <th>File</th>
-      <th>Analyzer</th>
-      <th>Result</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for result in results %}
-    <tr>
-      <td>{{ result.file_path }}</td>
-      <td>
-        <a
-          href="{{ url_for('main.module_results', package_name=package_name, analyzer=result.analyzer) }}"
-          >{{ result.analyzer }}</a
-        >
-      </td>
-      <td>{{ result.result }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+    <title>ASAP Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="{{ url_for('static', filename='js/packages.js') }}" defer></script>
+    <style>
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 50%;
+        top: 50%;
+        width: 60%;
+        min-width: 590px;
+        height: 80%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        padding: 20px;
+      }
+      .modal-bg {
+        display: none;
+        position: fixed;
+        z-index: 9998;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .modal iframe {
+        width: 100%;
+        height: calc(100% - 40px);
+        border: none;
+      }
+    </style>
+  </head>
+  <body style="background-color: #eaeaea">
+    <div class="container-scroller">
+      {% include 'components/header.html' %}
+      <div class="container-fluid page-body-wrapper">
+        {% include 'components/sidebar.html' %}
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+              <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="border rounded p-3 shadow-lg" style="background-color: #212529">
+                      <h2 style="color: #38ce3c">Results for {{ package_name }}</h2>
+                    </div>
+                    <div class="table-responsive border rounded p-1">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th
+                              style="
+                                font-size: large;
+                                text-align: center;
+                                background-color: #212529;
+                                color: #38ce3c;
+                              "
+                            >
+                              File
+                            </th>
+                            <th
+                              style="
+                                font-size: large;
+                                text-align: center;
+                                background-color: #212529;
+                                color: #38ce3c;
+                              "
+                            >
+                              Analyzer
+                            </th>
+                            <th
+                              style="
+                                font-size: large;
+                                text-align: center;
+                                background-color: #212529;
+                                color: #38ce3c;
+                              "
+                            >
+                              Risk
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                          <p class="close modal_close_btn"></p>
+                          {% for item in result %}
+                          <tr class="modal-trigger" data-url="{{ url_for('main.module_results', package_name=package_name, vuln_type=item.vuln_type, result_id=item.id) }}">
+                            <td>{{ item.file_path }}</td>
+                            <td style="text-align: center">
+                                {{ item.vuln_type }}
+                              </a>
+                              <div id="my_modal" class="modal">
+                                <iframe id="modal_iframe" src=""></iframe>
+                              </div>
+                            </td>
+                            <td style="text-align: center">
+                              {% if item.risk == 'High' %}
+                              <div class="badge badge-danger p-2">{{ item.risk }}</div>
+                              {% elif item.risk == 'Medium' %}
+                              <div class="badge badge-caution p-2">{{ item.risk }}</div>
+                              {% elif item.risk == 'Low' %}
+                              <div class="badge badge-warning p-2">{{ item.risk }}</div>
+                              {% endif %}
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-bg"></div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var modalTriggers = document.querySelectorAll(".modal-trigger");
+        var modalBg = document.querySelector(".modal-bg");
+        var modal = document.getElementById("my_modal");
+        var iframe = document.getElementById("modal_iframe");
+
+        modalTriggers.forEach(function (trigger) {
+          trigger.addEventListener("click", function (e) {
+            e.preventDefault();
+            var url = trigger.getAttribute("data-url");
+            iframe.setAttribute("src", url);
+            modal.style.display = "block";
+            modalBg.style.display = "block";
+          });
+        });
+
+        document.querySelector(".modal_close_btn").addEventListener("click", function () {
+          modal.style.display = "none";
+          modalBg.style.display = "none";
+          iframe.setAttribute("src", "");
+        });
+
+        modalBg.addEventListener("click", function () {
+          modal.style.display = "none";
+          modalBg.style.display = "none";
+          iframe.setAttribute("src", "");
+        });
+      });
+    </script>
+  </body>
+</html>

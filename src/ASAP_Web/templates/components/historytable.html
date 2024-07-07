@@ -1,0 +1,39 @@
+<div class="card">
+  <div class="card-body">
+    <div class="d-sm-flex align-items-center mb-4">
+      <h4 class="card-title mb-sm-0">History Table</h4>
+    </div>
+    <div class="table-responsive border rounded p-1">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="font-weight-bold">Package Name</th>
+            <th class="font-weight-bold">Platform</th>
+            <th class="font-weight-bold">Type</th>
+            <th class="font-weight-bold">Created At</th>
+            <th class="font-weight-bold">Risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in package_data %}
+          <tr>
+            <td>{{ item.package_name }}</td>
+            <td>{{ item.platform }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.created_at }}</td>
+            <td>
+              {% if item.risk == 'High' %}
+              <div class="badge badge-danger p-2">{{ item.risk }}</div>
+              {% elif item.risk == 'Medium' %}
+              <div class="badge badge-caution p-2">{{ item.risk }}</div>
+              {% elif item.risk == 'Low' %}
+              <div class="badge badge-warning p-2">{{ item.risk }}</div>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

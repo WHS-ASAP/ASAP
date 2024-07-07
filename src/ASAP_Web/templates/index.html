@@ -1,7 +1,58 @@
-{% extends 'base.html' %}
-{% block content %}
-  <div class="dashboard">
-    <h2>Welcome to ASAP Dashboard</h2>
-    <p>Select a package to view details on the vulnerabilities found.</p>
-  </div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendors/simple-line-icons/css/simple-line-icons.css') }}"
+    />
+    <title>ASAP</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="{{ url_for('static', filename='js/line_chart.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/doughnut_chart.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/packages.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/history_table.js') }}" defer></script>
+  </head>
+  <body>
+    <div class="container-scroller">
+      {% include 'components/header.html' %}
+      <div class="container-fluid page-body-wrapper">
+        {% include 'components/sidebar.html' %}
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+              <div class="col-md-8 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <canvas id="lineChart" class="chart"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <canvas id="doughnutChart" class="doughnut-chart chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 grid-margin stretch-card">
+                {% include 'components/historytable.html' %}
+              </div>
+            </div>
+            <footer class="footer">
+              <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted text-center text-sm-left d-block d-sm-inline-block"
+                  >ASAP version 1.0 © 2024</span
+                >
+              </div>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

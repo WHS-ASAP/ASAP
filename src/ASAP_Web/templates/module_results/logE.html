@@ -1,0 +1,19 @@
+<h1>{{ vuln_type }}|</h1>
+
+
+<h2>Results for {{ result }}</h2>
+{% set result_str = result.result.strip('[]').replace("'", " ").replace(",","\n") %}
+<table>
+    <thead>
+        <tr>
+            <th><strong>Vulnerable Type</strong></th>
+            <th><strong>Vulnerable Point</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>permission</th>
+            <td>{{ result_str }}</th>
+        </tr>
+    </tbody>
+</table>

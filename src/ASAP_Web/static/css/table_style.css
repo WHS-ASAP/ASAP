@@ -1,0 +1,64 @@
+.table-responsive-vertical {
+  overflow-y: auto;
+  max-height: 400px; /* Adjust the max-height as needed */
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-vertical td {
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 400px; /* Ensure this matches your HTML max-width */
+}
+
+.table-vertical {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.table-vertical th,
+.table-vertical td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+.wrap-content {
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+@media (max-width: 575.98px) {
+  .table-responsive-vertical-sm {
+    overflow-y: auto;
+    max-height: 300px; /* Adjust the max-height as needed */
+    -webkit-overflow-scrolling: touch;
+  }
+}
+@media (max-width: 767.98px) {
+  .table-responsive-vertical-md {
+    overflow-y: auto;
+    max-height: 300px; /* Adjust the max-height as needed */
+    -webkit-overflow-scrolling: touch;
+  }
+}
+@media (max-width: 991.98px) {
+  .table-responsive-vertical-lg {
+    overflow-y: auto;
+    max-height: 300px; /* Adjust the max-height as needed */
+    -webkit-overflow-scrolling: touch;
+  }
+}
+@media (max-width: 1199.98px) {
+  .table-responsive-vertical-xl {
+    overflow-y: auto;
+    max-height: 300px; /* Adjust the max-height as needed */
+    -webkit-overflow-scrolling: touch;
+  }
+}
+@media (max-width: 1399.98px) {
+  .table-responsive-vertical-xxl {
+    overflow-y: auto;
+    max-height: 300px; /* Adjust the max-height as needed */
+    -webkit-overflow-scrolling: touch;
+  }
+}
