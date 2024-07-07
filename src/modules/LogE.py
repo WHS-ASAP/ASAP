@@ -8,7 +8,6 @@ class LogAnalyzer:
             r'^\s*#', 
         ]
         
-        
     def is_ignored(self, line):
         # 라인이 주석인지 확인
         for pattern in self.ignore_patterns:
@@ -18,7 +17,7 @@ class LogAnalyzer:
         
     def contains_sensitive_info(self, message):
         sensitive_keywords = [
-            'access_token','password', 'secret', 'admin_id',
+            'access_token', 'password', 'secret', 'admin_id',
             'adminId', 'admin_pw', 'adminPw', 'admin_password',
             'admin_secret', 'api_secret', 'user_id', 'userId',
             'user_pw', 'userPw', 'user_password', 'user_secret',
@@ -30,27 +29,26 @@ class LogAnalyzer:
         
         message_lower = message.lower()
         for keyword in sensitive_keywords:
-            if keyword in message_lower:
+            if keyword.lower() in message_lower:
                 return True
         return False
     
     def extract_messages(self, content):
         results = []
         log_levels = ['v', 'd', 'i', 'e', 'w', 'wtf']
-        
+
         lines = content.split('\n')
         
         for level in log_levels:
-            pattern = f'Log.{level}("'
+            pattern = f'Log\\.{level.upper()}\\("'
 
             for line_num, line in enumerate(lines, start=1):
                 if not self.is_ignored(line):
-                    if pattern in line:
+                    if re.search(pattern, line, re.IGNORECASE):
                         if self.contains_sensitive_info(line):
                             results.append((f"Line {line_num}: {line.strip()}"))
                 
         return results
-    
     
     def run(self, content):
         result = self.extract_messages(content)
