@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Permission Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font_style.css') }}" />
+    <!-- 기타 필요한 스타일시트나 스크립트 링크 -->
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title custom-font" style="font-size: 150%">취약점 발생 원리</h2>
+        <ul style="list-style-type: none" class="custom-font">
+          <li>취약점이 아니지만 다른 취약점과 함께 더 큰 영향으로 번질 수 있다.</li>
+        </ul>
+        <h2 class="card-title custom-font" style="font-size: 150%">취약점 악용 가능성</h2>
+        <ul style="list-style-type: none" class="custom-font">
+          <li>
+            앱이 있는 기기에 부여된 permission을 이용해 기기의 저장소, 카메라 등에 접근할 수 있다.
+          </li>
+        </ul>
+        <h2 class="card-title custom-font" style="font-size: 150%">Relative CVE</h2>
+        <ul style="list-style-type: none">
+          <li>
+            <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31974" target="_blank" class="cve-link">CVE-2024-31974</a> |
+            <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31975" target="_blank" class="cve-link"">CVE-2024-31975</a> | 
+            <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31976" target="_blank" class="cve-link"">CVE-2024-31976</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="custom-font">Results for</h3>
+    <p class="custom-font">{{result.file_path}}</p>
+
+    {% set result_str = result.result.strip('[]').replace("'", " ").replace(",","\n") %}
+    <div class="table-responsive border rounded p-1 shadow">
+      <table class="table">
+        <thead>
+          <tr>
+            <th><strong>Vulnerable Type</strong></th>
+            <th><strong>Vulnerable Point</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>permission</th>
+            <td>{{ result_str }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

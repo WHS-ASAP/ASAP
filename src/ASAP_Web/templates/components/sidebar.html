@@ -28,11 +28,7 @@
       </a>
     </li>
     <li class="nav-item nav-category"><span class="nav-link">Package List</span></li>
-      <package-list packages='[
-        {% for package in packages %}
-        {"name": "{{ package }}", "link": "{{ url_for('main.package_results', package_name=package) }}"}{% if not loop.last %},{% endif %}
-        {% endfor %}
-      ]'></package-list>
+    <package-list></package-list>
     <li class="nav-item"></li>
   </ul>
 </nav>

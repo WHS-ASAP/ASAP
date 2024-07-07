@@ -1,0 +1,51 @@
+<div class="card">
+  <div class="card-body">
+    <div class="d-sm-flex align-items-center mb-4"></div>
+    <h2 class="card-title" style="font-size: 25px">취약점이 발생하는 원리</h2>
+    <ul style="list-style-type: none">
+      <li>개발자가 개발 편의성을 위해 저장한 정보를 개발 후 삭제하지 않았을 경우</li>
+      <li>크리덴셜을 소스코드에 저장하는 경우</li>
+      <li>크리덴셜을 사용하여 로그인을 하거나 세션을 탈취하여 로그인 시도를 할 수 있음</li>
+    </ul>
+    <h2 class="card-title" style="font-size: 25px">취약점 악용 가능성</h2>
+    <ul style="list-style-type: none">
+      <li>
+        Firebase url Access : firebase_url이 저장되어있고 접속이 허용되어있을 시 파이어 베이스에
+        저장된 정보를 가져올 수 있음
+      </li>
+      <li>
+        세션 탈취, 크리덴셜 노출 : 잘못된 자격증명 정보 저장으로 계정 탈취 혹은 개인정보 유출로
+        이어질 수 있음
+      </li>
+    </ul>
+    <h2 class="card-title" ; style="font-size: 25px">Relative CVE</h2>
+    <ul style="list-style-type: none">
+      <li>
+        <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31974" target="_blank" class="cve-link">CVE-2024-31974</a> |
+        <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31975" target="_blank" class="cve-link"">CVE-2024-31975</a> | 
+        <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31976" target="_blank" class="cve-link"">CVE-2024-31976</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<h2>Results for {{ package_name }}</h2>
+{% set result_str=result.result %} {% set result_str=result_str.replace("{'","").replace('"','') %}
+{% set result_list = result_str.split("', '") %}
+<div class="table-responsive border rounded p-1 shadow">
+  <table class="table">
+    <thead>
+      <tr>
+        <th><strong>Vulnerable Type</strong></th>
+        <th><strong>Valuerable Point</strong></th>
+      </tr>
+    </thead>
+    {% for item in result_list %} {%set item=item.split("': '")%}
+    <tbody>
+      <tr>
+        <th>{{ item[0] }}</th>
+        <td>{{ item[1] }}</td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+</div>

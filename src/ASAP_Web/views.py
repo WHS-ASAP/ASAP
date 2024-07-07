@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, jsonify
 from database import db, Result
+from flask import request
 
 main = Blueprint('main', __name__)
 
@@ -10,14 +11,20 @@ def index():
 
 @main.route('/package/<package_name>')
 def package_results(package_name):
-    results = Result.query.filter_by(package_name=package_name).all()
-    return render_template('results.html', package_name=package_name, results=results)
+    result = Result.query.filter_by(package_name=package_name).all()
+    return render_template('results.html', package_name=package_name, result=result)
 
-@main.route('/module/<package_name>/<analyzer>')
-def module_results(package_name, analyzer):
-    results = Result.query.filter_by(package_name=package_name, analyzer=analyzer).all()
-    return render_template('module_results.html', package_name=package_name, analyzer=analyzer, results=results)
-
+@main.route('/module/<package_name>/<vuln_type>')
+def module_results(package_name, vuln_type):
+    result_id = request.args.get('result_id')
+    if result_id:
+        result = Result.query.filter_by(id=result_id, package_name=package_name, vuln_type=vuln_type).first()
+        return render_template('module_results.html', package_name=package_name, result=[result], vuln_type=vuln_type)
+    else:
+        # result_id가 없는 경우의 처리
+        results = Result.query.filter_by(package_name=package_name, vuln_type=vuln_type).all()
+        return render_template('module_results.html', package_name=package_name, result=results, vuln_type=vuln_type)
+    
 @main.route('/api/vulnerability-counts')
 def get_vulnerability_counts():
     counts = db.session.query(Result.package_name, db.func.count(Result.id)).group_by(Result.package_name).all()
@@ -71,3 +78,8 @@ def history_table():
             })
 
     return jsonify(package_data)
+@main.route('/api/sidebar_list')
+def get_sidebar_list():
+    packages = db.session.query(Result.package_name).distinct().all()
+    package_list = [package[0] for package in packages]
+    return jsonify(package_list)
