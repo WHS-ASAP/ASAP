@@ -11,18 +11,6 @@ class FilePathCheck:
     def check_shared_and_pref(self):
         return 'shared' in self.file_path and 'pref' in self.file_path
 
-    # def check_path(self):
-    #     package_parts = self.origin_package_name.split('.')
-    #     thd = len(package_parts)
-    #     chk_num = 0
-
-    #     for i in self.tmp_lst[3:]:
-    #         # print(i)
-    #         if i in package_parts:
-    #             chk_num += 1
-
-    #     return chk_num >= thd
-
     def validate(self):
         # if self.check_shared_and_pref() or self.check_path():
         if self.check_shared_and_pref():
@@ -31,14 +19,14 @@ class FilePathCheck:
 
 class string_list:
     analysis_regex = {
-        r"//s3-[a-z0-9-]+\.amazonaws\.com/[a-z0-9._-]+",
-        r"//s3\.amazonaws\.com/[a-z0-9._-]+",
+        r"//s3-[a-z0-9-]+\.amazonaws\.com/[a-z0-9._-]+", # AWS Access Key ID
+        r"//s3\.amazonaws\.com/[a-z0-9._-]+", # AWS S3 Bucket 
         r"[a-z0-9.-]+\.s3-[a-z0-9-]\.amazonaws\.com",
         r"[a-z0-9.-]+\.s3-website[.-](eu|ap|us|ca|sa|cn)",
         r"[a-z0-9.-]+\.s3\.amazonaws\.com",
         r"amzn\.mws\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
         r"(?:\s|=|:|\"|^)AKC[a-zA-Z0-9]{10,}",
-        r"bearer\s[a-zA-Z0-9_\-:\.=]+",
+        r"bearer\s[a-zA-Z0-9_\-:\.=]+", #https://developer.twitter.com/en/docs/authentication/oauth-2-0/bearer-tokens 에 따라 개발자를 위한 것이므로 제3자에게 공개되어서는 안 됩니다.
         r"AKIA[0-9A-Z]{16}",
         r"(?<=://)[a-zA-Z0-9]+:[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
         r"cloudinary://[0-9]{15}:[0-9A-Za-z]+@[a-z]+",
@@ -70,8 +58,8 @@ class string_list:
         r"sk_live_[0-9a-zA-Z]{24}",
         r"rk_live_[0-9a-zA-Z]{24}",
         r"SK[0-9a-fA-F]{32}",
-        r"twiter.*[1-9][0-9]+-[0-9a-zA-Z]{40}",
+        r"twiter.*[1-9][0-9]+-[0-9a-zA-Z]{40}", # https://developer.twitter.com/en/docs/authentication/oauth-2-0/bearer-tokens 에 따라 개발자를 위한 것이므로 제3자에게 공개되어서는 안 됩니다.
         r"twiter(.{0,20})?['\"][0-9a-z]{18,25}",
         r"twiter(.{0,20})?['\"][0-9a-z]{35,44}",
-        r"\.child\("    
+        r"\.child\(" 
     }
