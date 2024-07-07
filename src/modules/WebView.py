@@ -92,8 +92,6 @@ class WebViewAnalyzer:
                             "fileaccess_lines": fileaccess_lines
                         }
                         self.output.append(result_dict)
-                        print(self.output)
             else:
                 pass
-
         return self.output
