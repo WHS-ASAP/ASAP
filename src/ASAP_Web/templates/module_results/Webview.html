@@ -1,72 +1,96 @@
-<div class="card">
-  <div class="card-body">
-    <div class="d-sm-flex align-items-center mb-4"></div>
-    <h2 class="card-title" style="font-size: 25px">취약점이 발생하는 원리</h2>
-    <ul style="list-style-type: none">
-      <li>WebView에서 URL을 로드할 때 적절한 검증없이 외부 입력을 허용</li>
-      <li>
-        addJavaScriptInterface 메서드를 통해 JavaScript네이티브 코드를 호출할 수 있게 설정된 경우
-        WebView를 통해 로컬 HTML파일을 로드
-      </li>
-    </ul>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table_style.css') }}" />
+  </head>
+    <body>
+      <div class="container-scroller">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="card-title" style="font-size: 25px">취약점 발생 원리</h2>
+            <ul style="list-style-type: none">
+              <li>WebView에서 URL을 로드할 때 적절한 검증없이 외부 입력을 허용</li>
+              <li>
+                addJavaScriptInterface 메서드를 통해 JavaScript네이티브 코드를 호출할 수 있게 설정된 경우
+                WebView를 통해 로컬 HTML파일을 로드
+              </li>
+            </ul>
 
-    <h2 class="card-title" style="font-size: 25px">취약점 악용 가능성</h2>
-    <ul style="list-style-type: none">
-      <li>잘못된 URL 로딩 처리: 피싱, 세션 하이재킹 등의 공격이 발생</li>
-      <li>JavaScript Interface 취약점: 악성 JavaScript가 원격 코드 실행을 유발</li>
-      <li>로컬 파일 로드: 파일 시스템 접근, 민감한 데이터 유출 등의 문제가 발생</li>
-    </ul>
-    <h2 class="card-title" ; style="font-size: 25px">Relative CVE</h2>
-    <ul style="list-style-type: none">
-      <li>
-        <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31974" target="_blank" class="cve-link">CVE-2024-31974</a> |
-        <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31975" target="_blank" class="cve-link"">CVE-2024-31975</a> | 
-        <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31976" target="_blank" class="cve-link"">CVE-2024-31976</a>
-      </li>
-    </ul>
-  </div>
-</div>
-<h2>Results for {{ package_name }}</h2>
-{% set result_str=result.result %}
-{% set result_str=result_str.strip('{}') %} 
-<div class="table-responsive border rounded p-1 shadow">
-  <table class="table">
-    <tb>
-      <tr>
-        <th><strong>Vulnerable Type</strong></th>
-        <th><strong>Vulnerable Point</strong></th>
-      </tr>
-    </tb>
-      {%set result_str =result_str.split("','")%}
-      {% for item in result_str %}
-        {%set item = item.split(":")%}
-        {%set activity=item[1].split(", 'webview_lines'")%}
-        {%set webview_lines=item[2].split("'javascript_lines'")%}
-        {%set javascript_enabled=item[3].split(", 'fileaccess_lines")%}
-        {%set fileaccess_lines=item[4].split("}")%}
-        <tbody>
-          <tr>
-            <th>activity</th>
-            <td>{{ activity[0] }}</td>
-          </tr>
-        </tbody>
-        <tbody>
-          <tr>
-            <th>webview_lines</th>
-            <td>{{ webview_lines[0] }}</td>
-          </tr>
-        </tbody>
-        <tbody>
-          <tr>
-            <th>javascript_enabled</th>
-            <td>{{ javascript_enabled[0] }}</td>
-          </tr>
-        </tbody>
-        <tbody>
-          <tr>
-            <th>fileaccess_enabled</th>
-            <td>{{fileaccess_lines[0] }}</td>
-          </tr>
-      {% endfor %}
-  </table>
-</div>
+            <h2 class="card-title" style="font-size: 25px">취약점 악용 가능성</h2>
+            <ul style="list-style-type: none">
+              <li>잘못된 URL 로딩 처리: 피싱, 세션 하이재킹 등의 공격이 발생</li>
+              <li>JavaScript Interface 취약점: 악성 JavaScript가 원격 코드 실행을 유발</li>
+              <li>로컬 파일 로드: 파일 시스템 접근, 민감한 데이터 유출 등의 문제가 발생</li>
+            </ul>
+            <h2 class="card-title" ; style="font-size: 25px">Relative CVE</h2>
+            <ul style="list-style-type: none">
+              <li>
+                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-41898" 
+                   target="_blank" 
+                   class="cve-link">CVE-2023-41898</a> |
+                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-43955"
+                   target="_blank" 
+                   class="cve-link"">CVE-2023-43955</a> | 
+                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-28895"
+                   target="_blank" 
+                   class="cve-link"">CVE-2024-28895</a> |
+                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31974"
+                   target="_blank" 
+                   class="cve-link"">CVE-2024-31974</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-body">
+          <h2>Results for</h2>
+          <p>{{ result.file_path }}</p>
+          {% set result_str=result.result %}
+          {% set result_str=result_str.strip('{}') %} 
+          <div class="table-responsive-vertical border rounded p-1 shadow">
+            <table class="table table-vertical">
+              <tb>
+                <tr>
+                  <th><strong>Type</strong></th>
+                  <th><strong>Result</strong></th>
+                </tr>
+              </tb>
+                {%set result_str =result_str.split("','")%}
+                {% for item in result_str %}
+                  {%set item = item.split(":")%}
+                  {%set activity=item[1].split(", 'webview_lines'")%}
+                  {%set webview_lines=item[2].split("'javascript_lines'")%}
+                  {%set javascript_enabled=item[3].split(", 'fileaccess_lines")%}
+                  {%set fileaccess_lines=item[4].split("}")%}
+                  <tbody>
+                    <tr>
+                      <td>activity</td>
+                      <td>{{ activity[0] }}</td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td>webview_lines</td>
+                      <td class="wrap-content">{{ webview_lines[0] }}</td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td>javascript_enabled</td>
+                      <td class="wrap-content">{{ javascript_enabled[0] }}</td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td>fileaccess_enabled</td>
+                      <td class="wrap-content">{{fileaccess_lines[0] }}</td>
+                    </tr>
+                  </tbody>
+                {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </body>
+</html>

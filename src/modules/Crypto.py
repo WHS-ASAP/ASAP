@@ -44,5 +44,5 @@ class CryptoAnalyzer:
             if not self.is_ignored(line):
                 for pattern in self.crypto_patterns:
                     if re.search(pattern, line):
-                        findings.append(f"Line {line_num}: {line.strip()}")
+                        findings.append((line_num, line))
         return findings

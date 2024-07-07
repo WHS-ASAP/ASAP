@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='templatemo-comparto.css') }}">
   <title>ASAP Results</title>
   <header>
-    <h1>{{vuln_type}} | 설명</h1>
+    <h1>{{vuln_type}}</h1>
   </header>
 </head>
 <body>
@@ -28,6 +28,10 @@
                       {% include 'module_results/DeepLink.html' %}
                     {% elif result.vuln_type == 'Permission' %}
                       {% include 'module_results/Permission.html' %}
+                    {% elif result.vuln_type == 'Crypto' %}
+                      {% include 'module_results/Crypto.html' %}
+                    {% elif result.vuln_type == 'LogE' %}
+                      {% include 'module_results/LogE.html' %}
                     {% else %}
                       <p>Results for {{ vuln_type }} are not displayed in this format.</p>
                     {% endif %}

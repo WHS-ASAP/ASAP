@@ -46,7 +46,7 @@ class LogAnalyzer:
                 if not self.is_ignored(line):
                     if re.search(pattern, line, re.IGNORECASE):
                         if self.contains_sensitive_info(line):
-                            results.append((f"Line {line_num}: {line.strip()}"))
+                            results.append((line_num, line))
                 
         return results
     

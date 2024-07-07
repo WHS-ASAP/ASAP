@@ -1,41 +1,72 @@
-<div class="card">
-    <div class="card-body">
-        <h1>{{ vuln_type }}|</h1>
-        <h2 class="card-title" style="font-size:25px;">취약점이 발생하는 원리</h2>
-        <ul style="list-style-type: none;">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table_style.css') }}" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title" style="font-size: 25px">취약점 발생 원리</h2>
+          <ul style="list-style-type: none">
             <li>어디에 어떤 암호 알고리즘을 이용하는지 탐지</li>
             <li>취약하다고 판단되는 경우 추가적인 동적 분석 진행</li>
             <li>ex) 취약한 암호화 알고리즘 사용, 하드코딩 된 키</li>
-        </ul>
-        <h2 class="card-title" style="font-size:25px;">취약점 악용 가능성</h2>
-        <ul style="list-style-type: none;">
-            <li>취약한 암호화 알고리즘 : 취약한 암호화 알고리즘을 사용하는 경우 복호 시도 가능</li>
-            <li>알아낸 정보를 통한 동적 분석 : 주요 정보 탈취 시도</li>
-        </ul>
-        <h2 class="card-title" style="font-size:25px;">Relative CVE</h2>
-        <ul style="list-style-type: none;">
+          </ul>
+          <h2 class="card-title" style="font-size: 25px">취약점 악용 가능성</h2>
+          <ul style="list-style-type: none">
+            <li>취약한 암호화 알고리즘 : 취약한 암호화 알고리즘을 사용하는 경우 복호 시도 가능.</li>
+            <li>알아낸 정보를 통한 동적 분석 : 주요 정보 탈취 시도 가능</li>
+          </ul>
+          <h2 class="card-title" style="font-size: 25px">Relative CVE</h2>
+          <ul style="list-style-type: none">
             <li>
-                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31974" target="_blank" class="cve-link">CVE-2024-31974</a> |
-                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31975" target="_blank" class="cve-link"">CVE-2024-31975</a> | 
-                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31976" target="_blank" class="cve-link"">CVE-2024-31976</a>
+              <a
+                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21179"
+                target="_blank"
+                class="cve-link"
+                >CVE-2023-21179</a
+              >
+              |
+              <a
+                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21443"
+                target="_blank"
+                class="cve-link"
+                >CVE-2023-21443</a
+              >
+              |
+              <a
+                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-4765"
+                target="_blank"
+                class="cve-link"
+                >CVE-2024-4765</a
+              >
             </li>
-        </ul>
+          </ul>
+        </div>
+        <div class="card-body">
+          <h2>Results for</h2>
+          <p>{{ result.file_path }}</p>
+          {% set result_list = result.result.strip('[]').split('),') %}
+          <div class="table-responsive-vertical border rounded p-1 shadow">
+            <table class="table table-vertical">
+              <tr>
+                <th>Line</th>
+                <th>Content</th>
+              </tr>
+              {% for item in result_list %} {% set parts = item.strip('() ').split(',', 1) %} {% if
+              parts|length == 2 %}
+              <tr>
+                <td>Line {{ parts[0] }}</td>
+                <td>{{ parts[1].strip("' ") }}</td>
+              </tr>
+              {% endif %} {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
-<h2>Results for {{ result }}</h2>
-{% set result_str = result.result.strip('[]').replace("'", " ").replace(",","\n") %}
-<div class="table-responsive border rounded p-1 shadow">
-    <table class="table">
-    <thead>
-        <tr>
-            <th><strong>Vulnerable Type</strong></th>
-            <th><strong>Vulnerable Point</strong></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th>permission</th>
-            <td>{{ result_str }}</th>
-        </tr>
-    </tbody>
-</table>
+  </body>
+</html>

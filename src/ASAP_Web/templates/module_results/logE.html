@@ -1,19 +1,80 @@
-<h1>{{ vuln_type }}|</h1>
-
-
-<h2>Results for {{ result }}</h2>
-{% set result_str = result.result.strip('[]').replace("'", " ").replace(",","\n") %}
-<table>
-    <thead>
-        <tr>
-            <th><strong>Vulnerable Type</strong></th>
-            <th><strong>Vulnerable Point</strong></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th>permission</th>
-            <td>{{ result_str }}</th>
-        </tr>
-    </tbody>
-</table>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table_style.css') }}" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title" style="font-size: 25px">취약점 발생 원리</h2>
+          <ul style="list-style-type: none">
+            <li>
+              앱에서 log는 민감한 정보를 포함하고 있다. log 내용 안에는 ip, email, 카드 번호, 토큰
+              등 악용되면 위험한 개인정보들이 들어있다.
+            </li>
+          </ul>
+          <h2 class="card-title" style="font-size: 25px">취약점 악용 가능성</h2>
+          <ul style="list-style-type: none">
+            <li>만약 id 정보를 알아낸다면 악의적으로 로그인을 할 수 있다.</li>
+            <li>만약 카드 번호를 알아낸다면 악의적으로 결제를 할 수 있다.</li>
+          </ul>
+          <h2 class="card-title" style="font-size: 25px">Relative CVE</h2>
+          <ul style="list-style-type: none">
+            <li>
+              <a
+                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-17355"
+                target="_blank"
+                class="cve-link"
+                >CVE-2019-17355</a
+              >
+              |
+              <a
+                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-20278"
+                target="_blank"
+                class="cve-link"
+                >CVE-2022-20278</a
+              >
+              |
+              <a
+                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-5908"
+                target="_blank"
+                class="cve-link"
+                >CVE-2024-5908</a
+              >
+              |
+              <a
+                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-6295"
+                target="_blank"
+                class="cve-link"
+                >CVE-2024-6295</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <h2>Results for</h2>
+          <p>{{ result.file_path }}</p>
+          {% set result_list = result.result.strip('[]').split('),') %}
+          <div class="table-responsive-vertical border rounded p-1 shadow">
+            <table class="table table-vertical">
+              <tr>
+                <th>Line</th>
+                <th>Content</th>
+              </tr>
+              {% for item in result_list %} {% set parts = item.strip('() ').split(',', 1) %} {% if
+              parts|length == 2 %}
+              <tr>
+                <td>Line {{ parts[0] }}</td>
+                <td>{{ parts[1].strip("' ") }}</td>
+              </tr>
+              {% endif %} {% endfor %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
