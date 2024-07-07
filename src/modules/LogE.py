@@ -25,7 +25,7 @@ class LogAnalyzer:
             'api_key', 'private_key', 'privateKey', 'private_token',
             'privateToken', 'auth_token', 'authToken', 'credit_card',
             'ssn', 'pin_code', 'session_id', 'IP_address', 'IPaddress',
-            'Cookies', 'SESSIONID',
+            'Cookies', 'Cookie', 'SESSIONID',
         ]
         
         message_lower = message.lower()
