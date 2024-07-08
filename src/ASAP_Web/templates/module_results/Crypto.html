@@ -15,27 +15,30 @@
         <h2 class="card-title" style="font-size:25px;">Relative CVE</h2>
         <ul style="list-style-type: none;">
             <li>
-                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31974" target="_blank" class="cve-link">CVE-2024-31974</a> |
-                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31975" target="_blank" class="cve-link"">CVE-2024-31975</a> | 
-                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-31976" target="_blank" class="cve-link"">CVE-2024-31976</a>
+                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-4765" target="_blank" class="cve-link">CVE-2024-4765</a> |
+                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-21179" target="_blank" class="cve-link"">CVE-2023-21179</a> | 
+                <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-21443" target="_blank" class="cve-link"">CVE-2024-21443</a>
             </li>
         </ul>
     </div>
 </div>
-<h2>Results for {{ result }}</h2>
-{% set result_str = result.result.strip('[]').replace("'", " ").replace(",","\n") %}
+<h3>Results for</h3>
+<p>{{ result.file_path }}</p>
+{% set result_str = result.result.strip('[]').split(",")%}
 <div class="table-responsive border rounded p-1 shadow">
     <table class="table">
-    <thead>
+    <tr>
+        <th><strong>Vulnerable Type</strong></th>
+        <th><strong>Vulnerable Point</strong></th>
+    </tr>
+    {% for item in result_str %} 
+        {% set item= item.split(":") %}
         <tr>
-            <th><strong>Vulnerable Type</strong></th>
-            <th><strong>Vulnerable Point</strong></th>
+          <td>Line {{ item[0].replace("'","") }}</td>
+          <td>{{ item[1].replace("'","") }}</td>
         </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th>permission</th>
-            <td>{{ result_str }}</th>
-        </tr>
-    </tbody>
-</table>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+</html>
