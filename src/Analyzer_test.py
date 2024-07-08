@@ -197,7 +197,7 @@ class AnalyzerTest:
                 if package_name in package_names_to_skip:
                     print(f"Skipping already analyzed package: {package_name}")
                     continue
-                self.process_directory(package_path, analyzers, now_time, target_files)
+                self.process_directory(root_directory, analyzers, now_time, target_files)
 
     def run(self):
         if not os.path.exists(self.java_dir) or not os.path.exists(self.smali_dir):
