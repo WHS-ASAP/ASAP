@@ -75,6 +75,7 @@ class AnalyzerTest:
                     
                     if result:
                         findings.append((file_path, analyzer.__class__.__name__, result))
+                        package_name = package_name.split("/")[-1]
                         with app.app_context():
                             save_finding_to_db(package_name, file_path, 
                                                vuln_types[analyzer.__class__.__name__],
@@ -96,8 +97,10 @@ class AnalyzerTest:
     def process_root_directory(self, root_directory, analyzers, now_time, package_names_to_skip, target_files=None):
         for package_name in os.listdir(root_directory):
             package_path = os.path.join(root_directory, package_name)
+            package_name = package_path.replace(root_directory, '').strip(os.sep).split(os.sep)[0]
+            # print(package_name)
             time.sleep(0.2)
-            if package_path not in package_names_to_skip:
+            if package_name not in package_names_to_skip:
                 self.process_directory(package_path, analyzers, now_time, target_files)
             else:
                 print(f"Skipping already analyzed package: {package_name}")
