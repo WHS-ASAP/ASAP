@@ -20,7 +20,6 @@ Scope of Vulnerabilities in ASAP:
 
 
 ## ASAP Tool Guide
----
 ### 1. Getting Started
 ---
 ```
@@ -52,6 +51,7 @@ Error: Target file not found at docs\target.txt
 ---
 ![find apk_src](https://github.com/WHS-ASAP/ASAP/assets/149529045/9c459cfd-4da2-4932-8db5-7ebbc28d8e67)
 ![run ApkProcessor.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/7f638f13-2194-4afa-8196-769bba1b3eb8)
+<img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/9c459cfd-4da2-4932-8db5-7ebbc28d8e67"  width="400" height="500">
 ---
 ### 7. If you can find ASAP/src/java_src and ASAP/src/smali_src, run Analyzer_test.py
 ---
@@ -63,10 +63,14 @@ Error: Target file not found at docs\target.txt
 ![cli after running app.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36)
 ![web](https://github.com/WHS-ASAP/ASAP/assets/149529045/8bcf014f-6704-478e-8537-5ff37c6b714e)
 
+
+
 ## References
 ([Webview Hijacking](https://ufo.stealien.com/2020-06-18/Deeplink))
 ([BWASP](https://github.com/BWASP/BWASP?tab=readme-ov-file))
 개발하면서 참고한 링크
+
+
 
 ## Contributor
 
@@ -89,6 +93,8 @@ Error: Target file not found at docs\target.txt
 + Mentor: Joowon Kim ([@arrester](https://github.com/arrester))
 + PL: Sunggwang Park ([@n0paew](https://github.com/n0paew))
 ---
+
+
 
 ## Acknowledgement
 This work was supported by Korea Information Technology Research Institute (KITRI) 2nd WhiteHat School (WHS) Program.
