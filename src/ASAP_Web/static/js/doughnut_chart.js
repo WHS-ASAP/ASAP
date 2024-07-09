@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
               fontSizeTotal: 22, // Adjust font size as needed
               fontSizeText: 16, // Adjust font size as needed
               color: "#333", // Adjust color as needed
-              fontFamily: "Open Sans",
+              fontFamily: "Arial, sans-serif",
             },
           },
         },

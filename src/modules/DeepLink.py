@@ -23,7 +23,7 @@ class DeepLinkAnalyzer:
         for activity in root.findall(".//activity"):
             activity_name = activity.attrib.get(f'{{{self.android_ns}}}name')
             if not activity_name:
-                continue  # activity_name이 없으면 무시
+                continue
             activity_uri_list = []
             for intent_filter in activity.findall("intent-filter"):
                 schemes, hosts, ports, all_paths = [], [], [], []
@@ -64,7 +64,6 @@ class DeepLinkAnalyzer:
                     activity_schemes[activity_name] = []
                 activity_schemes[activity_name].extend(activity_uri_list)
 
-        # Combine all URIs for each activity into a single string
         combined_activity_schemes = {
             activity: " , ".join(uris)
             for activity, uris in activity_schemes.items()
@@ -100,7 +99,7 @@ class DeepLinkAnalyzer:
         return path
     
     def locate_strings_xml(self, smali_dir, package_name):
-        values_dir = os.path.join(smali_dir, package_name, 'res', 'values')
+        values_dir = os.path.join(smali_dir, 'res', 'values')
         strings_file_path = os.path.join(values_dir, 'strings.xml')
         
         if os.path.exists(strings_file_path):
@@ -154,25 +153,27 @@ class DeepLinkAnalyzer:
                     var = line.split("}")[0].split()[-1]
                     if var in local_register:
                         param.add(local_register[var])
+                        #print(f"Found param: {local_register[var]} in file: {file_path}")
+
                 elif "addURI(" in line:
                     var_list = line.split("{")[1].split("}")[0].split(", ")
                     if var_list[1] in local_register and var_list[2] in local_register:
                         host = local_register[var_list[1]]
                         path = local_register[var_list[2]]
                         addURI.add(host + "/" + path)
+                        #print(f"Found addURI: {host}/{path} in file: {file_path}")
                 elif "Uri;->parse(" in line:
                     var = line.split("{")[1].split("}")[0]
                     if var in local_register:
                         UriParse.add(local_register[var])
+                        #print(f"Found UriParse: {local_register[var]} in file: {file_path}")
                 elif "addJavascriptInterface(" in line:
                     if "}" not in line: continue
 
                     var_list = line.split("{")[1].split("}")[0].split(", ")
                     if var_list[1] in local_register and var_list[2] in local_register:
                         addJsIf.add(local_register[var_list[2]])
-
-                
-
+                        #print(f"Found addJavascriptInterface: {local_register[var_list[2]]} in file: {file_path}") 
 
             except Exception as e:
                 print(f"Error processing line in {file_path}: {e}")
@@ -189,20 +190,23 @@ class DeepLinkAnalyzer:
     def parse_smali_directory(self, directory, manifest_schemes):
         params, addURIs, UriParses, tmpUriParse, addJsIfs, methods = set(), set(), set(), set(), set(), set()
 
-        with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
-            futures = [
-                executor.submit(self.parse_smali_file, os.path.join(path, file))
-                for path, _, files in os.walk(directory)
-                for file in files if file.endswith(".smali")
-            ]
+        with ThreadPoolExecutor() as executor:
+            futures = []
+            for path, _, files in os.walk(directory):
+                for file in files:
+                    if file.endswith(".smali"):
+                        futures.append(executor.submit(self.parse_smali_file, os.path.join(path, file)))
 
             for future in as_completed(futures):
-                param, addURI, UriParse,addJsIf,method = future.result()
-                params.update(param)
-                addURIs.update(addURI)
-                tmpUriParse.update(UriParse)
-                addJsIfs.update(addJsIf)
-                methods.update(method)
+                try:
+                    param, addURI, UriParse, addJsIf, method = future.result()
+                    params.update(param)
+                    addURIs.update(addURI)
+                    tmpUriParse.update(UriParse)
+                    addJsIfs.update(addJsIf)
+                    methods.update(method)
+                except Exception as e:
+                    print(f"Error processing smali file: {e}")
 
         for uri in tmpUriParse:
             if any(uri.startswith(scheme) for scheme in manifest_schemes):
@@ -212,15 +216,13 @@ class DeepLinkAnalyzer:
             "params": list(params),
             "addURIs": list(addURIs),
             "UriParses": list(UriParses),
-            "methods" : list(methods),
-            "addJsIfs" : list(addJsIfs)
+            "methods": list(methods),
+            "addJsIfs": list(addJsIfs)
         }
-
     def run(self, manifest_content, smali_dir):
         try:
             manifest_schemes, activity_schemes = self.analyze_manifest(manifest_content, smali_dir)
         except Exception as e:
-            print(f"Error analyzing manifest: {e}")
             manifest_schemes, activity_schemes = set(), {}
 
         if not activity_schemes or not manifest_schemes:
@@ -229,7 +231,6 @@ class DeepLinkAnalyzer:
             try:
                 smali_results = self.parse_smali_directory(smali_dir, manifest_schemes)
             except Exception as e:
-                print(f"Error analyzing smali directory: {e}")
                 smali_results = {}
 
         formatted_results = {}
@@ -251,7 +252,5 @@ class DeepLinkAnalyzer:
         
         if smali_results.get("addJsIfs"):
             formatted_results["addJavascriptInterface"] = [f"{item}" for item in smali_results["addJsIfs"]]
-
-
 
         return formatted_results

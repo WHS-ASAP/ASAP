@@ -75,7 +75,7 @@ class AnalyzerTest:
                     
                     if result:
                         findings.append((file_path, analyzer.__class__.__name__, result))
-                        package_name = package_name.split("/")[-1]
+                        package_name = package_name.split(os.sep)[-1]
                         with app.app_context():
                             save_finding_to_db(package_name, file_path, 
                                                vuln_types[analyzer.__class__.__name__],
