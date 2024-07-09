@@ -49,7 +49,7 @@ Error: Target file not found at docs\target.txt
 ---
 ### 6. If you can find ASAP/src/apk_dir, run ApkProcessor.py
 ---
-<img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/9c459cfd-4da2-4932-8db5-7ebbc28d8e67"  width="500" height="400">
+<img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/d2e2ae37-e63f-4d76-9ece-14eb664ce615"  width="450" height="380">
 
 ![run ApkProcessor.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/7f638f13-2194-4afa-8196-769bba1b3eb8)
 ---
