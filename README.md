@@ -21,7 +21,7 @@ Scope of Vulnerabilities in ASAP:
 
 ## ASAP Tool Guide
 ### 1. Getting Started
----
+
 ```
 git clone https://github.com/WHS-ASAP/ASAP.git
 cd ASAP
@@ -29,14 +29,14 @@ pip install -r requirements.txt
 ```
 ---
 ### 2. Add ASAP/src/tools/jadx/lib/jadx-dev-all.jar
----
+
 ![add jadx-dev-all.jar](https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45)
 
 ---
 
 
 ### 3. If you want to set target applications, go to ASAP/src/docs/target.txt and write app package name
----
+
 ![target.txt path](https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614)
 
 ![target.txt readme](https://github.com/WHS-ASAP/ASAP/assets/149529045/2e9ce3a3-b5e1-4ff7-a716-625c0c387d8d)
@@ -45,7 +45,7 @@ pip install -r requirements.txt
 
 
 ### 4. If you want to test some HackerOne applications, just run apk_Downloader.py without target.txt
----
+
 사진... 이 필요한데 에러 뜸
 원래 되지 않았었나?
 Error: Target file not found at docs\target.txt
@@ -54,14 +54,14 @@ Error: Target file not found at docs\target.txt
 
 
 ### 5. Go to ASAP/src, run apk_Downloader.py
----
+
 나는 403 에러 뜸 누군가 사진 좀
 
 ---
 
 
 ### 6. If you can find ASAP/src/apk_dir, run ApkProcessor.py
----
+
 <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/d2e2ae37-e63f-4d76-9ece-14eb664ce615"  width="450" height="380">
 
 ![run ApkProcessor.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/7f638f13-2194-4afa-8196-769bba1b3eb8)
@@ -70,7 +70,7 @@ Error: Target file not found at docs\target.txt
 
 
 ### 7. If you can find ASAP/src/java_src and ASAP/src/smali_src, run Analyzer_test.py
----
+
 <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/29048756-c68f-4a9c-b49b-b939643274a7"  width="450" height="320">
 
 ![run Analyzer_test.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e)
@@ -79,7 +79,7 @@ Error: Target file not found at docs\target.txt
 
 
 ### 8. Go to ASAP/src/ASAP_Web, run app.py
----
+
 ![cli after running app.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36)
 
 ![web](https://github.com/WHS-ASAP/ASAP/assets/149529045/8bcf014f-6704-478e-8537-5ff37c6b714e)
