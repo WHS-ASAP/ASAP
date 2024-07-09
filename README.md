@@ -69,7 +69,7 @@ Error: Target file not found at docs\target.txt
 
 ### 7. If you can find ASAP/src/java_src and ASAP/src/smali_src, run Analyzer_test.py
 ---
-<img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/29048756-c68f-4a9c-b49b-b939643274a7"  width="400" height="320">
+<img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/29048756-c68f-4a9c-b49b-b939643274a7"  width="450" height="320">
 
 ![run Analyzer_test.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e)
 
