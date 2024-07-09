@@ -82,7 +82,10 @@ Error: Target file not found at docs\target.txt
 
 ![cli after running app.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36)
 
+
 ![web](https://github.com/WHS-ASAP/ASAP/assets/149529045/8bcf014f-6704-478e-8537-5ff37c6b714e)
+
+![web](https://github.com/WHS-ASAP/ASAP/assets/149529045/4ffea731-2752-4c4d-a2ca-aeb2186dbfe3)
 
 ---
 
