@@ -6,7 +6,8 @@ class WebViewAnalyzer:
     def __init__(self):
         self.java_dir = 'java_src'
         self.activity_pattern = re.compile(r'activity[^<>]*exported="true"[^<>]* ', re.IGNORECASE)
-        self.getExtra_pattern = re.compile(r"get[^()\n]*Extra", re.IGNORECASE)
+        self.getExtra_pattern = re.compile(r"getStringExtra", re.IGNORECASE)
+        self.getExtras_pattern = re.compile(r"getStringExtras", re.IGNORECASE)
         self.getintent_pattern = re.compile(r"getIntent", re.IGNORECASE)
         self.parseIntent_pattern = re.compile(r"parseIntent", re.IGNORECASE)
         self.loadurl_pattern = re.compile(r"loadurl", re.IGNORECASE)
@@ -57,9 +58,11 @@ class WebViewAnalyzer:
                 if intent_result and intent_line!=line_num:
                     webview_result.append(intent_result)
                     webview_result.append(line.strip())
+                    intent_result=[]
                 elif intent_result and intent_line==line_num:
                     webview_result.append(line.strip())
-
+                else:
+                    intent_result = []
 
             if self.setAllowFileAccessFromFileURLs_pattern.findall(line) or self.allowuniversalaccess_pattern.findall(line) or self.setallowFileaccess_pattern.search(line):
                 if webview_result:
