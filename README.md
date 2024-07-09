@@ -49,12 +49,14 @@ pip install -r requirements.txt
 사진... 이 필요한데 에러 뜸
 원래 되지 않았었나?
 Error: Target file not found at docs\target.txt
+
 ---
 
 
 ### 5. Go to ASAP/src, run apk_Downloader.py
 ---
 나는 403 에러 뜸 누군가 사진 좀
+
 ---
 
 
