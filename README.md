@@ -61,7 +61,7 @@ pip install -r requirements.txt
 
 ### 5. Go to ASAP/src, run apk_Downloader.py
 
-나는 403 에러 뜸 누군가 사진 좀
+
 
 ---
 
@@ -98,11 +98,11 @@ pip install -r requirements.txt
 
 
 ## References
-([Webview Hijacking](https://ufo.stealien.com/2020-06-18/Deeplink))
+([OWASP Mobile Top10](https://owasp.org/www-project-mobile-top-10/))
 
 ([BWASP](https://github.com/BWASP/BWASP?tab=readme-ov-file))
 
-개발하면서 참고한 링크
+([Webview Hijacking](https://ufo.stealien.com/2020-06-18/Deeplink))
 
 
 
