@@ -54,9 +54,7 @@ pip install -r requirements.txt
 
 ### 4. If you want to test some HackerOne applications, just run apk_Downloader.py without target.txt
 
-사진... 이 필요한데 에러 뜸
-원래 되지 않았었나?
-Error: Target file not found at docs\target.txt
+![run apk_Downloader.py without target.txt](https://github.com/WHS-ASAP/ASAP/assets/149529045/bf2fee52-64c2-47a8-ac83-a24906e272fc)
 
 ---
 
