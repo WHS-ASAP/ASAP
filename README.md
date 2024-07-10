@@ -61,7 +61,7 @@ pip install -r requirements.txt
 
 ### 5. Go to ASAP/src, run apk_Downloader.py
 
-![run apk_Downloader.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/f575ff29-5c1b-4ea2-bbc4-1a054cd34b55)
+![run apk_Downloader.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/37e1d012-35d8-4e41-aafa-daa854ba25ce)
 
 ---
 
@@ -112,15 +112,15 @@ pip install -r requirements.txt
    > Develop WebView module
 + Jeongahn Jang ([@jeongahn](https://github.com/jeongahn))
    > Full-Stack(develop web), Development Manager(contribute all of modules)
-+ Seoa Myung ([@SeoA0703](https://github.com/SeoA0703))
-   > Develop Permission module
++ Seoah Myeoung ([@SeoA0703](https://github.com/SeoA0703))
+   > Develop Permission, Log module
 + Woohyun Son ([@emerards](https://github.com/emerards))
    > Develop SQL_Injection
 + Yebean Kim ([@kimyebean](https://github.com/kimyebean))
    > Develop Crypto module
-+ Yunsung Lee ([@hansowon](https://github.com/hansowon))
++ Yunseong Lee ([@hansowon](https://github.com/hansowon))
    > Develop DeepLink module
-+ Yuwon Sul ([@AR3CIA](https://github.com/AR3CIA))
++ Yuwon Seol ([@AR3CIA](https://github.com/AR3CIA))
    > Develop HardCoded module
 
 ---
