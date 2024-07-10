@@ -12,7 +12,7 @@ Scope of Vulnerabilities in ASAP:
      > Detect if you use an external intent as an activity target with [exported="true"] exported from androidmanifest.xml and load the intent with loadURL => webview vulnerability detection
 Check presence of function that allows file access with javascripted function in same activity => xss vulnerability detection
    + DeepLink
-     > Print scheme://host/path from Androidmanifest.xml, detection of parameters through getQueryParameter function in smali code, adjustable host/path through addURI function, url matching scheme through 'Uri; ->parse, JavascriptInterface Detection of JavascriptInterface Available in WebView via JavascriptInterface Annotation, addJavascriptInterface Detection =>Redirect Vulnerability
+     > Print [scheme://host/path] from Androidmanifest.xml, detection of parameters through getQueryParameter function in smali code, adjustable host/path through addURI function, url matching scheme through 'Uri; ->parse, JavascriptInterface Detection of JavascriptInterface Available in WebView via JavascriptInterface Annotation, addJavascriptInterface Detection =>Redirect Vulnerability
    + SQL_Injection
      > SQL execution statement in Java code, SQL injection prevention code detection
    + HardCoded
@@ -89,6 +89,9 @@ pip install -r requirements.txt
 ![cli after running app.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36)
 
 ![web](https://github.com/WHS-ASAP/ASAP/assets/149529045/c7095256-7343-410f-bb50-06ada9a9a22a)
+
+
+<img src="https://github.com/WHS-ASAP/ASAP/assets/102972001/7afb3062-11c6-461e-8c51-664c13f9d2b3">
 
 
 ---
