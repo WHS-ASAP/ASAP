@@ -42,7 +42,8 @@ pip install -r requirements.txt
   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45">
 </p>
 
-<!-->![add jadx-dev-all.jar](https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45)-->
+<!--![add jadx-dev-all.jar](https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45)
+-->
 
 ---
 
