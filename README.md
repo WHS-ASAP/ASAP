@@ -50,8 +50,8 @@ pip install -r requirements.txt
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614" width="60%" height="60%"> <br>
    
-   [![Go to ASAP/src/docs](https://github.com/WHS-ASAP/ASAP/assets/149529045/f0de63e6-83cc-42ab-8ce5-26881bcce822)](https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md)
-   
+   [![Go to ASAP/src/docs](https://github.com/WHS-ASAP/ASAP/assets/149529045/9c5db5d1-6c0c-4267-a876-98d1df9c86c1)](https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md)
+
 </p>
 
 
@@ -61,7 +61,7 @@ pip install -r requirements.txt
 ### 4. If you want to test some HackerOne applications, just run apk_Downloader.py without target.txt
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/bf2fee52-64c2-47a8-ac83-a24906e272fc" width="100%" height="100%">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/2a97b1d4-f852-419c-88de-32d6aafba598" width="100%" height="100%">
 </p>
 
 
@@ -71,7 +71,7 @@ pip install -r requirements.txt
 ### 5. Go to ASAP/src, run apk_Downloader.py
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/37e1d012-35d8-4e41-aafa-daa854ba25ce" width="100%" height="100%">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/21e1010e-7bb7-4b55-8b97-69cf1484582f" width="100%" height="100%">
 </p>
 
 
