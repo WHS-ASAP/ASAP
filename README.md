@@ -48,10 +48,16 @@ pip install -r requirements.txt
 ### 3. If you want to set target applications, go to ASAP/src/docs/target.txt and write app package name
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614" width="60%" height="60%"> <br><br>
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/782c8304-0780-406d-a1c5-2fba6b2059ff" width="100%" height="100%">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614" width="60%" height="60%">
 </p>
 
+Enter the Android package name in target.txt as below
+```
+com.asap
+com.scanningApp
+...
+1111
+```
 
 
 ---
