@@ -35,7 +35,7 @@ risk_levels = {
     "PermissionAnalyzer": "Low"
 }
 
-class AnalyzerTest:
+class Analyzer:
     def __init__(self, java_dir='java_src', smali_dir='smali_src'):
         self.java_dir = java_dir
         self.smali_dir = smali_dir
@@ -128,6 +128,6 @@ class AnalyzerTest:
 
 if __name__ == "__main__":
     start_time = time.time()
-    analyzer = AnalyzerTest()
+    analyzer = Analyzer()
     analyzer.run()
     print(f"Execution time: {time.time() - start_time:.2f} seconds")

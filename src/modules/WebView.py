@@ -1,27 +1,46 @@
 import re
 import os
 
+
 class WebViewAnalyzer:
 
     def __init__(self):
-        self.java_dir = 'java_src'
-        self.activity_pattern = re.compile(r'activity[^<>]*exported="true"[^<>]* ', re.IGNORECASE)
+        self.java_dir = "java_src"
+        self.activity_pattern = re.compile(
+            r'activity[^<>]*exported="true"[^<>]* ', re.IGNORECASE
+        )
         self.getExtra_pattern = re.compile(r"getStringExtra", re.IGNORECASE)
         self.getExtras_pattern = re.compile(r"getStringExtras", re.IGNORECASE)
         self.getintent_pattern = re.compile(r"getIntent", re.IGNORECASE)
         self.parseIntent_pattern = re.compile(r"parseIntent", re.IGNORECASE)
         self.loadurl_pattern = re.compile(r"loadurl", re.IGNORECASE)
         self.loadData_pattern = re.compile(r"loadData[^)\n]*text/html", re.IGNORECASE)
-        self.shouldOverrideUrlLoading_pattern = re.compile(r'shouldOverrideUrlLoading', re.IGNORECASE)
-        self.javascriptinterface_pattern = re.compile(r'@JavascriptInterface', re.IGNORECASE)
-        self.setjavascriptenabled_pattern = re.compile(r'setjavascriptenabled', re.IGNORECASE)
-        self.addJavascriptInterface_pattern = re.compile(r'addJavascriptInterface', re.IGNORECASE)
-        self.setAllowFileAccessFromFileURLs_pattern = re.compile(r'setAllowFileAccessFromFileURLs\(true\)', re.IGNORECASE)
-        self.allowuniversalaccess_pattern = re.compile(r'setAllowUniversalAccessFromFileURLs\(true\)', re.IGNORECASE)
-        self.setallowFileaccess_pattern = re.compile(r'setAllowFileAccess', re.IGNORECASE)
-        self.setAllowContentAccess_pattern = re.compile(r'setAllowContentAccess', re.IGNORECASE)
-        self.metadata_pattern = re.compile(r'@metadata', re.IGNORECASE)
-        self.hardcoded_pattern = re.compile(r'[^(]https://[^"'']', re.IGNORECASE)
+        self.shouldOverrideUrlLoading_pattern = re.compile(
+            r"shouldOverrideUrlLoading", re.IGNORECASE
+        )
+        self.javascriptinterface_pattern = re.compile(
+            r"@JavascriptInterface", re.IGNORECASE
+        )
+        self.setjavascriptenabled_pattern = re.compile(
+            r"setjavascriptenabled", re.IGNORECASE
+        )
+        self.addJavascriptInterface_pattern = re.compile(
+            r"addJavascriptInterface", re.IGNORECASE
+        )
+        self.setAllowFileAccessFromFileURLs_pattern = re.compile(
+            r"setAllowFileAccessFromFileURLs\(true\)", re.IGNORECASE
+        )
+        self.allowuniversalaccess_pattern = re.compile(
+            r"setAllowUniversalAccessFromFileURLs\(true\)", re.IGNORECASE
+        )
+        self.setallowFileaccess_pattern = re.compile(
+            r"setAllowFileAccess", re.IGNORECASE
+        )
+        self.setAllowContentAccess_pattern = re.compile(
+            r"setAllowContentAccess", re.IGNORECASE
+        )
+        self.metadata_pattern = re.compile(r"@metadata", re.IGNORECASE)
+        self.hardcoded_pattern = re.compile(r'[^(]https://[^"' "]", re.IGNORECASE)
 
     def exported_activity(self, content):
         matches = self.activity_pattern.findall(content)
@@ -36,7 +55,7 @@ class WebViewAnalyzer:
 
     def analyze_activity(self, activity):
         try:
-            with open(activity, 'r', encoding='utf-8') as file:
+            with open(activity, "r", encoding="utf-8") as file:
                 sources = file.read()
                 return sources
         except UnicodeDecodeError:
@@ -51,24 +70,37 @@ class WebViewAnalyzer:
         intent_line = -1
 
         for line_num, line in enumerate(lines):
-            if self.getExtra_pattern.findall(line) or self.getintent_pattern.findall(line) or self.parseIntent_pattern.findall(line):
+            if (
+                self.getExtra_pattern.findall(line)
+                or self.getintent_pattern.findall(line)
+                or self.parseIntent_pattern.findall(line)
+            ):
                 intent_result.append(line.strip())
                 intent_line = line_num
-            if (self.loadurl_pattern.findall(line) or self.shouldOverrideUrlLoading_pattern.findall(line)) and not self.metadata_pattern.findall(line):
-                if intent_result and intent_line!=line_num:
+            if (
+                self.loadurl_pattern.findall(line)
+                or self.shouldOverrideUrlLoading_pattern.findall(line)
+            ) and not self.metadata_pattern.findall(line):
+                if intent_result and intent_line != line_num:
                     webview_result.append(intent_result)
                     webview_result.append(line.strip())
-                    intent_result=[]
-                elif intent_result and intent_line==line_num:
+                    intent_result = []
+                elif intent_result and intent_line == line_num:
                     webview_result.append(line.strip())
                 else:
                     intent_result = []
 
-            if self.setAllowFileAccessFromFileURLs_pattern.findall(line) or self.allowuniversalaccess_pattern.findall(line) or self.setallowFileaccess_pattern.search(line):
+            if (
+                self.setAllowFileAccessFromFileURLs_pattern.findall(line)
+                or self.allowuniversalaccess_pattern.findall(line)
+                or self.setallowFileaccess_pattern.search(line)
+            ):
                 if webview_result:
                     fileaccess_result.append((line.strip()))
-            
-            if self.setjavascriptenabled_pattern.findall(line) or self.javascriptinterface_pattern.findall(line):
+
+            if self.setjavascriptenabled_pattern.findall(
+                line
+            ) or self.javascriptinterface_pattern.findall(line):
                 if webview_result:
                     js_result.append((line.strip()))
 
@@ -80,19 +112,23 @@ class WebViewAnalyzer:
         result_dict = {}
         for activity in result:
             package = content.split("package=")[1].split('"')[1]
-            activity_path = activity.replace('.', os.sep) + ".java"
+            activity_path = activity.replace(".", os.sep) + ".java"
             base_path = os.getcwd()
-            whole_path = os.path.join(base_path, "java_src", package, "sources", activity_path)
+            whole_path = os.path.join(
+                base_path, "java_src", package, "sources", activity_path
+            )
             if os.path.exists(whole_path):
                 sources = self.analyze_activity(whole_path)
                 if sources:
-                    webview_lines, js_lines, fileaccess_lines = self.extract_lines_with_patterns(sources)
+                    webview_lines, js_lines, fileaccess_lines = (
+                        self.extract_lines_with_patterns(sources)
+                    )
                     if webview_lines:
                         result_dict = {
                             "activity": activity,
                             "webview_lines": webview_lines,
                             "javascript_lines": js_lines,
-                            "fileaccess_lines": fileaccess_lines
+                            "fileaccess_lines": fileaccess_lines,
                         }
                         self.output.append(result_dict)
             else:
