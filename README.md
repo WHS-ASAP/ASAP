@@ -111,7 +111,7 @@ pip install -r requirements.txt
 
 ## Check execution with video
 
-https://github.com/WHS-ASAP/ASAP/assets/149529045/33daecf6-d99b-4ecb-bfe4-ecc9d36ff4d3
+https://github.com/WHS-ASAP/ASAP/assets/149529045/51141726-4eb4-4511-a504-2b5b5a2ed211
 
 
 
