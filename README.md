@@ -50,9 +50,7 @@ pip install -r requirements.txt
 <p align="center">
     <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614" width="60%" height="60%"> <br><br>
    
-    <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">
-        <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/9c5db5d1-6c0c-4267-a876-98d1df9c86c1" width="60%" height="60%">
-    </a>
+   [![Go to ASAP/src/docs](https://github.com/WHS-ASAP/ASAP/assets/149529045/9c5db5d1-6c0c-4267-a876-98d1df9c86c1)](https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md)
 </p>
 
 
