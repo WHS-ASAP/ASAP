@@ -38,6 +38,10 @@ pip install -r requirements.txt
 ---
 ### 2. Add ASAP/src/tools/jadx/lib/jadx-dev-all.jar
 
+<p align="center">
+  <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45">
+</p>
+
 <center>
 ![add jadx-dev-all.jar](https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45)
 </center>
