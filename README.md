@@ -39,11 +39,10 @@ pip install -r requirements.txt
 ### 2. Add ASAP/src/tools/jadx/lib/jadx-dev-all.jar
 
 <p align="center">
-  <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45">
+  <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45" width="450" height="380">
 </p>
 
-<!--![add jadx-dev-all.jar](https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45)
--->
+<!--![add jadx-dev-all.jar](https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45)-->
 
 ---
 
@@ -73,7 +72,7 @@ pip install -r requirements.txt
 
 ### 6. If you can find ASAP/src/apk_dir, run ApkProcessor.py
 
-<img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/d2e2ae37-e63f-4d76-9ece-14eb664ce615"  width="450" height="380">
+<img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/d2e2ae37-e63f-4d76-9ece-14eb664ce615" width="450" height="380">
 
 ![run ApkProcessor.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/7f638f13-2194-4afa-8196-769bba1b3eb8)
 
