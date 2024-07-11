@@ -104,11 +104,15 @@ pip install -r requirements.txt
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36" width="100%" height="100%"> <br><br>
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/c7095256-7343-410f-bb50-06ada9a9a22a" width="100%" height="100%">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/102972001/7afb3062-11c6-461e-8c51-664c13f9d2b3" width="100%" height="100%">
 </p>
 
 
 ---
+
+## Check execution with video
+
+https://github.com/WHS-ASAP/ASAP/assets/149529045/33daecf6-d99b-4ecb-bfe4-ecc9d36ff4d3
+
 
 
 ## References
