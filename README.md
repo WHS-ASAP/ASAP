@@ -38,63 +38,77 @@ pip install -r requirements.txt
 ---
 ### 2. Add ASAP/src/tools/jadx/lib/jadx-dev-all.jar
 
-![add jadx-dev-all.jar](https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45)
+<p align="center">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45" width="60%" height="60%">
+</p>
 
 ---
 
 
 ### 3. If you want to set target applications, go to ASAP/src/docs/target.txt and write app package name
 
-![target.txt path](https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614)
+<p align="center">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614" width="70%" height="70%">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/9c5db5d1-6c0c-4267-a876-98d1df9c86c1" width="30%" height="30%"> <br>
+   <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">Go to ASAP/src/docs</a>
+</p>
 
-![target.txt readme](https://github.com/WHS-ASAP/ASAP/assets/149529045/2e9ce3a3-b5e1-4ff7-a716-625c0c387d8d)
+
 
 ---
 
 
 ### 4. If you want to test some HackerOne applications, just run apk_Downloader.py without target.txt
 
-![run apk_Downloader.py without target.txt](https://github.com/WHS-ASAP/ASAP/assets/149529045/bf2fee52-64c2-47a8-ac83-a24906e272fc)
+<p align="center">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/2a97b1d4-f852-419c-88de-32d6aafba598" width="100%" height="100%">
+</p>
+
 
 ---
 
 
 ### 5. Go to ASAP/src, run apk_Downloader.py
 
-![run apk_Downloader.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/37e1d012-35d8-4e41-aafa-daa854ba25ce)
+<p align="center">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/21e1010e-7bb7-4b55-8b97-69cf1484582f" width="100%" height="100%">
+</p>
+
+
+---
+
+
+### 6. If you can find ASAP/src/apk_dir, run ASAP.py
+
+<p align="center">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/7f638f13-2194-4afa-8196-769bba1b3eb8" width="100%" height="100%">
+   First, run ApkProcessor.py -> you can find ASAP/src/java_src and ASAP/src/smali_src <br><br>
+</p>
+
+<p align="center">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/f1433f07-a4e8-4cdf-9def-1572af68a939" width="60%" height="60%"> <br>
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e" width="100%" height="100%">
+   Then, run Ananyzer.py
+</p>
+
 
 ---
 
 
-### 6. If you can find ASAP/src/apk_dir, run ApkProcessor.py
+### 7. Go to ASAP/src/ASAP_Web, run app.py
 
-<img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/d2e2ae37-e63f-4d76-9ece-14eb664ce615"  width="450" height="380">
-
-![run ApkProcessor.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/7f638f13-2194-4afa-8196-769bba1b3eb8)
-
----
-
-
-### 7. If you can find ASAP/src/java_src and ASAP/src/smali_src, run Analyzer_test.py
-
-<img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/29048756-c68f-4a9c-b49b-b939643274a7"  width="450" height="320">
-
-![run Analyzer_test.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e)
-
----
-
-
-### 8. Go to ASAP/src/ASAP_Web, run app.py
-
-![cli after running app.py](https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36)
-
-![web](https://github.com/WHS-ASAP/ASAP/assets/149529045/c7095256-7343-410f-bb50-06ada9a9a22a)
-
-
-<img src="https://github.com/WHS-ASAP/ASAP/assets/102972001/7afb3062-11c6-461e-8c51-664c13f9d2b3">
+<p align="center">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36" width="100%" height="100%"> <br><br>
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/c7095256-7343-410f-bb50-06ada9a9a22a" width="100%" height="100%">
+</p>
 
 
 ---
+
+## Check execution with video
+
+https://github.com/WHS-ASAP/ASAP/assets/149529045/51141726-4eb4-4511-a504-2b5b5a2ed211
+
 
 
 ## References
@@ -125,7 +139,7 @@ pip install -r requirements.txt
 
 ---
 + Mentor: Joowon Kim ([@arrester](https://github.com/arrester))
-+ PL: Sunggwang Park ([@n0paew](https://github.com/n0paew))
++ PL: Seonggwang Park ([@n0paew](https://github.com/n0paew))
 ---
 
 
