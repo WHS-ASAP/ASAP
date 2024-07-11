@@ -78,18 +78,12 @@ pip install -r requirements.txt
 ---
 
 
-### 6. If you can find ASAP/src/apk_dir, run ApkProcessor.py
+### 6. If you can find ASAP/src/apk_dir, run ASAP.py
 
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/7f638f13-2194-4afa-8196-769bba1b3eb8" width="100%" height="100%">
 </p>
-
-
----
-
-
-### 7. If you can find ASAP/src/java_src and ASAP/src/smali_src, run Analyzer_test.py
-
+then, you can find ASAP/src/java_src and ASAP/src/smali_src <br><br>
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/f1433f07-a4e8-4cdf-9def-1572af68a939" width="60%" height="60%"> <br><br>
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e" width="100%" height="100%">
@@ -99,7 +93,7 @@ pip install -r requirements.txt
 ---
 
 
-### 8. Go to ASAP/src/ASAP_Web, run app.py
+### 7. Go to ASAP/src/ASAP_Web, run app.py
 
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36" width="100%" height="100%"> <br><br>
