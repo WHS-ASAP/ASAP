@@ -9,7 +9,10 @@ class FilePathCheck:
         self.origin_package_name = self.tmp_lst[1]
 
     def check_shared_and_pref(self):
-        return "shared" in self.file_path and "pref" in self.file_path
+        pattern_shared = re.compile(r'shared', re.IGNORECASE)
+        pattern_pref = re.compile(r'pref', re.IGNORECASE)
+        return pattern_shared in self.file_path and pattern_pref in self.file_path
+        # return 'shared' in self.file_path and 'pref' in self.file_path
 
     def validate(self):
         if self.check_shared_and_pref():
