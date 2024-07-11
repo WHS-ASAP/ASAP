@@ -88,7 +88,7 @@ pip install -r requirements.txt
 ### 7. If you can find ASAP/src/java_src and ASAP/src/smali_src, run Analyzer_test.py
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/29048756-c68f-4a9c-b49b-b939643274a7" width="60%" height="60%"> <br>
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/29048756-c68f-4a9c-b49b-b939643274a7" width="60%" height="60%"> <br><br>
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e" width="100%" height="100%">
 </p>
 
