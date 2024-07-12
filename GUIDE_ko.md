@@ -52,7 +52,7 @@ pip install -r requirements.txt
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/21e1010e-7bb7-4b55-8b97-69cf1484582f" width="100%" height="100%">
 </p>
 
-이러면 target.txt에 적혀있는 패키지를 대상으로 다운로드를 진행하게 됩니다.
+이러면 'target.txt'에 적혀있는 패키지를 대상으로 다운로드를 진행하게 됩니다.
 
 ---
 
@@ -69,7 +69,6 @@ ASAP.py를 실행시키면 apk_dir에 있는 apk들을 대상으로 디컴파일
 디컴파일이 완료되면 취약점 진단을 시작합니다.
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e" width="100%" height="100%">
-   Then, run Ananyzer.py
 </p>
 
 
@@ -98,7 +97,7 @@ ASAP.py를 실행시키면 apk_dir에 있는 apk들을 대상으로 디컴파일
    <img src="https://github.com/user-attachments/assets/1a20a0c2-01bb-4f3c-89f4-dbb658e81067" width="100%" height="100%">
 </p>
 
-하단의 History 테이블이나 좌측에 있는 PACKGE LIST의 패키지명을 클릭하면 해당 패키지의 분석 결과를 확인할 수 있습니다.
+하단의 'History' 테이블이나 좌측에 있는 'PACKGE LIST'의 패키지명을 클릭하면 해당 패키지의 분석 결과를 확인할 수 있습니다.
 <p align="center">
    <img src="https://github.com/user-attachments/assets/21e67c19-813b-4575-90c1-ecdb95c8efb0" width="100%" height="100%">
 </p>

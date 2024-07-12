@@ -69,9 +69,7 @@ Running ASAP.py will attempt to decompile the apks in apk_dir, which will save t
 Upon completion of the decompile, start diagnosing the vulnerability.
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e" width="100%" height="100%">
-   Then, run Ananyzer.py
 </p>
-
 
 
 ---
