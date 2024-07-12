@@ -24,13 +24,16 @@ Scope of Vulnerabilities in ASAP:
      > Detect logs that output sensitive information from Java code
 ---
 
+<br>
+<br>
 
-## ASAP Tool Guide
+# ASAP Tool Guide
 
-[guide-ko-documentation](/ASAP/GUIDE_ko.md)
+[guide-ko-documentation](/ASAP/GUIDE_ko.md) <br>
 [guide-en-documentation](/ASAP/GUIDE_en.md)
 
-### 1. Getting Started
+## 1. Getting Started
+<br>
 
 ```
 git clone https://github.com/WHS-ASAP/ASAP.git
@@ -38,7 +41,9 @@ cd ASAP
 pip install -r requirements.txt
 ```
 ---
-### 2. Add ASAP/src/tools/jadx/lib/jadx-dev-all.jar
+
+## 2. Add ASAP/src/tools/jadx/lib/jadx-dev-all.jar
+<br>
 
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45" width="100%" height="100%">
@@ -46,8 +51,12 @@ pip install -r requirements.txt
 
 ---
 
-### 3. If you want to set target applications, go to ASAP/src/docs/target.txt and write app package name
+## 3. If you want to set target applications, go to ASAP/src/docs/target.txt and write app package name
+<br>
+
 Go to ASAP/src, run apk_Downloader.py
+
+
 <p align="center">
 
    <img src="https://github.com/user-attachments/assets/9ccac071-9885-4771-8ccc-a1ccbb58c89a" width="100%" height="100%">
@@ -58,6 +67,7 @@ Go to ASAP/src, run apk_Downloader.py
 ---
 
 ### 4. If you want to test some HackerOne applications, just run apk_Downloader.py without target.txt
+<br>
 
 <p align="center">
    <img src="https://github.com/user-attachments/assets/8eaaab15-d54e-4947-9c67-8a61a83444f9" width="100%" height="100%"></a>
@@ -66,15 +76,18 @@ Go to ASAP/src, run apk_Downloader.py
 ---
 
 ### 5. If you can find ASAP/src/apk_dir, run ASAP.py
+<br>
 
 <p align="center">
    <img src="https://github.com/user-attachments/assets/d29c845e-9b22-4b42-ada9-f37025475156" width="100%" height="100%"> </a>
+
    First, run ApkProcessor.py -> you can find ASAP/src/java_src and ASAP/src/smali_src <br><br>
 </p>
 
 ---
 
 ### 6. Go to ASAP/src/ASAP_Web, run app.py
+<br>
 
 <p align="center">
    <img src="https://github.com/user-attachments/assets/727a4ef9-89a1-48c7-978c-9187638ba77c" width="100%" height="100%"> </a>
