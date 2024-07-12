@@ -21,11 +21,9 @@ class CryptoAnalyzer:
             r'\bCipher\.getInstance\("3DES(/[A-Z]+)?(/[A-Z0-9]+)?"\)\b',
 
             # 하드코딩된 키 또는 초기화 벡터 관련
-            r'\bnew SecretKeySpec\b',
-            r'\bkeyBytes =\b',
-            r'\bivBytes =\b',
-            r'\bkey = "\b',
-            r'\biv = "\b'
+            r'\bivBytes\s*=\s*{[^}]+}',
+            r'\biv\s*=\s*"[^\"]+"',
+            r'\bivBytes\s*=\s*new\s+byte\[\]\s*{[^}]+}'
         ]
         
         # 주석이나 문자열 내의 키워드 무시하기 위한 패턴
