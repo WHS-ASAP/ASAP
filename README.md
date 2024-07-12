@@ -26,7 +26,6 @@ Check presence of function that allows file access with javascripted function in
 ---
 
 
-
 ## ASAP Tool Guide
 ### 1. Getting Started
 
@@ -44,72 +43,48 @@ pip install -r requirements.txt
 
 ---
 
-
 ### 3. If you want to set target applications, go to ASAP/src/docs/target.txt and write app package name
-
+Go to ASAP/src, run apk_Downloader.py
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614" width="100%" height="100%">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/9c5db5d1-6c0c-4267-a876-98d1df9c86c1" width="100%" height="100%"> <br>
+   target.txt에 앱 이름 입력
+   app_package_name1
+   app_package_name2
+   app_package_name3
+   <a href="https://github.com/user-attachments/assets/8b652daf-4293-4b38-b41a-39257cebbc97"></a>
+   <br>
    <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">Go to ASAP/src/docs</a>
 </p>
 
-
-
 ---
-
 
 ### 4. If you want to test some HackerOne applications, just run apk_Downloader.py without target.txt
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/2a97b1d4-f852-419c-88de-32d6aafba598" width="100%" height="100%">
+   <a href="https://github.com/user-attachments/assets/f6e3733b-1b69-48b5-a3de-08227a6005ea" width="100%" height="100%"></a>
 </p>
-
 
 ---
 
-
-### 5. Go to ASAP/src, run apk_Downloader.py
-
-<p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/21e1010e-7bb7-4b55-8b97-69cf1484582f" width="100%" height="100%">
-</p>
-
-
----
-
-
-### 6. If you can find ASAP/src/apk_dir, run ASAP.py
+### 5. If you can find ASAP/src/apk_dir, run ASAP.py
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/7f638f13-2194-4afa-8196-769bba1b3eb8" width="100%" height="100%">
+   <a href="https://github.com/user-attachments/assets/d8e6c4b9-97ff-4ac5-b96a-bf0f56c41819" width="100%" height="100%"> </a>
    First, run ApkProcessor.py -> you can find ASAP/src/java_src and ASAP/src/smali_src <br><br>
 </p>
 
-<p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/f1433f07-a4e8-4cdf-9def-1572af68a939" width="100%" height="100%"> <br>
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e" width="100%" height="100%">
-   Then, run Ananyzer.py
-</p>
-
-
 ---
 
-
-### 7. Go to ASAP/src/ASAP_Web, run app.py
+### 6. Go to ASAP/src/ASAP_Web, run app.py
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36" width="100%" height="100%"> <br><br>
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/c7095256-7343-410f-bb50-06ada9a9a22a" width="100%" height="100%">
+   <a href="https://github.com/user-attachments/assets/96dd2b2e-40ac-4b79-818b-62b65b8f4e1a" width="100%" height="100%"> </a>
 </p>
-
 
 ---
 
 ## Check execution with video
 
 https://github.com/WHS-ASAP/ASAP/assets/149529045/51141726-4eb4-4511-a504-2b5b5a2ed211
-
-
 
 ## References
 ([OWASP Mobile Top10](https://owasp.org/www-project-mobile-top-10/))
@@ -147,4 +122,4 @@ https://github.com/WHS-ASAP/ASAP/assets/149529045/51141726-4eb4-4511-a504-2b5b5a
 ## Acknowledgement
 This work was supported by Korea Information Technology Research Institute (KITRI) 2nd WhiteHat School (WHS) Program.
 
-[Project Name: APP in Security (ASAP) Project]
+[Project Name: ASAP(Security in APP) Project]
