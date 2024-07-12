@@ -47,9 +47,8 @@ pip install -r requirements.txt
 Go to ASAP/src, run apk_Downloader.py
 <p align="center">
 
-   <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614" width="70%" height="70%">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/9c5db5d1-6c0c-4267-a876-98d1df9c86c1" width="70%" height="70%"> <br>
+   <img src="https://github.com/user-attachments/assets/9ccac071-9885-4771-8ccc-a1ccbb58c89a" width="70%" height="70%">
+<br>
    <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">Go to ASAP/src/docs</a>
 </p>
    <br>
