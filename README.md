@@ -9,24 +9,27 @@ ASAP only supports static analysis.
 ---
 Scope of Vulnerabilities in ASAP: 
    + WebView
-     > Detect if you use an external intent as an activity target with [exported="true"] exported from androidmanifest.xml and load the intent with loadURL => webview vulnerability detection
-Check presence of function that allows file access with javascripted function in same activity => xss vulnerability detection
+     > In the activity "exported="true", verify that external intent is being loaded into the loadURL, javascript is enabled, and that there is a method to apply javascriptinterface.
    + DeepLink
-     > Print [scheme://host/path] from Androidmanifest.xml, detection of parameters through getQueryParameter function in smali code, adjustable host/path through addURI function, url matching scheme through 'Uri; ->parse, JavascriptInterface Detection of JavascriptInterface Available in WebView via JavascriptInterface Annotation, addJavascriptInterface Detection =>Redirect Vulnerability
+     > Output [scheme://host/path] from Androidmanifest.xml, parameter detection through smali code function, host/path, URL matching method, JavascriptInterface detection
    + SQL_Injection
-     > SQL execution statement in Java code, SQL injection prevention code detection
+     > Detects code that runs SQL in Java code and code that prevents SQL injection
    + HardCoded
-     > API Key or Credentials inside the apk
+     > API Key or Credentials inside the source code. 
    + Permission
-     > Extract Permission from Android Manifest in xml Code
+     > Extract Permission from AndroidManifest.xml in source code.
    + Insecure_DataStorage (Crypto)
-     > Extract encryption logic within Shared Preference
+     > Encryption pattern detection in source code on the path where both shared and pref enter
    + Insecure_Logging (LogE)
-     > Log detection that outputs sensitive information in Java code
+     > Detect logs that output sensitive information from Java code
 ---
 
 
 ## ASAP Tool Guide
+
+[guide-ko-documentation](/ASAP/GUIDE_ko.md)
+[guide-en-documentation](/ASAP/GUIDE_en.md)
+
 ### 1. Getting Started
 
 ```
@@ -47,11 +50,8 @@ pip install -r requirements.txt
 Go to ASAP/src, run apk_Downloader.py
 <p align="center">
 
-   <img src="https://github.com/user-attachments/assets/9ccac071-9885-4771-8ccc-a1ccbb58c89a" width="70%" height="70%">
+   <img src="https://github.com/user-attachments/assets/9ccac071-9885-4771-8ccc-a1ccbb58c89a" width="100%" height="100%">
 <br>
-   <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">Go to ASAP/src/docs</a>
-</p>
-   <br>
    <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">Go to ASAP/src/docs</a>
 </p>
 
