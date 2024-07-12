@@ -46,11 +46,12 @@ pip install -r requirements.txt
 ### 3. If you want to set target applications, go to ASAP/src/docs/target.txt and write app package name
 Go to ASAP/src, run apk_Downloader.py
 <p align="center">
-   target.txt에 앱 이름 입력
-   app_package_name1
-   app_package_name2
-   app_package_name3
-   <img src="https://github.com/user-attachments/assets/57d3e255-61cb-41fd-8448-6621fd9eddf8"></a>
+
+   <p align="center">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614" width="70%" height="70%">
+   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/9c5db5d1-6c0c-4267-a876-98d1df9c86c1" width="700%" height="70%"> <br>
+   <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">Go to ASAP/src/docs</a>
+</p>
    <br>
    <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">Go to ASAP/src/docs</a>
 </p>
