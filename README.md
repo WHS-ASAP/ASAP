@@ -9,26 +9,31 @@ ASAP only supports static analysis.
 ---
 Scope of Vulnerabilities in ASAP: 
    + WebView
-     > Detect if you use an external intent as an activity target with [exported="true"] exported from androidmanifest.xml and load the intent with loadURL => webview vulnerability detection
-Check presence of function that allows file access with javascripted function in same activity => xss vulnerability detection
+     > In the activity "exported="true", verify that external intent is being loaded into the loadURL, javascript is enabled, and that there is a method to apply javascriptinterface.
    + DeepLink
-     > Print [scheme://host/path] from Androidmanifest.xml, detection of parameters through getQueryParameter function in smali code, adjustable host/path through addURI function, url matching scheme through 'Uri; ->parse, JavascriptInterface Detection of JavascriptInterface Available in WebView via JavascriptInterface Annotation, addJavascriptInterface Detection =>Redirect Vulnerability
+     > Output [scheme://host/path] from Androidmanifest.xml, parameter detection through smali code function, host/path, URL matching method, JavascriptInterface detection
    + SQL_Injection
-     > SQL execution statement in Java code, SQL injection prevention code detection
+     > Detects code that runs SQL in Java code and code that prevents SQL injection
    + HardCoded
-     > API Key or Credentials inside the apk
+     > API Key or Credentials inside the source code. 
    + Permission
-     > Extract Permission from Android Manifest in xml Code
+     > Extract Permission from AndroidManifest.xml in source code.
    + Insecure_DataStorage (Crypto)
-     > Extract encryption logic within Shared Preference
+     > Encryption pattern detection in source code on the path where both shared and pref enter
    + Insecure_Logging (LogE)
-     > Log detection that outputs sensitive information in Java code
+     > Detect logs that output sensitive information from Java code
 ---
 
+<br>
+<br>
 
+# ASAP Tool Guide
 
-## ASAP Tool Guide
-### 1. Getting Started
++ [guide-ko-documentation](/GUIDE_ko.md) <br>
++ [guide-en-documentation](/GUIDE_en.md)
+
+## 1. Getting Started
+<br>
 
 ```
 git clone https://github.com/WHS-ASAP/ASAP.git
@@ -36,7 +41,9 @@ cd ASAP
 pip install -r requirements.txt
 ```
 ---
-### 2. Add ASAP/src/tools/jadx/lib/jadx-dev-all.jar
+
+## 2. Add ASAP/src/tools/jadx/lib/jadx-dev-all.jar
+<br>
 
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45" width="100%" height="100%">
@@ -44,72 +51,53 @@ pip install -r requirements.txt
 
 ---
 
+## 3. If you want to set target applications, go to ASAP/src/docs/target.txt and write app package name
+<br>
 
-### 3. If you want to set target applications, go to ASAP/src/docs/target.txt and write app package name
+Go to ASAP/src, run apk_Downloader.py
+
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/24f76541-f2f5-4d1d-9356-1ea324c7c614" width="100%" height="100%">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/9c5db5d1-6c0c-4267-a876-98d1df9c86c1" width="30%" height="30%"> <br>
+
+   <img src="https://github.com/user-attachments/assets/9ccac071-9885-4771-8ccc-a1ccbb58c89a" width="100%" height="100%">
+<br>
    <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">Go to ASAP/src/docs</a>
 </p>
 
-
-
 ---
-
 
 ### 4. If you want to test some HackerOne applications, just run apk_Downloader.py without target.txt
+<br>
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/2a97b1d4-f852-419c-88de-32d6aafba598" width="100%" height="100%">
+   <img src="https://github.com/user-attachments/assets/8eaaab15-d54e-4947-9c67-8a61a83444f9" width="100%" height="100%"></a>
 </p>
-
 
 ---
 
-
-### 5. Go to ASAP/src, run apk_Downloader.py
-
-<p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/21e1010e-7bb7-4b55-8b97-69cf1484582f" width="100%" height="100%">
-</p>
-
-
----
-
-
-### 6. If you can find ASAP/src/apk_dir, run ASAP.py
+### 5. If you can find ASAP/src/apk_dir, run ASAP.py
+<br>
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/7f638f13-2194-4afa-8196-769bba1b3eb8" width="100%" height="100%">
+   <img src="https://github.com/user-attachments/assets/d29c845e-9b22-4b42-ada9-f37025475156" width="100%" height="100%"> </a>
+
    First, run ApkProcessor.py -> you can find ASAP/src/java_src and ASAP/src/smali_src <br><br>
 </p>
 
-<p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/f1433f07-a4e8-4cdf-9def-1572af68a939" width="60%" height="60%"> <br>
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/72205656-be6a-4deb-b2f6-b246e5a4335e" width="100%" height="100%">
-   Then, run Ananyzer.py
-</p>
-
-
 ---
 
-
-### 7. Go to ASAP/src/ASAP_Web, run app.py
+### 6. Go to ASAP/src/ASAP_Web, run app.py
+<br>
 
 <p align="center">
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/919a55c8-8d68-4b1a-977c-1264b2c67d36" width="100%" height="100%"> <br><br>
-   <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/c7095256-7343-410f-bb50-06ada9a9a22a" width="100%" height="100%">
+   <img src="https://github.com/user-attachments/assets/727a4ef9-89a1-48c7-978c-9187638ba77c" width="100%" height="100%"> </a>
 </p>
-
 
 ---
 
 ## Check execution with video
 
 https://github.com/WHS-ASAP/ASAP/assets/149529045/51141726-4eb4-4511-a504-2b5b5a2ed211
-
-
 
 ## References
 ([OWASP Mobile Top10](https://owasp.org/www-project-mobile-top-10/))
@@ -147,4 +135,4 @@ https://github.com/WHS-ASAP/ASAP/assets/149529045/51141726-4eb4-4511-a504-2b5b5a
 ## Acknowledgement
 This work was supported by Korea Information Technology Research Institute (KITRI) 2nd WhiteHat School (WHS) Program.
 
-[Project Name: APP in Security (ASAP) Project]
+[Project Name: ASAP(Security in APP) Project]
