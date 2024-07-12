@@ -1,22 +1,20 @@
 import re
 import requests as r
 from modules.utils import string_list
-# from utils import string_list
-# import time
 
 class HardCodedAnalyzer:
     def __init__(self):
         self.string = string_list.analysis_regex
-        self.cache = {}  # 캐시를 위한 딕셔너리
+        self.cache = {}
         
     def firebase_connect(self, uri):
-        data = ''        
+        data = ''
         if uri in self.cache:
             return
         res = r.get(uri)
         if res.status_code == 200:
             data = "Firebase access enabled"
-            self.cache[uri] = data  # 응답을 캐시에 저장
+            self.cache[uri] = data
             return data
         else:
             data = res.text
@@ -36,8 +34,8 @@ class HardCodedAnalyzer:
                         if "</string>" in line:
                             self.xml_match = re.search(xml_pattern, line, re.I)
                             if self.xml_match.group(1) == '"firebase_database_url"':
-                                url = f'{self.xml_match.group(2)}'
-                                self.xml_results[self.xml_match.group(2)] = self.firebase_connect(url+'/.json').strip()
+                                url = self.xml_match.group(2)
+                                self.xml_results[url] = self.firebase_connect(url+'/.json').strip()
                             else:
                                 match1, match2 = self.xml_match.group(1), self.xml_match.group(2)
                                 self.xml_results[match1] = match2
