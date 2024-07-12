@@ -50,7 +50,7 @@ Go to ASAP/src, run apk_Downloader.py
    app_package_name1
    app_package_name2
    app_package_name3
-   <a href="https://github.com/user-attachments/assets/8b652daf-4293-4b38-b41a-39257cebbc97"></a>
+   <img src="https://github.com/user-attachments/assets/8b652daf-4293-4b38-b41a-39257cebbc97"></a>
    <br>
    <a href="https://github.com/WHS-ASAP/ASAP/blob/readme/src/docs/Readme.md">Go to ASAP/src/docs</a>
 </p>
@@ -60,7 +60,7 @@ Go to ASAP/src, run apk_Downloader.py
 ### 4. If you want to test some HackerOne applications, just run apk_Downloader.py without target.txt
 
 <p align="center">
-   <a href="https://github.com/user-attachments/assets/f6e3733b-1b69-48b5-a3de-08227a6005ea" width="100%" height="100%"></a>
+   <img src="https://github.com/user-attachments/assets/f6e3733b-1b69-48b5-a3de-08227a6005ea" width="100%" height="100%"></a>
 </p>
 
 ---
@@ -68,7 +68,7 @@ Go to ASAP/src, run apk_Downloader.py
 ### 5. If you can find ASAP/src/apk_dir, run ASAP.py
 
 <p align="center">
-   <a href="https://github.com/user-attachments/assets/d8e6c4b9-97ff-4ac5-b96a-bf0f56c41819" width="100%" height="100%"> </a>
+   <img src="https://github.com/user-attachments/assets/d8e6c4b9-97ff-4ac5-b96a-bf0f56c41819" width="100%" height="100%"> </a>
    First, run ApkProcessor.py -> you can find ASAP/src/java_src and ASAP/src/smali_src <br><br>
 </p>
 
@@ -77,7 +77,7 @@ Go to ASAP/src, run apk_Downloader.py
 ### 6. Go to ASAP/src/ASAP_Web, run app.py
 
 <p align="center">
-   <a href="https://github.com/user-attachments/assets/96dd2b2e-40ac-4b79-818b-62b65b8f4e1a" width="100%" height="100%"> </a>
+   <img src="https://github.com/user-attachments/assets/96dd2b2e-40ac-4b79-818b-62b65b8f4e1a" width="100%" height="100%"> </a>
 </p>
 
 ---
