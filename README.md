@@ -3,7 +3,7 @@ This WhiteHat School(WHS) Project is an *open-source*, analysis tool to support 
 
 The ASAP tool basically provides possible locations for vulnerabilities in code obtained using the jadx decompiler. 
 
-ASAP only supports static analysis. 
+ASAP only supports static analysis except firebase detection in HardCoded.py. 
 
 
 ---
@@ -103,6 +103,10 @@ https://github.com/WHS-ASAP/ASAP/assets/149529045/51141726-4eb4-4511-a504-2b5b5a
 ([OWASP Mobile Top10](https://owasp.org/www-project-mobile-top-10/))
 
 ([BWASP](https://github.com/BWASP/BWASP?tab=readme-ov-file))
+
+([MobSF](https://github.com/MobSF/Mobile-Security-Framework-MobSF))
+
+([apkleaks](https://github.com/dwisiswant0/apkleaks))
 
 ([Webview Hijacking](https://ufo.stealien.com/2020-06-18/Deeplink))
 
