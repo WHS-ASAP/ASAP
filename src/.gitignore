@@ -7,3 +7,5 @@ __pycache__/
 *.pth
 docs/target.txt
 tools/jadx/lib/jadx-dev-all.jar
+modules/*.tldr
+*.tldr

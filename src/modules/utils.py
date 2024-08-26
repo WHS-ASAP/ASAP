@@ -9,13 +9,14 @@ class FilePathCheck:
         self.origin_package_name = self.tmp_lst[1]
 
     def check_shared_and_pref(self):
-        return 'shared' in self.file_path and 'pref' in self.file_path
+        return "shared" in self.file_path and "pref" in self.file_path
 
     def validate(self):
         # if self.check_shared_and_pref() or self.check_path():
         if self.check_shared_and_pref():
             return self.file_path
         return None
+
 
 class string_list:
     analysis_regex = {
@@ -34,12 +35,22 @@ class string_list:
         r"(facebook)(.{0,20})?['\"][0-9a-f]{32}",
         r"[a-z0-9.-]+\.firebaseio\.com",
         r"([a-zA-Z0-9_-]*:[a-zA-Z0-9_-]+@github.com*)$",
-        r"AIza[0-9A-Za-z\-_]{35}", 
+        r"AIza[0-9A-Za-z\-_]{35}",
         r"[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com",
         r"heroku.*[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}",
         r"(?i)^((?=.*[a-z])(?=.*[0-9])(?:[a-z0-9_=]+\.){2}(?:[a-z0-9_\-\+/=]*))$",
         r"(([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{2}[-]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}[\.]){2}[0-9A-Fa-f]{4})$",
         r"(?<=mailto:)[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+",
         r"[a-zA-Z]{3,10}://[^/\s:@]{3,20}:[^/\s:@]{3,20}@.{1,100}[\"'\s]",
-        r"\.child\(" 
+        r"\.child\(",
     }
+
+
+class ExtractContent:
+    def __init__(self, file_path):
+        self.file_path = file_path
+
+    def extract_content(self):
+        with open(self.file_path, "r", encoding="utf-8", errors="ignore") as file:
+            content = file.read()
+            return content

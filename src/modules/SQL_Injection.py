@@ -1,4 +1,5 @@
 import re
+from modules.utils import ExtractContent
 
 
 class SQLInjectionAnalyzer:
@@ -68,7 +69,14 @@ class SQLInjectionAnalyzer:
 
         return []
 
-    def run(self, content):
+    def run(self, file_path):
+        accessible_file_types = ["java", "kt"]
+        if not file_path.endswith(tuple(accessible_file_types)):
+            # print(f"LogAnalyzer: {file_path} is not a java or kotlin file")
+            return
+        else:
+            content = ExtractContent(file_path).extract_content()
+
         return self.analyze_file(content)
 
 
