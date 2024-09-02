@@ -1,5 +1,6 @@
 import os
 import re
+import requests
 
 
 class FilePathCheck:
@@ -17,9 +18,36 @@ class FilePathCheck:
             return self.file_path
         return None
 
+class firebase:
+    def __init__(self):
+        self.file_path = './modules/result.txt'
 
+    def firebase_parsing(self):
+        i = 1
+        child = []
+        with open(self.file_path, 'r') as f:
+            lines  = f.readlines()
+            for line in lines:
+                if line.startswith('https:/'):
+                    url = line.strip()
+                else:
+                    child.append(line.strip())
+                    i += 1
+        return url, child
+    
+    def firebase_connect(self):
+        url, childs = self.firebase_parsing()
+        res = requests.get(f'{url}/.json')
+        if childs:
+            for child in childs:
+                res = requests.get(f'{url}/{child}/.json')
+                print(res.status_code)
+            
+
+                
+        
 class string_list:
-    analysis_regex = {
+    java_analysis_regex = [
         r"//s3-[a-z0-9-]+\.amazonaws\.com/[a-z0-9._-]+",
         r"//s3\.amazonaws\.com/[a-z0-9._-]+",
         r"[a-z0-9.-]+\.s3-[a-z0-9-]\.amazonaws\.com",
@@ -35,15 +63,21 @@ class string_list:
         r"(facebook)(.{0,20})?['\"][0-9a-f]{32}",
         r"[a-z0-9.-]+\.firebaseio\.com",
         r"([a-zA-Z0-9_-]*:[a-zA-Z0-9_-]+@github.com*)$",
-        r"AIza[0-9A-Za-z\-_]{35}",
+        r"AIza[0-9A-Za-z\-_]{35}", 
         r"[0-9]+-[0-9A-Za-z_]{32}\.apps\.googleusercontent\.com",
         r"heroku.*[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}",
         r"(?i)^((?=.*[a-z])(?=.*[0-9])(?:[a-z0-9_=]+\.){2}(?:[a-z0-9_\-\+/=]*))$",
         r"(([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{2}[-]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}[\.]){2}[0-9A-Fa-f]{4})$",
         r"(?<=mailto:)[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+",
         r"[a-zA-Z]{3,10}://[^/\s:@]{3,20}:[^/\s:@]{3,20}@.{1,100}[\"'\s]",
-        r"\.child\(",
-    }
+        r"\.child\(" 
+    ]
+
+    xml_analysis_string = [
+        'AWS', 'Amazon','Access_Key_ID', 'S3_Bucket','Facebook_Access_Token','Facebook_ClientID', 'Facebook_OAuth', 'Facebook_Secret_Key', 'firebase_database_url', 'Amazon_AWS_Access_Key_ID', 'Discord_BOT_Token', 'Twitter_Secret_Key',
+        'Twitter_oauth', 'Twitter_clientid', 'Twitter_access_token', 'Twilio_api_key', 'SSH', 'slack_token', 'Json_Web_Token',
+        'Google_OAuth_Access_Token', 'Google_Cloud_Platform_OAuth', 'Google_Cloud_Platform_Service_Account' 'GitHub', 'Artifactory'
+    ]
 
 
 class ExtractContent:
