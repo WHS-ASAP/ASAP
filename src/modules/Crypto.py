@@ -1,5 +1,5 @@
 import re
-from utils import ExtractContent
+from modules.utils import ExtractContent
 
 class CryptoAnalyzer:
     def __init__(self):
@@ -45,8 +45,7 @@ class CryptoAnalyzer:
         return True
 
     def run(self, file_path):
-        need_file_list = ['shared', 'pref']
-        if not any(ext in file_path for ext in need_file_list):
+        if not any('shared' and 'pref' in file_path):
             return
         extractor = ExtractContent(file_path)
         content = extractor.extract_content()

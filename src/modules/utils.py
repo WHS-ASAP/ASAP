@@ -2,22 +2,6 @@ import os
 import re
 import requests
 
-
-class FilePathCheck:
-    def __init__(self, file_path):
-        self.file_path = file_path
-        self.tmp_lst = file_path.split(os.sep)
-        self.origin_package_name = self.tmp_lst[1]
-
-    def check_shared_and_pref(self):
-        return "shared" in self.file_path and "pref" in self.file_path
-
-    def validate(self):
-        # if self.check_shared_and_pref() or self.check_path():
-        if self.check_shared_and_pref():
-            return self.file_path
-        return None
-
 class firebase:
     def __init__(self):
         self.file_path = './modules/result.txt'
@@ -41,8 +25,28 @@ class firebase:
         if childs:
             for child in childs:
                 res = requests.get(f'{url}/{child}/.json')
-                print(res.status_code)
+                if res.status_code == 200:
+                    if res.text != 'null':
+                        data = "Firebase data accessable"
+                    else:
+                        data = "Firebase access enabled"
+                else:
+                    data = res.text
+        return data
             
+    def firebase_connect(self, uri):
+        data = ''
+        if uri in self.cache:
+            return
+        res = requests.get(uri)
+        if res.status_code == 200:
+            data = "Firebase access enabled"
+            self.cache[uri] = data
+            return data
+        else:
+            data = res.text
+            self.cache[uri] = data
+            return data
 
                 
         

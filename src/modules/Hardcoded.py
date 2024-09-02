@@ -1,6 +1,6 @@
 from modules.utils import string_list, ExtractContent
 import xml.etree.ElementTree as ET
-import re
+import re, os
 
 class HardCodedAnalyzer:
     def __init__(self):
@@ -29,7 +29,7 @@ class HardCodedAnalyzer:
     def java_analyzer(self, content):
         result = {}
         lines = content.split('\n')
-        for line in lines:
+        for line_num, line in enumerate(lines, start=1):
             for pattern in self.java_string:
                 res = re.search(pattern, line, re.IGNORECASE)
                 if res:
@@ -39,23 +39,22 @@ class HardCodedAnalyzer:
                             child = child_match.group(1)
                             self.file_open(child, append=True)  
                     else:
-                        result['java'] = line.lstrip()
+                        result[f'line low : {line_num}'] = line.lstrip()
         return result
 
 
         
     def run(self, file_path):
         result = {}
-        need_file_list = ['values\\strings.xml', '.java']
-        if not any(file_path.endswith(ext) for ext in need_file_list):
+        if not any(file_path.endswith(ext) for ext in [os.path.join('values', 'strings.xml'), '.java']):
             return
         extractor = ExtractContent(file_path)
         content = extractor.extract_content()
-        if 'values\\strings.xml' in file_path:
-            print(f'start analysis {file_path}')
+        if os.path.join('values', 'strings.xml') in file_path:
+            # print(f'start analysis {file_path}')
             result.update(self.xml_analyzer(content))
         else:
-            print(f'start analysis {file_path}')
+            # print(f'start analysis {file_path}')
             result.update(self.java_analyzer(content))
         if result:
             return result
