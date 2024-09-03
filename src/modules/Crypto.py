@@ -1,4 +1,5 @@
 import re
+from modules.utils import ExtractContent
 
 class CryptoAnalyzer:
     def __init__(self):
@@ -38,17 +39,20 @@ class CryptoAnalyzer:
         ]
 
     def is_ignored(self, line):
-        # 라인이 주석이나 문자열인지 확인
         for pattern in self.ignore_patterns:
             if re.search(pattern, line):
-                return True
-        return False
+                return False
+        return True
 
-    def run(self, content):
+    def run(self, file_path):
+        if not any('shared' and 'pref' in file_path):
+            return
+        extractor = ExtractContent(file_path)
+        content = extractor.extract_content()
         findings = []
         lines = content.split('\n')
         for line_num, line in enumerate(lines, start=1):
-            if not self.is_ignored(line):
+            if self.is_ignored(line):
                 for pattern in self.crypto_patterns:
                     if re.search(pattern, line):
                         findings.append((line_num, line))
