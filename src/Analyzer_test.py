@@ -44,7 +44,7 @@ class Analyzer:
         self.analyzers = {
             SQLInjectionAnalyzer(),
             # CryptoAnalyzer(),
-            LogAnalyzer(),
+            # LogAnalyzer(),
             # PermissionAnalyzer(),
             # WebViewAnalyzer(),
             # HardCodedAnalyzer(),
@@ -86,11 +86,11 @@ class Analyzer:
         target_files=None,
     ):
         for package_name in os.listdir(root_directory):
+            print(package_name)
             package_path = os.path.join(root_directory, package_name)
             package_name = (
                 package_path.replace(root_directory, "").strip(os.sep).split(os.sep)[0]
             )
-            # print(package_name)
             time.sleep(0.2)
             if package_name not in package_names_to_skip:
                 self.process_directory(package_path, analyzers, now_time, target_files)
@@ -118,10 +118,15 @@ class Analyzer:
 
     def get_analyzed_package_names(self):
         with app.app_context():
-            return {
+            package_names = {
                 result.package_name
                 for result in Result.query.with_entities(Result.package_name).distinct()
             }
+            # 경로에서 'java_src/' 부분을 제거하고 패키지 이름만 추출
+            cleaned_package_names = {
+                os.path.relpath(name, "java_src") for name in package_names
+            }
+            return cleaned_package_names
 
 
 if __name__ == "__main__":
