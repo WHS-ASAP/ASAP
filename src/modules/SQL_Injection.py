@@ -72,20 +72,17 @@ class ContentProviderAnalyzer:
             if not arg2.startswith(("'", '"')):
                 arg2 = self.find_variable_value(arg2, sus_content)
 
-            # print(f"First argument: {arg1}")
-            # print(f"Second argument: {arg2}")
             if arg1 and arg2:
-                if arg1.startswith(("'", '"')) and arg2.startswith(("'", '"')):
-                    content_uri_lst.append(f"content://{arg1[1:-1]}/{arg2[1:-1]}")
-                else:
-                    content_uri_lst.append(f"content://{arg1}/{arg2}")
+                arg1 = arg1.replace('"', "")
+                arg2 = arg2.replace('"', "")
+                content_uri_lst.append(f"content://{arg1}/{arg2}")
 
         # 3. 상수 선언된 Content URI 탐지
         constant_matches = self.constant_uri_pattern.findall(sus_content)
         content_uri_lst.extend(constant_matches)
 
         if content_uri_lst:
-            print(content_uri_lst)
+            # print(content_uri_lst)
             return content_uri_lst
         return []
 
