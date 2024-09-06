@@ -19,9 +19,9 @@ class HardCodedAnalyzer:
         for string in root.findall('string'):
             name = string.get('name')
             value = string.text
-            if any(name.lower() in item.lower() for item in self.xml_string):
+            if any(item.lower() in name.lower() for item in self.xml_string):
                 if 'firebase' in name:
-                    self.file_open(value)
+                    self.file_open(value, append=True)
                 else:
                     result[name] = value
         return result
