@@ -1,7 +1,14 @@
 import re
 import os
 from modules.utils import ExtractContent
-from modules.permission2 import PermissionAnalyzer
+from modules.Permission import PermissionAnalyzer
+
+#출력
+# {scheme을 쓰는 activity:
+# 그 activity의 scheme:
+# 그 activity의 path:
+# 그 activity와 연관된 모든 param:
+#}
 
 class DeepLinkAnalyzer:
     def __init__(self):
@@ -9,27 +16,54 @@ class DeepLinkAnalyzer:
         self.activity_pattern = re.compile(r'<activity.*?>.*?</activity>', re.DOTALL)
         self.getQueryParameter_pattern = re.compile(r'getQueryParameter\(([^)]+)\)')
         self.scheme_pattern = re.compile(r'android:scheme="([^"]+)"', re.IGNORECASE)
-        self.path_pattern=re.compile(r'android:path="([^"]+)"', re.IGNORECASE)
+        self.path_pattern=re.compile(r'android:path([^=]+)="([^"]+)"', re.IGNORECASE)
         self.host_pattern = re.compile(r'host', re.IGNORECASE)
         self.addURI_pattern = re.compile(r'\.addURI\(([^,]+),\s*"([^"]+)",\s*(\d+)\)', re.IGNORECASE)
         self.uriParse_pattern = re.compile(r'Uri\.parse\("([^"]*)"\)', re.IGNORECASE)
-        #self.path_pattern=re.compile(r'"/([^"]+)"',re.IGNORECASE)
+        self.path_pattern1=re.compile(r'("/[^"/>]+")',re.IGNORECASE)
 
     def searching_activity(self, activities):
-        results = []
+        activity_list=[]
+        scheme_list=[]
+        #scheme_list=set(scheme_list)
+        path_list=[]
         for activity in activities:
-            activity_name_pattern = re.compile(r'android:name="([^"]*)"', re.IGNORECASE)
+            activity_name_pattern = re.compile(r'<activity([^>]+)android:name="([^"]*)"', re.IGNORECASE)
             activity_name = activity_name_pattern.search(activity)
-            scheme_match = self.scheme_pattern.search(activity)
-            path_match = self.path_pattern.search(activity)
+            activity_list.append(activity_name.group(2))
+            #print(f'activity_name {activity_list}')
+            scheme_match = self.scheme_pattern.findall(activity)
+            path_match = self.path_pattern.findall(activity)
+            path_match2=self.path_pattern1.findall(activity)
+            """if path_match2:
+                print(f'path{path_match2}')"""
 
-            if activity_name and scheme_match:
-                name_string = activity_name.group(1)
-                scheme = scheme_match.group(1)
+            """if activity_name and scheme_match:
+                activity_list.extend(activity_name)
+                #print(activity_list)"""
+            for scheme in scheme_match:
+                scheme_list.append(scheme)
+                #print(f'scheme{scheme_list}')
+            for path in path_match:
+                path_list.append(path)
+            for path2 in path_match2:
+                path_list.append(path2)
+                """
+                if path2:
+                    path_list.append(path2)
+                    print(f'path{path_list}')"""
+                #results.append((activity_name, scheme_match, path_match))
+       
+            """name_string = activity_name-
+                scheme = scheme_match
+                print(scheme)
                 path = path_match.group(1) if path_match else ''  # path가 없으면 빈 문자열 추가
-                results.append((name_string, scheme, path))  # 항상 세 개의 값 반환
-
-        return results if results else False
+                results.append((name_string, scheme, path))  # 항상 세 개의 값 반환"""
+            scheme_set=set(scheme_list)
+            
+            path_list=[]
+        #print(f'searching activity result {activity_list, scheme_set, path_list}')
+        return activity_list,scheme_list,path_list
 
     def extract_lines_with_pattern(self, sources):
         #print('in extract_lines_with_pattern')
@@ -56,10 +90,10 @@ class DeepLinkAnalyzer:
                 
         return intent_result
     
-    def permissions_in_deeplink(self,xml_path, scheme_list):
+    def permissions_in_deeplink(self,xml_path):
         analyzer = PermissionAnalyzer()
-        dangerous_keywords, dangerous_permissions = analyzer.run_deeplink(xml_path, scheme_list)
-        return dangerous_keywords, dangerous_permissions
+        dangerous_permissions = analyzer.run_deeplink(xml_path)
+        return dangerous_permissions
         
     def resolve_string_key(self, file_path, key):  # string key를 받아서 resolve
         if file_path.endswith("strings.xml"):
@@ -97,45 +131,49 @@ class DeepLinkAnalyzer:
 
     def run(self, file_path):
         search_path = []
-        scheme_list = []
         path_list=[]
         deeplink_params=[]
         if file_path.endswith("AndroidManifest.xml"):
             #print('in_androidmanifest')
             content = ExtractContent(file_path).extract_content()
             activities = self.activity_pattern.findall(content)
-            activity_schemes = self.searching_activity(activities)
-            #print(f"Activity schemes: {activity_schemes}")
-            if activity_schemes:
-                for activity, scheme, path in activity_schemes:
-                    search_path.append(activity)
-
-                    if "@string/" in scheme:
-                        key = scheme.split("@string/")[1]
-                        package = file_path.split("java_src\\")[1].split("\\resources")[0]
-                        xml_file = os.path.join(os.getcwd(), "java_src", package, "resources", "res", "values", "strings.xml")
-                        real_scheme = self.resolve_string_key(xml_file, key)
-                        scheme_list.append(real_scheme if real_scheme else scheme)
-                        
-                    else:
-                        scheme_list.append(scheme)
-                    if path!='':
-                        path_list.append(path)
+            activity_list,scheme_list,path_list = self.searching_activity(activities)
+            #print(f"Activity schemes: {activity_list,scheme_list,path_list}")
+            for scheme in scheme_list:
+                scheme=f'{scheme}'
+                if "@string/" in scheme:
+                    #print(f'here! {scheme}')
+                    key = scheme.split("@string/")[1]
+                    package = file_path.split("java_src\\")[1].split("\\resources")[0]
+                    xml_file = os.path.join(os.getcwd(), "java_src", package, "resources", "res", "values", "strings.xml")
+                    real_scheme = self.resolve_string_key(xml_file, key)
+                    #print(f'new here {real_scheme}')
+                    scheme_list.remove(scheme)
+                    real_scheme=tuple(real_scheme)
+                    print(f'real_scheme{real_scheme}')
+                    scheme_list.append(real_scheme)
+            for path in path_list:
+                if path!='':
+                    path_list.append(path)
             self.output = []
             result_dict = {}
-
             # dangerous_permissions가 제대로 추출되는지 확인
-            dangerous_keywords, dangerous_permission = self.permissions_in_deeplink(file_path, scheme_list)
+            dangerous_permission = self.permissions_in_deeplink(file_path)
             #print(f"Dangerous keywords: {dangerous_keywords}")
             #print(f"Dangerous permissions: {dangerous_permission}")
-            for activity in search_path:
+            for activity in activity_list:
+                #print(f'activity {activity}')
+                #activity=f'{activity}'
                 package = file_path.split("java_src\\")[1].split("\\resources")[0]
                 activity_path = activity.replace(".", os.sep) + ".java"
                 base_path = os.getcwd()
                 whole_path = os.path.join(base_path, "java_src", package, "sources", activity_path)
+                ##print(f'whole_path{whole_path}')
                 if os.path.exists(whole_path):
+                    #print(f'whole_path {whole_path}')
                     sources = ExtractContent(whole_path).extract_content()
                     if sources: #딥링크 체크
+                        #print(sources)
                         #print(f"Activity sources: {sources}")
                         params = self.extract_lines_with_pattern(sources)
                         deeplink_params.extend(params)
@@ -166,19 +204,32 @@ class DeepLinkAnalyzer:
                                     #print(f"Resolved variable parameter: {real_parameter}")
                                     deeplink_params.remove(parameter)
                                     deeplink_params.append(real_parameter)
-                            #else deeplink_pa
+                    
                         deeplink_params=list(set(deeplink_params))
+                        #scheme_list=tuple(scheme_list)
+                        #path_list=tuple(path_list)
+                        scheme_list=set(scheme_list)
+                        path_list=set(path_list)
                         if deeplink_params:
                             result_dict = {
+                                "activity": activity,
                                 "scheme": scheme_list,
                                 "path":path_list,
-                                "activity": activity,
                                 "deeplink_params": deeplink_params,
                             }
+                        else:
+                            result_dict = {
+                                "activity": activity,
+                                "scheme": scheme_list,
+                                "path":path_list,
+                            }
+                        #print(result_dict)
+                        self.output.append(result_dict)
                 else:
                     pass
-            self.output.append(result_dict)
-            #print(f"DeepLinkAnalyzer: {self.output}")
+            #self.output.append(result_dict)
+            #print(result_dict)
+            print(f"DeepLinkAnalyzer: {self.output}")
             return self.output
         else:
             pass
