@@ -35,21 +35,6 @@ class firebase:
                     data = res.text
         return data
 
-    def firebase_connect(self, uri):
-        data = ""
-        if uri in self.cache:
-            return
-        res = requests.get(uri)
-        if res.status_code == 200:
-            data = "Firebase access enabled"
-            self.cache[uri] = data
-            return data
-        else:
-            data = res.text
-            self.cache[uri] = data
-            return data
-
-
 class string_list:
     java_analysis_regex = [
         r"//s3-[a-z0-9-]+\.amazonaws\.com/[a-z0-9._-]+",
