@@ -6,10 +6,11 @@ class HardCodedAnalyzer:
     def __init__(self):
         self.java_string = list(string_list.java_analysis_regex)
         self.xml_string = list(string_list.xml_analysis_string)
-        
+        self.child_regex = re.compile(r'child\(["\']([^"\']+)["\']\)')
+
     def file_open(self, data, append=False):
         mode = 'a' if append else 'w'
-        with open('./modules/result.txt', mode) as f:
+        with open('./modules/result.txt', mode, encoding='utf-8') as f:
             f.write(data + '\n')
 
     def xml_analyzer(self, content):
@@ -33,17 +34,17 @@ class HardCodedAnalyzer:
             for pattern in self.java_string:
                 res = re.search(pattern, line, re.IGNORECASE)
                 if res:
-                    if "child(" in res.group():
-                        child_match = re.search(r'child\(["\']([^"\']+)["\']\)', line)
-                        if child_match:
-                            child = child_match.group(1)
-                            self.file_open(child, append=True)  
+                    # 모든 child() 호출을 탐지
+                    child_matches = self.child_regex.findall(line)
+                    if child_matches:
+                        path = ""
+                        for child in child_matches:
+                            path = f"{path}/{child}".strip('/')
+                            self.file_open(path, append=True)
                     else:
                         result[f'line low : {line_num}'] = line.lstrip()
         return result
 
-
-        
     def run(self, file_path):
         result = {}
         if not any(file_path.endswith(ext) for ext in [os.path.join('values', 'strings.xml'), '.java']):
@@ -51,10 +52,8 @@ class HardCodedAnalyzer:
         extractor = ExtractContent(file_path)
         content = extractor.extract_content()
         if os.path.join('values', 'strings.xml') in file_path:
-            # print(f'start analysis {file_path}')
             result.update(self.xml_analyzer(content))
         else:
-            # print(f'start analysis {file_path}')
             result.update(self.java_analyzer(content))
         if result:
             return result

@@ -28,11 +28,11 @@ class firebase:
                 res = requests.get(f"{url}/{child}/.json")
                 if res.status_code == 200:
                     if res.text != "null":
-                        data = "Firebase data accessable"
+                        data = f"{url}/{child}/.json : Firebase data accessable"
                     else:
-                        data = "Firebase access enabled"
+                        data = f"{url}/{child}/.json : Firebase access enabled"
                 else:
-                    data = res.text
+                    data = res.text[1:-1].strip()
         return data
 
 class string_list:
@@ -63,7 +63,6 @@ class string_list:
     ]
 
     xml_analysis_string = [
-        "AWS",
         "Amazon",
         "Access_Key_ID",
         "S3_Bucket",
@@ -86,6 +85,11 @@ class string_list:
         "Google_Cloud_Platform_OAuth",
         "Google_Cloud_Platform_Service_Account" "GitHub",
         "Artifactory",
+        "SECRET_KEY",
+        "API_KEY",
+        "API_TOKEN",
+        "SECRET_TOKEN",
+        "BEARER"
     ]
 
 
