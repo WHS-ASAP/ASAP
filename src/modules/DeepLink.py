@@ -9,6 +9,8 @@ from modules.Permission import PermissionAnalyzer
 # 그 activity의 path:
 # 그 activity와 연관된 모든 param:
 #}
+# 메서드를 한눈에 알아볼 수 있게 정리하기
+# init에서 정규표현식 다 정리하기
 
 class DeepLinkAnalyzer:
     def __init__(self):
@@ -35,12 +37,7 @@ class DeepLinkAnalyzer:
             scheme_match = self.scheme_pattern.findall(activity)
             path_match = self.path_pattern.findall(activity)
             path_match2=self.path_pattern1.findall(activity)
-            """if path_match2:
-                print(f'path{path_match2}')"""
 
-            """if activity_name and scheme_match:
-                activity_list.extend(activity_name)
-                #print(activity_list)"""
             for scheme in scheme_match:
                 scheme_list.append(scheme)
                 #print(f'scheme{scheme_list}')
@@ -48,18 +45,6 @@ class DeepLinkAnalyzer:
                 path_list.append(path)
             for path2 in path_match2:
                 path_list.append(path2)
-                """
-                if path2:
-                    path_list.append(path2)
-                    print(f'path{path_list}')"""
-                #results.append((activity_name, scheme_match, path_match))
-       
-            """name_string = activity_name-
-                scheme = scheme_match
-                print(scheme)
-                path = path_match.group(1) if path_match else ''  # path가 없으면 빈 문자열 추가
-                results.append((name_string, scheme, path))  # 항상 세 개의 값 반환"""
-            scheme_set=set(scheme_list)
             
             path_list=[]
         #print(f'searching activity result {activity_list, scheme_set, path_list}')
@@ -150,7 +135,7 @@ class DeepLinkAnalyzer:
                     #print(f'new here {real_scheme}')
                     scheme_list.remove(scheme)
                     real_scheme=tuple(real_scheme)
-                    print(f'real_scheme{real_scheme}')
+                    #print(f'real_scheme{real_scheme}')
                     scheme_list.append(real_scheme)
             for path in path_list:
                 if path!='':
@@ -158,7 +143,7 @@ class DeepLinkAnalyzer:
             self.output = []
             result_dict = {}
             # dangerous_permissions가 제대로 추출되는지 확인
-            dangerous_permission = self.permissions_in_deeplink(file_path)
+            dangerous_info = self.permissions_in_deeplink(file_path)
             #print(f"Dangerous keywords: {dangerous_keywords}")
             #print(f"Dangerous permissions: {dangerous_permission}")
             for activity in activity_list:
@@ -216,12 +201,14 @@ class DeepLinkAnalyzer:
                                 "scheme": scheme_list,
                                 "path":path_list,
                                 "deeplink_params": deeplink_params,
+                                "vulnerable_info_in_your_device": dangerous_info,
                             }
                         else:
                             result_dict = {
                                 "activity": activity,
                                 "scheme": scheme_list,
                                 "path":path_list,
+                                "vulnerable_info_in_your_device": dangerous_info,
                             }
                         #print(result_dict)
                         self.output.append(result_dict)
@@ -229,7 +216,7 @@ class DeepLinkAnalyzer:
                     pass
             #self.output.append(result_dict)
             #print(result_dict)
-            print(f"DeepLinkAnalyzer: {self.output}")
+            #print(f"DeepLinkAnalyzer: {self.output}")
             return self.output
         else:
             pass
