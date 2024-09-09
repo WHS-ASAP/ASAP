@@ -7,7 +7,6 @@ from modules.SQL_Injection import SQLInjectionAnalyzer
 from modules.Permission import PermissionAnalyzer
 from modules.Crypto import CryptoAnalyzer
 from modules.LogE import LogAnalyzer
-from modules.utils import FilePathCheck
 from ASAP_Web import create_app
 from ASAP_Web.database import db, save_finding_to_db, Result
 
@@ -26,9 +25,9 @@ vuln_types = {
 
 # 기준: 결과값과 취약점까지의 거리/해커원 cvss 기준 / 해커원에서 관련 사례들의 risk책정값
 risk_levels = {
-    "SQLInjectionAnalyzer": "High",
     "LogAnalyzer": "High",
     "HardCodedAnalyzer": "High",
+    "SQLInjectionAnalyzer": "Medium",
     "DeepLinkAnalyzer": "Medium",
     "WebViewAnalyzer": "Medium",
     "CryptoAnalyzer": "Medium",
