@@ -120,7 +120,7 @@ https://github.com/WHS-ASAP/ASAP/assets/149529045/51141726-4eb4-4511-a504-2b5b5a
 
 
 
-## Contributor
+## Contributor version 1.0
 
 + PM: Yeeun Lee ([@Yenniiii](https://github.com/Yenniiii))
    > Develop WebView module
@@ -136,7 +136,18 @@ https://github.com/WHS-ASAP/ASAP/assets/149529045/51141726-4eb4-4511-a504-2b5b5a
    > Develop DeepLink module
 + Yuwon Seol ([@AR3CIA](https://github.com/AR3CIA))
    > Develop HardCoded module
+---
 
+## Contributor version 2.0
+
++ PM : Jeongahn Jang ([@jeongahn](https://github.com/jeongahn))
+   > Develop SQL_Injection, Log module
++ Yeeun Lee ([@Yenniiii](https://github.com/Yenniiii))
+   > Develop WebView, DeepLink module
++ Seoah Myeoung ([@SeoA0703](https://github.com/SeoA0703))
+   > Develop Permission module
++ Yuwon Seol ([@AR3CIA](https://github.com/AR3CIA))
+   > Develop HardCoded module
 ---
 + Mentor: Joowon Kim ([@arrester](https://github.com/arrester))
 + PL: Seonggwang Park ([@n0paew](https://github.com/n0paew))
