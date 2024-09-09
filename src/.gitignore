@@ -8,4 +8,5 @@ __pycache__/
 docs/target.txt
 tools/jadx/lib/jadx-dev-all.jar
 modules/*.tldr
+modules/result.txt
 *.tldr
