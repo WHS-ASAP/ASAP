@@ -7,6 +7,9 @@ class HardCodedAnalyzer:
         self.java_string = list(string_list.java_analysis_regex)
         self.xml_string = list(string_list.xml_analysis_string)
         self.child_regex = re.compile(r'child\(["\']([^"\']+)["\']\)')
+        self.ignore_file_path = [
+            'kotlin'
+        ]
 
     def file_open(self, data, append=False):
         mode = 'a' if append else 'w'
@@ -44,11 +47,20 @@ class HardCodedAnalyzer:
                     else:
                         result[f'line low : {line_num}'] = line.lstrip()
         return result
+    
+    def is_need_file(self, file_path):
+        ignore_file_path = ['/kotlin/']
+        for ignore in ignore_file_path:
+            if ignore in file_path:
+                return False
+
+        norm_path = os.path.normpath(file_path)
+        return norm_path.endswith(os.path.sep + 'values' + os.path.sep + 'strings.xml') or norm_path.endswith('.java')
 
     def run(self, file_path):
-        result = {}
-        if not any(file_path.endswith(ext) for ext in [os.path.join('values', 'strings.xml'), '.java']):
-            return
+        if not self.is_need_file(file_path):
+            return None
+        
         extractor = ExtractContent(file_path)
         content = extractor.extract_content()
         if os.path.join('values', 'strings.xml') in file_path:
