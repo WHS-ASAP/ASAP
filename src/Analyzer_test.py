@@ -20,7 +20,6 @@ vuln_types = {
     "DeepLinkAnalyzer": "DeepLink",
     "WebViewAnalyzer": "WebView",
     "CryptoAnalyzer": "Crypto",
-    "PermissionAnalyzer": "Permission",
 }
 
 # 기준: 결과값과 취약점까지의 거리/해커원 cvss 기준 / 해커원에서 관련 사례들의 risk책정값
@@ -31,7 +30,6 @@ risk_levels = {
     "DeepLinkAnalyzer": "Medium",
     "WebViewAnalyzer": "Medium",
     "CryptoAnalyzer": "Medium",
-    "PermissionAnalyzer": "Low",
 }
 
 
@@ -42,12 +40,11 @@ class Analyzer:
 
         self.analyzers = {
             SQLInjectionAnalyzer(),
-            # CryptoAnalyzer(),
-            # LogAnalyzer(),
-            # PermissionAnalyzer(),
-            # WebViewAnalyzer(),
-            # HardCodedAnalyzer(),
-            # DeepLinkAnalyzer(),
+            CryptoAnalyzer(),
+            LogAnalyzer(),
+            WebViewAnalyzer(),
+            HardCodedAnalyzer(),
+            DeepLinkAnalyzer(),
         }
 
     def analyze_file(self, file_path, analyzers, now_time, package_name=None):
