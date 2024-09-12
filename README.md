@@ -8,13 +8,13 @@ ASAP only supports static analysis.
 
 ---
 Scope of Vulnerabilities in ASAP: 
+   + SQL_Injection
+     > Detects query statements, detects the uri address of Content Provider with exported = true, and returns it to the result value
    + WebView
      > Detect if you use an external intent as an activity target with [exported="true"] exported from androidmanifest.xml and load the intent with loadURL => webview vulnerability detection
 Check presence of function that allows file access with javascripted function in same activity => xss vulnerability detection
    + DeepLink
      > Print [scheme://host/path] from Androidmanifest.xml, detection of parameters through getQueryParameter function in smali code, adjustable host/path through addURI function, url matching scheme through 'Uri; ->parse, JavascriptInterface Detection of JavascriptInterface Available in WebView via JavascriptInterface Annotation, addJavascriptInterface Detection =>Redirect Vulnerability
-   + SQL_Injection
-     > SQL execution statement in Java code, SQL injection prevention code detection
    + HardCoded
      > API Key or Credentials inside the apk
    + Permission
