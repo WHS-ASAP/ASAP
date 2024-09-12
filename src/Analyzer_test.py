@@ -1,10 +1,10 @@
 import os
 import time
+import multiprocessing
 from modules.DeepLink import DeepLinkAnalyzer
 from modules.WebView import WebViewAnalyzer
 from modules.Hardcoded import HardCodedAnalyzer
 from modules.SQL_Injection import SQLInjectionAnalyzer
-from modules.Permission import PermissionAnalyzer
 from modules.Crypto import CryptoAnalyzer
 from modules.LogE import LogAnalyzer
 from ASAP_Web import create_app
@@ -38,40 +38,41 @@ class Analyzer:
         self.java_dir = java_dir
         self.smali_dir = smali_dir
 
-        self.analyzers = {
+        self.analyzers = [
             SQLInjectionAnalyzer(),
             CryptoAnalyzer(),
             LogAnalyzer(),
             WebViewAnalyzer(),
             HardCodedAnalyzer(),
             DeepLinkAnalyzer(),
-        }
+        ]
 
-    def analyze_file(self, file_path, analyzers, now_time, package_name=None):
-        for analyzer in analyzers:
-            result = analyzer.run(file_path)
+    def analyze_file(self, file_path, analyzer, now_time, package_name=None):
+        result = analyzer.run(file_path)
 
-            if result:
-                with app.app_context():
-                    save_finding_to_db(
-                        package_name,
-                        file_path,
-                        vuln_types[analyzer.__class__.__name__],
-                        risk_levels[analyzer.__class__.__name__],
-                        str(result),
-                        now_time,
-                    )
+        if result:
+            with app.app_context():
+                save_finding_to_db(
+                    package_name,
+                    file_path,
+                    vuln_types[analyzer.__class__.__name__],
+                    risk_levels[analyzer.__class__.__name__],
+                    str(result),
+                    now_time,
+                )
 
     def process_directory(self, directory, analyzers, now_time, target_files=None):
+        tasks = []
         for root, _, files in os.walk(directory):
             for file in files:
                 file_path = os.path.join(root, file)
-                self.analyze_file(
-                    file_path,
-                    analyzers,
-                    now_time,
-                    directory,
-                )
+                for analyzer in analyzers:
+                    # 각 파일 분석 작업을 멀티프로세싱으로 처리
+                    tasks.append((file_path, analyzer, now_time, directory))
+
+        # 멀티프로세싱으로 작업 수행
+        with multiprocessing.Pool() as pool:
+            pool.starmap(self.analyze_file, tasks)
 
     def process_root_directory(
         self,
