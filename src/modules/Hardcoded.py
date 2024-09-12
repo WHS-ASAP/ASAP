@@ -61,7 +61,7 @@ class HardCodedAnalyzer:
     def run(self, file_path):
 
         result = {}
-
+        
         if not self.is_need_file(file_path):
             return None
 
