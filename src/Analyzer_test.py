@@ -94,10 +94,8 @@ class Analyzer:
                 print(f"Skipping already analyzed package: {package_name}")
 
     def run(self):
-        if not os.path.exists(self.java_dir) or not os.path.exists(self.smali_dir):
-            print(
-                f"Error: Source directory '{self.java_dir}' or '{self.smali_dir}' not found."
-            )
+        if not os.path.exists(self.java_dir):
+            print(f"Error: Source directory '{self.java_dir}' not found.")
             return
 
         with app.app_context():
