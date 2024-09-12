@@ -45,7 +45,7 @@ class ContentProviderAnalyzer:
         # 전체 추출한 Content URI 리스트
         content_uri_lst = []
 
-        # 1-1. Uri.parse()에서 () 사이의 모든 값을 추출
+        # 1. Uri.parse()에서 () 사이의 모든 값을 추출
         uri_parse_matches = self.uriParse_pattern.finditer(sus_content)
         for match in uri_parse_matches:
             uri_value = match.group(1)
@@ -55,12 +55,11 @@ class ContentProviderAnalyzer:
                 # 변수명을 기반으로 해당 값 할당 추적
                 # 1-2. URI = "content://~"와 같이 변수에 저장 후, Uri.parse로 사용하는 경우
                 uri_value = self.find_variable_value(uri_value, sus_content)
-            # google, facebook, firebase 등 외부 패키지의 URI는 제외
 
             if uri_value and not ExceptCPkeyword().check(uri_value):
                 content_uri_lst.append(uri_value)
 
-        # 2-1. uri Matcher를 사용해서 addURI로 추가하는 경우
+        # 2. uri Matcher를 사용해서 addURI로 추가하는 경우
         matcher = self.uriMatcher_pattern.search(sus_content)
         if matcher:
             arg1 = matcher.group(1).strip()
