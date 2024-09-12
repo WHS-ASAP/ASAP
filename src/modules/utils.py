@@ -44,7 +44,7 @@ class string_list:
         r"[a-z0-9.-]+\.s3\.amazonaws\.com",
         r"amzn\.mws\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
         r"(?:\s|=|:|\"|^)AKC[a-zA-Z0-9]{10,}",
-        r"bearer\s[a-zA-Z0-9_\-:\.=]+",
+        r"bearer\s(?!.*bearer)[a-zA-Z0-9_\-:\.=]+"
         r"((?:N|M|O)[a-zA-Z0-9]{23}\.[a-zA-Z0-9-_]{6}\.[a-zA-Z0-9-_]{27})$",
         r"EAACEdEose0cBA[0-9A-Za-z]+",
         r"facebook(.{0,20})?['\"][0-9]{13,17}",
@@ -59,7 +59,7 @@ class string_list:
         r"(([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{2}[-]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}[\.]){2}[0-9A-Fa-f]{4})$",
         r"(?<=mailto:)[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+",
         r"[a-zA-Z]{3,10}://[^/\s:@]{3,20}:[^/\s:@]{3,20}@.{1,100}[\"'\s]",
-        r"\.child\(",
+        r'child\(["\']([^"\']+)["\']\)'
     ]
 
     xml_analysis_string = [
@@ -91,7 +91,6 @@ class string_list:
         "SECRET_TOKEN",
         "BEARER"
     ]
-
 
 class ExtractContent:
     def __init__(self, file_path):
