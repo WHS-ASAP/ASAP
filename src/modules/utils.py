@@ -3,36 +3,54 @@ import re
 import requests
 
 
-class firebase:
+class Firebase:
     def __init__(self):
-        self.file_path = "./modules/result.txt"
+        self.file_path = './modules/result.txt'
 
-    def firebase_parsing(self):
-        i = 1
-        child = []
-        with open(self.file_path, "r") as f:
+    def load_urls(self):
+        urls = []
+        childs = []
+        with open(self.file_path, 'r') as f:
             lines = f.readlines()
             for line in lines:
-                if line.startswith("https:/"):
-                    url = line.strip()
+                url = line.strip()
+                if url.startswith("https:/"):
+                    urls.append(url)
                 else:
-                    child.append(line.strip())
-                    i += 1
-        return url, child
+                    childs.append(line.strip())
+        return urls, childs
 
-    def firebase_connect(self):
-        url, childs = self.firebase_parsing()
-        res = requests.get(f"{url}/.json")
-        if childs:
-            for child in childs:
-                res = requests.get(f"{url}/{child}/.json")
+    def firebase_connect(self, urls, childs=None):
+        data = {}
+        for url in urls:
+            try:
+                res = requests.get(f"{url}/.json")
                 if res.status_code == 200:
                     if res.text != "null":
-                        data = f"{url}/{child}/.json : Firebase data accessable"
+                        data[url] = "Firebase data accessible"
                     else:
-                        data = f"{url}/{child}/.json : Firebase access enabled"
+                        data[url] = "Firebase access enabled but no data"
                 else:
-                    data = res.text[1:-1].strip()
+                    data[url] = f"{res.text}"
+
+                if childs:
+                    for child in childs:
+                        child_res = requests.get(f"{url}/{child}/.json")
+                        if child_res.status_code == 200:
+                            if child_res.text != "null":
+                                data[f"{url}/{child}"] = "Child data accessible"
+                            else:
+                                data[f"{url}/{child}"] = "Child access enabled but no data"
+                        else:
+                            data[f"{url}/{child}"] = f"{child_res.text}"
+
+            except Exception as e:
+                data[url] = f"Exception occurred: {str(e)}"
+        return data
+    
+    def run(self):
+        urls, childs = self.load_urls()
+        data = self.firebase_connect(urls, childs)
         return data
 
 class string_list:
@@ -59,7 +77,7 @@ class string_list:
         r"(([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{2}[-]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}[\.]){2}[0-9A-Fa-f]{4})$",
         r"(?<=mailto:)[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+",
         r"[a-zA-Z]{3,10}://[^/\s:@]{3,20}:[^/\s:@]{3,20}@.{1,100}[\"'\s]",
-        r'child\(["\']([^"\']+)["\']\)'
+        r'.child\(["\']([^"\']+)["\']\)'
     ]
 
     xml_analysis_string = [
