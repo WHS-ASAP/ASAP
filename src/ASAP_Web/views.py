@@ -11,23 +11,45 @@ def index():
     return render_template("index.html", packages=[pkg[0] for pkg in packages])
 
 
-@main.route("/package/<package_name>")
+@main.route("/package/<path:package_name>")
 def package_results(package_name):
+    print(f"Searching for package: {package_name}")  # 디버깅용 로그
+
+    # 정확한 package_name으로 검색
     result = Result.query.filter_by(package_name=package_name).all()
+
+    if not result:
+        # java_src/ 접두어가 없는 경우도 검색
+        alternative_name = f"java_src/{package_name}"
+        result = Result.query.filter_by(package_name=alternative_name).all()
+
+    # 디버깅을 위한 결과 출력
+    print(f"Query results: {len(result) if result else 0} items found")
+
     return render_template("results.html", package_name=package_name, result=result)
 
 
-@main.route("/module/<package_name>/<vuln_type>")
+@main.route("/module/<path:package_name>/<vuln_type>")
 def module_results(package_name, vuln_type):
     result_id = request.args.get("result_id")
+
     if result_id:
+        # 정확한 package_name으로 먼저 검색
         result = Result.query.filter_by(
             id=result_id, package_name=package_name, vuln_type=vuln_type
         ).first()
+
+        # 결과가 없으면 java_src/ 접두어를 추가하여 검색
+        if not result and not package_name.startswith("java_src/"):
+            alternative_name = f"java_src/{package_name}"
+            result = Result.query.filter_by(
+                id=result_id, package_name=alternative_name, vuln_type=vuln_type
+            ).first()
+
         return render_template(
             "module_results.html",
             package_name=package_name,
-            result=[result],
+            result=[result] if result else [],
             vuln_type=vuln_type,
         )
     else:
@@ -35,6 +57,14 @@ def module_results(package_name, vuln_type):
         results = Result.query.filter_by(
             package_name=package_name, vuln_type=vuln_type
         ).all()
+
+        # 결과가 없으면 java_src/ 접두어를 추가하여 검색
+        if not results and not package_name.startswith("java_src/"):
+            alternative_name = f"java_src/{package_name}"
+            results = Result.query.filter_by(
+                package_name=alternative_name, vuln_type=vuln_type
+            ).all()
+
         return render_template(
             "module_results.html",
             package_name=package_name,
