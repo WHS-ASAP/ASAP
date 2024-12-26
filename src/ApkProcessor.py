@@ -1,4 +1,4 @@
-import os
+import os, time
 import subprocess
 import platform
 import sys
@@ -92,5 +92,7 @@ class ApkProcessor:
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     processor = ApkProcessor()
     processor.run()
+    print(f"Execution time: {time.time() - start_time:.2f} seconds")

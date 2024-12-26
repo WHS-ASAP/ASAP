@@ -8,7 +8,6 @@ from modules.Permission import PermissionAnalyzer
 # fileaccess true 탐지 O
 # js기능이 활성화되어있을 때 javascriptinterface가 적용된 함수명이 잘 나오는지 O
 # permission이 잘 나오는지 O
-# 안드로이드 스튜디오로 만들어지지 않은 앱 액티비티가 없는 앱?-정적분석으로 탐지할 수 있는 방법??? frida 후킹,.., java php / 기본적인걸 막아주는 프레임 워크 node js/flutter/react natvie/kiri처럼 나오는거
 
 
 class WebViewAnalyzer:

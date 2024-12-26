@@ -26,26 +26,9 @@
           <h2 class="card-title" style="font-size: 25px">Relative CVE</h2>
           <ul style="list-style-type: none">
             <li>
-              <a
-                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-34909"
-                target="_blank"
-                class="cve-link"
-                >CVE-2022-34909</a
-              >
-              |
-              <a
-                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-42535"
-                target="_blank"
-                class="cve-link"
-                >CVE-2022-42535</a
-              >
-              |
-              <a
-                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-23948"
-                target="_blank"
-                class="cve-link"
-                >CVE-2023-23948</a
-              >
+              <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-34909" target="_blank" class="cve-link">CVE-2022-34909</a> |
+              <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-42535" target="_blank" class="cve-link">CVE-2022-42535</a> |
+              <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-23948" target="_blank" class="cve-link">CVE-2023-23948</a>
             </li>
           </ul>
         </div>
@@ -53,20 +36,21 @@
       <div class="card-body">
         <h2>Results for</h2>
         <p>{{ result.file_path }}</p>
-        {% set result_list = result.result.strip('[]').split('),') %}
         <div class="table-responsive-vertical border rounded p-1 shadow">
           <table class="table table-vertical">
             <tr>
-              <th>Line</th>
-              <th>SQL Query</th>
+              <th>Issue</th>
+              <th>Description</th>
             </tr>
-            {% for item in result_list %} {% set parts = item.strip('() ').split(',', 1) %} {% if
-            parts|length == 2 %}
-            <tr>
-              <td>Line {{ parts[0] }}</td>
-              <td>{{ parts[1].strip("' ") }}</td>
-            </tr>
-            {% endif %} {% endfor %}
+            {% if "Surely Accessible Content Provider" in result.result or "Possible Accessible Content Provider" in result.result %}
+              {% set parts = result.result.strip("[]'").split(" : ") %}
+              {% if parts|length == 2 %}
+                <tr>
+                  <td>{{ parts[0] }}</td>
+                  <td>{{ parts[1] }}</td>
+                </tr>
+              {% endif %}
+            {% endif %}
           </table>
         </div>
       </div>

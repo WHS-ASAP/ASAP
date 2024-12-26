@@ -1,324 +1,175 @@
-import os
-import time
 import asyncio
-from tqdm import tqdm
-from bs4 import BeautifulSoup
-import urllib.request
 from playwright.async_api import async_playwright
+from bs4 import BeautifulSoup
+import os
+import urllib.request
+from tqdm import tqdm
 import ssl
-import platform
 
+# SSL 인증서 검증 무시 설정
 context = ssl._create_unverified_context()
 
 
-class ApkDownloader:
-    def __init__(self):
-        self.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-        }
-        self.base_apkpure_url = "https://d.apkpure.com/b/APK/"
+async def download_apk(url, package_name):
+    """APK 파일 다운로드 함수"""
+    if not os.path.exists("apk_dir"):
+        os.makedirs("apk_dir")
+        print("📁 다운로드 디렉토리 생성: apk_dir")
 
-    async def download_apk(self, package_name):
-        download_url = f"{self.base_apkpure_url}{package_name}?version=latest"
-        # check download url
-        print(download_url)
+    file_path = os.path.join("apk_dir", f"{package_name}.apk")
 
-        # Retry logic because the download might fail due to network issues
-        max_retries = 3  # Maximum number of retries
-        retry_delay = 5  # Retry delay in seconds
+    # 이미 다운로드된 파일이 있는지 확인
+    if os.path.exists(file_path):
+        print(f"ℹ️  {package_name}.apk가 이미 존재합니다. 건너뜁니다.")
+        return True
 
-        # Retry loop
-        for attempt in range(max_retries):
-            try:
-                req = urllib.request.Request(download_url, headers=self.headers)
-                with urllib.request.urlopen(req, context=context) as response:
-                    if response.status == 200:
-                        if not os.path.exists("apk_dir"):
-                            os.makedirs("apk_dir")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
 
-                        apk_path = os.path.join("apk_dir", f"{package_name}.apk")
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, context=context) as response:
+            total_size = int(response.headers.get("Content-Length", 0))
 
-                        # Check if the APK already exists in the apk_dir
-                        if os.path.exists(apk_path):
-                            print(
-                                f"{package_name} already exists in apk_dir. Skipping download."
-                            )
-                            return
+            with open(file_path, "wb") as f, tqdm(
+                desc=f"⬇️ {package_name}.apk 다운로드 중",
+                total=total_size,
+                unit="iB",
+                unit_scale=True,
+                unit_divisor=1024,
+            ) as progress_bar:
+                while True:
+                    chunk = response.read(8192)
+                    if not chunk:
+                        break
+                    size = f.write(chunk)
+                    progress_bar.update(size)
 
-                        total_size = int(response.getheader("Content-Length", 0))
-                        # view download progress (visualize the download progress with tqdm)
-                        with open(apk_path, "wb") as file, tqdm(
-                            desc=f"Downloading {package_name}",
-                            total=total_size,
-                            unit="iB",
-                            unit_scale=True,
-                            unit_divisor=1024,  # 1KB
-                        ) as bar:
-                            while True:
-                                chunk = response.read(1024)
-                                if not chunk:
-                                    break
-                                file.write(chunk)
-                                bar.update(len(chunk))
+        print(f"✅ 다운로드 완료: {file_path}")
+        return True
+    except Exception as e:
+        print(f"❌ 다운로드 중 오류 발생: {str(e)}")
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        return False
 
-                        print(f"\nDownloaded {package_name} to {apk_path}")
-                        break  # Exit the loop if download is successful
-                    else:
-                        print(
-                            f"Failed to download {package_name}. Status code: {response.status}"
-                        )
-            # Retry the download if an exception occurs
-            except Exception as e:
-                print(f"Error: {e}")
-                if attempt < max_retries - 1:
-                    print(f"Retrying in {retry_delay} seconds...")
-                    await asyncio.sleep(retry_delay)
-                    retry_delay *= 2  # Exponential backoff
-                else:
-                    print(
-                        f"Exceeded maximum retries. Could not download {package_name}."
-                    )
 
-    # Search for APKs on HackerOne
-    async def search_hackerone(self, search_start_index=0, search_maxresults=10):
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
-            page = await browser.new_page()
-            await page.goto(
-                "https://hackerone.com/opportunities/all/search?asset_types=GOOGLE_PLAY_APP_ID&ordering=Newest+programs"
-            )
-            await page.wait_for_timeout(
-                5000
-            )  # Wait for the JavaScript to load the content
+async def search_and_download_apk(package_name):
+    """앱 검색 및 APK 다운로드 함수"""
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        )
+        page = await context.new_page()
 
-            package_lst = []
-            index = search_start_index
+        try:
+            print(f"\n📱 패키지 처리 시작: {package_name}")
+            await page.goto("https://apkcombo.com/ko/")
+            await page.wait_for_load_state("networkidle")
 
-            while len(package_lst) < search_maxresults:
-                content = await page.content()
-                soup = BeautifulSoup(content, "html.parser")
-                panels = soup.find_all("div", class_="Panel-module_u1-panel__javlC")
+            print(f"🔎 '{package_name}' 검색 중...")
+            await page.wait_for_selector('input.ainput.awesomplete[name="q"]')
+            await page.fill('input.ainput.awesomplete[name="q"]', package_name)
 
-                while index < len(panels) and len(package_lst) < search_maxresults:
-                    panel = panels[index]
-                    footer = panel.find(
-                        "footer",
-                        class_="flex flex-col justify-center px-md pb-md md:px-lg md:pb-lg h-3xl",
-                    )
-                    if footer:
-                        link = footer.find(
-                            "a",
-                            class_="Button-module_u1-button__OJmLM Button-module_u1-button--fill__dIsoD Button-module_u1-button--secondary__T13hl Button-module_u1-button--rounded-all__h9prY",
-                        )
-                        if link:
-                            scope_url = "https://hackerone.com" + link["href"]
-                            if "?type=team" in scope_url:
-                                scope_url = scope_url.replace(
-                                    "?type=team", "/policy_scopes"
-                                )
-                            package_name = await self.get_package_name(scope_url)
+            await page.wait_for_selector("button.button.button-search.is-link")
+            await page.click("button.button.button-search.is-link")
 
-                            if (
-                                package_name
-                                and "https://play.google.com/store/apps/details?id="
-                                in package_name
-                            ):
-                                package_name = package_name.replace(
-                                    "https://play.google.com/store/apps/details?id=", ""
-                                )
+            await page.wait_for_load_state("networkidle")
+            await page.wait_for_timeout(3000)
 
-                            if package_name and (
-                                "." in package_name
-                                and len(package_name.split(".")) > 1
-                                and len(package_name) < 40
-                            ):
-                                print(
-                                    f"Adding package name '{package_name}' to the list. Progress: {len(package_lst) + 1}/{search_maxresults}"
-                                )
-                                package_lst.append(package_name)
-                            else:
-                                print(
-                                    f"Package name '{package_name}' is invalid. Skipping. You may need to search manually."
-                                )
-
-                    index += 1
-
-                await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                await asyncio.sleep(2)  # Wait for more panels to load
-
-            await browser.close()
-            return package_lst
-
-    # Get the package name from the HackerOne scope URL
-    async def get_package_name(self, scope_url):
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
-            page = await browser.new_page()
-            await page.goto(scope_url)
-            await page.wait_for_timeout(
-                5000
-            )  # Wait for the JavaScript to load the content
-
+            print("🔍 검색 결과에서 앱 링크 찾는 중...")
             content = await page.content()
             soup = BeautifulSoup(content, "html.parser")
+
+            app_link = soup.find("a", class_="button is-success is-fullwidth")
+
+            if app_link and "href" in app_link.attrs:
+                app_url = f"https://apkcombo.com{app_link['href']}"
+                print(f"✅ 앱 페이지 발견: {app_url}")
+
+                await page.goto(app_url)
+                await page.wait_for_load_state("networkidle")
+                await page.wait_for_selector(".file-list")
+
+                print("🔍 APK 파일 검색 중...")
+                content = await page.content()
+                soup = BeautifulSoup(content, "html.parser")
+
+                file_list = soup.find("ul", class_="file-list")
+                if file_list:
+                    apk_link = None
+                    for link in file_list.find_all("a", class_="variant octs"):
+                        if "href" in link.attrs and not "XAPK" in link.get_text():
+                            apk_link = link["href"]
+                            break
+
+                    if apk_link:
+                        print(f"✅ APK 다운로드 링크 발견")
+                        await browser.close()
+                        return await download_apk(apk_link, package_name)
+                    else:
+                        print(
+                            "⚠️ APK 파일을 찾을 수 없습니다. XAPK 파일만 존재하거나 다른 형식일 수 있습니다."
+                        )
+                        print("❗ 수동으로 다운로드해주시기 바랍니다.")
+                        await browser.close()
+                        return False
+                else:
+                    print("❌ 파일 목록을 찾을 수 없습니다.")
+                    await browser.close()
+                    return False
+            else:
+                print("❌ 앱 링크를 찾을 수 없습니다.")
+                await browser.close()
+                return False
+
+        except Exception as e:
+            print(f"❌ 오류 발생: {str(e)}")
             await browser.close()
+            return False
 
-            asset_rows = soup.find_all(
-                "tr", class_="sc-fqkvVR spec-asset-row daisy-table__row"
-            )
-            for row in asset_rows:
-                if row.find(
-                    "td", class_="daisy-table__cell", string="Android: Play Store"
-                ):
-                    cell = row.find(
-                        "td", class_="daisy-table__cell", style="max-width: 400px;"
-                    )
-                    if cell:
-                        strong_tag = cell.find("strong")
-                        if strong_tag and strong_tag.has_attr("title"):
-                            return strong_tag["title"]
-                        else:
-                            div_tag = cell.find(
-                                "div",
-                                class_="interactive-markdown break-word markdownable daisy-helper-text",
-                            )
-                            if div_tag:
-                                inner_div = div_tag.find(
-                                    "div",
-                                    class_="vertical-spacing interactive_markdown_p",
-                                )
-                                if inner_div:
-                                    strong_tag = inner_div.find("strong")
-                                    if strong_tag:
-                                        content = strong_tag.get_text().strip()
-                                        package_name = content.split()[-1]
-                                        return package_name
-            return None
 
-    async def run(self):
-        print(
-            "------------------------------------------APK Downloader--------------------------------------------"
-        )
-        print(
-            "|---APK Downloader, if you want to download apk, please enter the target in /src/docs/target.txt---|"
-        )
-        print(
-            "|But if you don't write anything in target.txt, the program will search hackerone and download apk.|"
-        )
-        print(
-            "----------------------------------------------------------------------------------------------------"
-        )
+async def process_target_file():
+    """target.txt 파일에서 패키지 목록을 읽고 처리"""
+    target_file = os.path.join("docs", "target.txt")
 
-        try:
-            # User directory/ASAP path
-            file_path = os.getcwd()
+    if not os.path.exists(target_file):
+        print(f"❌ target.txt 파일을 찾을 수 없습니다: {target_file}")
+        return
 
-            # set target file path
-            target_file_path = os.path.join(file_path, "docs/target.txt")
-            print(target_file_path)
-            if not os.path.exists(target_file_path):
-                print(f"Error: Target file not found at {target_file_path}")
+    try:
+        with open(target_file, "r") as f:
+            packages = [line.strip() for line in f.readlines() if line.strip()]
 
-            else:
-                with open(target_file_path, "r") as file:
-                    targets = [line.strip() for line in file.readlines()]
+        if not packages:
+            print("⚠️ target.txt 파일이 비어있습니다.")
+            return
 
-            if not targets:
-                print(
-                    "No targets found in target.txt. Searching hackerone for targets."
-                )
-                search_start_index = int(
-                    input("Enter the start index for searching hackerone: ")
-                )
-                search_maxresults = int(
-                    input("Enter the maximum number of results to search for: ")
-                )
-                targets = await self.search_hackerone(
-                    search_start_index=search_start_index,
-                    search_maxresults=search_maxresults,
-                )
-                if not targets:
-                    print(
-                        "Sorry Our program can't find any targets in hackerone because of the change in the website structure. Please write the target in target.txt."
-                    )
+        print(f"📋 총 {len(packages)}개의 앱 패키지를 처리합니다.")
 
-            print(f"Downloading {len(targets)} APKs : {targets}...")
-            download_tasks = [self.download_apk(target) for target in targets]
-            await asyncio.gather(*download_tasks)
+        for package in packages:
+            success = await search_and_download_apk(package)
+            if not success:
+                print(f"⚠️ {package}는 수동으로 다운로드가 필요할 수 있습니다.")
+            print("-" * 50)
 
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            print("Trying to install browsers with playwright install")
-            os.system(
-                "python -m playwright install"
-            )  # if not installed, install browsers with playwright
-            print("Please rerun the script after the installation is complete.")
+        print("\n✅ 모든 패키지 처리 완료")
 
-    async def test(self):
-        print(
-            "------------------------------------------APK Downloader--------------------------------------------"
-        )
-        print(
-            "|---APK Downloader, if you want to download apk, please enter the target in /src/docs/target.txt---|"
-        )
-        print(
-            "|But if you don't write anything in target.txt, the program will search hackerone and download apk.|"
-        )
-        print(
-            "----------------------------------------------------------------------------------------------------"
-        )
+    except Exception as e:
+        print(f"❌ target.txt 파일 처리 중 오류 발생: {str(e)}")
 
-        try:
-            # set target current file path
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            parent_dir = os.path.dirname(script_dir)
-            target_file_path = os.path.join("docs", "target.txt")
 
-            if not os.path.exists(target_file_path):
-                print(f"Error: Target file not found at {target_file_path}")
-                return
+async def main():
+    print("----------------------------------------")
+    print("APKCombo Downloader")
+    print("Target file: docs/target.txt")
+    print("Download directory: apk_dir")
+    print("----------------------------------------")
 
-            with open(target_file_path, "r") as file:
-                targets = [line.strip() for line in file.readlines()]
-
-            if not targets:
-                print(
-                    "No targets found in target.txt. Searching hackerone for targets."
-                )
-                search_start_index = int(
-                    input("Enter the start index for searching hackerone: ")
-                )
-                search_maxresults = int(
-                    input("Enter the maximum number of results to search for: ")
-                )
-                targets = await self.search_hackerone(
-                    search_start_index=search_start_index,
-                    search_maxresults=search_maxresults,
-                )
-                if not targets:
-                    print(
-                        "Sorry Our program can't find any targets in hackerone because of the change in the website structure. Please write the target in target.txt."
-                    )
-
-            print(f"Downloading {len(targets)} APKs : {targets}...")
-            download_tasks = [self.download_apk(target) for target in targets]
-            await asyncio.gather(*download_tasks)
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            print("Trying to install browsers with playwright install")
-
-            if platform.system() == "Windows":
-                os.system("python -m playwright install")
-            else:
-                os.system(
-                    "python3 -m playwright install"
-                )  # if not installed, install browsers with playwright
-            print("Please rerun the script after the installation is complete.")
+    await process_target_file()
 
 
 if __name__ == "__main__":
-    downloader = ApkDownloader()
-    asyncio.run(downloader.test())
+    asyncio.run(main())

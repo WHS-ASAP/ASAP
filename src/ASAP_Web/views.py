@@ -19,7 +19,7 @@ def package_results(package_name):
     result = Result.query.filter_by(package_name=package_name).all()
 
     if not result:
-        # java_src/ 접두어가 없는 경우도 검색
+        # java_src/ 없는 경우도 검색
         alternative_name = f"java_src/{package_name}"
         result = Result.query.filter_by(package_name=alternative_name).all()
 
@@ -39,7 +39,7 @@ def module_results(package_name, vuln_type):
             id=result_id, package_name=package_name, vuln_type=vuln_type
         ).first()
 
-        # 결과가 없으면 java_src/ 접두어를 추가하여 검색
+        # 결과가 없으면 java_src/ 추가하여 검색
         if not result and not package_name.startswith("java_src/"):
             alternative_name = f"java_src/{package_name}"
             result = Result.query.filter_by(
@@ -58,7 +58,7 @@ def module_results(package_name, vuln_type):
             package_name=package_name, vuln_type=vuln_type
         ).all()
 
-        # 결과가 없으면 java_src/ 접두어를 추가하여 검색
+        # 결과가 없으면 java_src/를 추가하여 검색
         if not results and not package_name.startswith("java_src/"):
             alternative_name = f"java_src/{package_name}"
             results = Result.query.filter_by(
@@ -125,7 +125,6 @@ def history_table():
     package_data = []
     for package in packages:
         package_name = package[0]
-        # 가장 높은 위험도를 가진 결과를 가져옵니다.
         highest_risk_result = (
             db.session.query(Result)
             .filter_by(package_name=package_name)

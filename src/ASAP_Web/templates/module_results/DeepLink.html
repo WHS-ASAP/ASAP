@@ -20,58 +20,78 @@
               접속하고 어플리케이션 내 민감한 개인 정보 (카드번호, 주소 등)가 공격자에게 노출
             </li>
           </ul>
+
           <h2 class="card-title" style="font-size: 25px">취약점 악용 가능성</h2>
           <ul style="list-style-type: none">
             <li>공격자가 조작한 링크 접속</li>
             <li>webview를 이용한 deeplink 공격</li>
           </ul>
+
           <h2 class="card-title" style="font-size: 25px">Relative CVE</h2>
           <ul style="list-style-type: none">
             <li>
-              <a
-                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-6542"
-                target="_blank"
-                class="cve-link"
-                >CVE-2023-6542</a
-              >
-              |
-              <a
-                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-36612"
-                target="_blank"
-                class="cve-link"
-                >CVE-2023-36612</a
-              >
-              |
-              <a
-                href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-34405"
-                target="_blank"
-                class="cve-link"
-                >CVE-2024-34405</a
-              >
+              <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-6542" target="_blank" class="cve-link">CVE-2023-6542</a> |
+              <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-36612" target="_blank" class="cve-link">CVE-2023-36612</a> |
+              <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2024-34405" target="_blank" class="cve-link">CVE-2024-34405</a>
             </li>
           </ul>
         </div>
         <div class="card-body">
           <h2>Results for</h2>
           <p>{{ result.file_path }}</p>
-          {% set result_str = result.result.strip('{}').replace("[]", " ").replace("'", " ") %} {%
-          set temp_result = result_str.split("],") %}
           <div class="table-responsive-vertical border rounded p-1 shadow">
             <table class="table table-vertical">
               <thead>
                 <tr>
-                  <th><strong>Type</strong></th>
-                  <th><strong>Result</strong></th>
+                  <th>Activity</th>
+                  <th>Schemes</th>
+                  <th>Path</th>
+                  <th>DeepLink Parameters</th>
                 </tr>
               </thead>
-              {% for item in temp_result %} {% set result_list = item.split(": [") %}
               <tbody>
-                <tr>
-                  <td>{{ result_list[0] }}</td>
-                  <td class="wrap-content">{{ result_list[1] }}</td>
-                </tr>
+                {% if result and result.result %}
+                  {% set result_data = result.result|string %}
+                  {% for line in result_data.strip('[]').split('}, {') %}
+                    {% if "activity" in line %}
+                      <tr>
+                        <td>
+                          {% if "activity':" in line %}
+                            {{ line.split("activity': '")[1].split("'")[0] }}
+                          {% endif %}
+                        </td>
+                        <td class="wrap-content">
+                          {% if "scheme':" in line %}
+                            {% set schemes = line.split("scheme': ")[1].split(", 'path'")[0] %}
+                            {{ schemes.replace("{", "").replace("}", "").replace("(", "").replace(")", "").replace("'", "") }}
+                          {% endif %}
+                        </td>
+                        <td class="wrap-content">
+                          {% if "path': " in line %}
+                            {% set path = line.split("path': ")[1] %}
+                            {% if "deeplink_params" in line %}
+                              {% set path = path.split(", 'deeplink_params")[0] %}
+                            {% endif %}
+                            {% if path != "set()" %}
+                              {{ path.replace("{", "").replace("}", "").replace("(", "").replace(")", "").replace("'", "") }}
+                            {% else %}
+                              No specific path
+                            {% endif %}
+                          {% endif %}
+                        </td>
+                        <td class="wrap-content">
+                          {% if "deeplink_params':" in line %}
+                            {% set params = line.split("deeplink_params': ")[1] %}
+                            {{ params.replace("{", "").replace("}", "").replace("(", "").replace(")", "").replace("'", "") }}
+                          {% else %}
+                            No parameters
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
               </tbody>
-              {% endfor %}
             </table>
           </div>
         </div>
