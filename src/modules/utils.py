@@ -3,6 +3,32 @@ import re
 import requests
 
 
+class FilePathCheck:
+    def __init__(self, file_path: str):
+        self.file_path = file_path
+        self.excluded_paths = [
+            "build",
+            "test",
+            "example",
+            "sample",
+            "demo",
+            "third_party",
+            "thirdparty",
+            "3rdparty",
+            "external",
+        ]
+
+    def validate(self) -> bool:
+        """
+        파일 경로가 분석에서 제외되어야 하는지 확인
+
+        Returns:
+            bool: 분석 대상이면 True, 제외 대상이면 False
+        """
+        lower_path = self.file_path.lower()
+        return not any(excluded in lower_path for excluded in self.excluded_paths)
+
+
 class firebase:
     def __init__(self):
         self.file_path = "./modules/result.txt"
@@ -35,6 +61,7 @@ class firebase:
                     data = res.text[1:-1].strip()
         return data
 
+
 class string_list:
     java_analysis_regex = [
         r"//s3-[a-z0-9-]+\.amazonaws\.com/[a-z0-9._-]+",
@@ -59,7 +86,7 @@ class string_list:
         r"(([0-9A-Fa-f]{2}[:]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{2}[-]){5}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}[\.]){2}[0-9A-Fa-f]{4})$",
         r"(?<=mailto:)[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.-]+",
         r"[a-zA-Z]{3,10}://[^/\s:@]{3,20}:[^/\s:@]{3,20}@.{1,100}[\"'\s]",
-        r'child\(["\']([^"\']+)["\']\)'
+        r'child\(["\']([^"\']+)["\']\)',
     ]
 
     xml_analysis_string = [
@@ -89,8 +116,9 @@ class string_list:
         "API_KEY",
         "API_TOKEN",
         "SECRET_TOKEN",
-        "BEARER"
+        "BEARER",
     ]
+
 
 class ExtractContent:
     def __init__(self, file_path):
