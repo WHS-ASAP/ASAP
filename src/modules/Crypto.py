@@ -4,7 +4,7 @@ from modules.utils import ExtractContent
 
 class CryptoAnalyzer:
     def __init__(self):
-        # 암호화 관련 키워드 패턴 목록
+        # pattern list related to crypto
         self.crypto_patterns = [
             # 취약한 PRNG 관련
             r"\bjava\.util\.Random\b",
