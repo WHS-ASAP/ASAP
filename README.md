@@ -41,8 +41,8 @@ pip install -r requirements.txt
 <p align="center">
    <img src="https://github.com/WHS-ASAP/ASAP/assets/149529045/242397f6-c92a-4900-962c-f4ef7e854b45" width="100%" height="100%">
 </p>
-
 Download the jadx-dev-all.jar file from here: https://drive.google.com/file/d/1u2BQv8YsoNmeNCLvpt2V9HRhnzU-51Q8/view?usp=sharing
+
 ---
 
 
