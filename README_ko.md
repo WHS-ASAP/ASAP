@@ -42,17 +42,108 @@ python3 -m asap web --config my-config.json
 
 ## 분석 모듈
 
-| 모듈 | 규칙 수 | 검사 항목 |
-|---|---:|---|
-| SQL_Injection | 3 | SQL 쿼리, 쿼리 인자, Content Provider 접근 설정 |
-| WebView | 10 | URI 로딩, JavaScript 브리지, 파일 접근, WebView 보안 설정 |
-| DeepLink | 4 | URI 처리, App Links 설정, Intent 전달 |
-| HardCoded | 5 | 코드에 포함된 자격 증명, 토큰, API 키, 개인 키 |
-| Permission | 7 | 권한, 외부 공개 컴포넌트, 디버깅, PendingIntent 설정 |
-| Insecure_DataStorage | 12 | Preferences, 암호화, 키, IV, 백업, Firebase 데이터베이스 경로·규칙 |
-| Insecure_Logging | 2 | 앱 및 HTTP 로그의 민감 정보 |
+기본 설정에서는 7개 모듈을 한 번에 분석합니다. 각 카테고리를 펼치면 세부 검사 항목을 확인할 수 있습니다.
 
-세부 내용은 [규칙 카탈로그](docs/rule-catalog.md) 또는 `python3 -m asap rules`로 확인할 수 있습니다.
+<details>
+<summary>SQL_Injection · 3개 규칙</summary>
+
+| 규칙 | 검사 항목 |
+|---|---|
+| `SQL001` | 외부 입력과 연결된 동적 SQL 문자열 |
+| `SQL002` | 상수로 확인되지 않은 SQL 인자와 쿼리 구성 |
+| `SQL003` | 외부 공개 Content Provider의 읽기·쓰기 권한 경계 |
+
+</details>
+
+<details>
+<summary>WebView · 10개 규칙</summary>
+
+| 규칙 | 검사 항목 |
+|---|---|
+| `WV001` | 외부 입력에서 WebView 로딩 API로 이어지는 경로 |
+| `WV002` | addJavascriptInterface를 통한 JavaScript 브리지 노출 |
+| `WV003` | file URL의 파일 간·출처 간 접근 허용 설정 |
+| `WV004` | TLS 오류 처리에서 요청을 계속하는 proceed 호출 |
+| `WV005` | WebView 콘텐츠 디버깅 활성화 설정 |
+| `WV006` | 암호화되지 않은 혼합 콘텐츠 허용 설정 |
+| `WV007` | WebView의 로컬 파일 접근 활성화 설정 |
+| `WV008` | 웹 메시지 API의 와일드카드 출처·대상 설정 |
+| `WV009` | URL·호스트의 부분 문자열에 의존하는 URI 검증 |
+| `WV010` | Manifest·Network Security Config의 평문 트래픽 허용 설정 |
+
+</details>
+
+<details>
+<summary>DeepLink · 4개 규칙</summary>
+
+| 규칙 | 검사 항목 |
+|---|---|
+| `DL001` | Manifest에 등록된 커스텀 URI 스킴 |
+| `DL002` | 웹 링크 intent-filter의 autoVerify 설정 누락 |
+| `DL003` | 외부 Intent 또는 파싱한 외부 입력의 컴포넌트 전달 경로 |
+| `DL004` | Intent의 removeLaunchSecurityProtection 호출 |
+
+</details>
+
+<details>
+<summary>HardCoded · 5개 규칙</summary>
+
+| 규칙 | 검사 항목 |
+|---|---|
+| `HC001` | 민감한 이름의 식별자에 할당된 문자열 상수 |
+| `HC002` | 패키지에 포함된 PEM 개인 키 표시 |
+| `HC003` | 자격 증명·비밀 토큰 형식과 일치하는 상수 |
+| `HC004` | Google API 키 형식과 같은 파일의 서비스 사용 단서 |
+| `HC005` | URL 사용자 정보 영역에 포함된 자격 증명 형태의 상수 |
+
+</details>
+
+<details>
+<summary>Permission · 7개 규칙</summary>
+
+| 규칙 | 검사 항목 |
+|---|---|
+| `PM001` | Manifest의 앱 디버깅 활성화 설정 |
+| `PM002` | 선언된 권한 경계가 없는 외부 공개 컴포넌트 |
+| `PM003` | 사용자 정의 권한의 normal·dangerous 또는 생략된 보호 수준 |
+| `PM004` | 민감 권한 선언과 SDK 적용 범위 |
+| `PM005` | targetSdk 31 이상에서 intent-filter를 가진 컴포넌트의 exported 명시 누락 |
+| `PM006` | PendingIntent의 FLAG_MUTABLE 설정 |
+| `PM007` | ACCESS_LOCAL_NETWORK 선언과 API 37 대상 조건 |
+
+</details>
+
+<details>
+<summary>Insecure_DataStorage · 12개 규칙</summary>
+
+| 규칙 | 검사 항목 |
+|---|---|
+| `DS001` | DES·3DES·RC4 및 AES ECB 계열 암호 모드 |
+| `DS002` | MD5·SHA-1 등 레거시 해시 사용 |
+| `DS003` | IV·nonce 생성에 사용된 상수 또는 고정 바이트 배열 |
+| `DS004` | 레거시 world-readable·world-writeable 저장 모드 |
+| `DS005` | 민감한 값의 Preferences 저장 표현식 |
+| `DS006` | 앱 백업 설정과 백업 규칙 참조 |
+| `DS007` | 더 이상 권장되지 않는 AndroidX Security-Crypto API 사용 |
+| `DS008` | SecretKeySpec의 상수 기반 암호 키 재료 |
+| `DS009` | 소스·설정의 Firebase 데이터베이스 호스트와 getReference·child 참조 경로 |
+| `DS010` | 제공된 Firebase Rules의 무조건 읽기 허용과 하위 경로 상속 |
+| `DS011` | 제공된 Firebase Rules의 무조건 쓰기 허용과 하위 경로 상속 |
+| `DS012` | 제공된 로컬 Firebase JSON의 루트·하위 객체·배열 경로와 자료형 |
+
+</details>
+
+<details>
+<summary>Insecure_Logging · 2개 규칙</summary>
+
+| 규칙 | 검사 항목 |
+|---|---|
+| `LG001` | 로그 인자·문자열 보간에 포함된 민감한 값의 식별자 |
+| `LG002` | HttpLoggingInterceptor의 HEADERS·BODY 로깅 설정 |
+
+</details>
+
+각 규칙의 적용 조건과 권장 조치는 [규칙 카탈로그](docs/rule-catalog.md)에서 확인할 수 있습니다. 규칙 목록은 `python3 -m asap rules`로도 볼 수 있습니다.
 
 ## CLI
 
@@ -80,22 +171,6 @@ python3 -m asap scan tests/fixtures/demo -o results/demo
 ```
 
 설정 파일에서 모듈, 제외 경로, 처리 한도, 도구 경로, 결과 제외 조건을 지정할 수 있습니다. [config.example.json](examples/config.example.json)을 참고하고 `--config my-config.json`으로 전달하세요. 디컴파일러를 호출하지 않고 읽을 수 있는 XML과 자산만 검사하려면 `--no-decompile`을 사용합니다. 이 경우 DEX 분석 범위는 미완료로 표시됩니다.
-
-### Firebase Realtime Database
-
-`Insecure_DataStorage` 모듈은 Firebase 데이터베이스 호스트와 소스의 `getReference()` / `child()` 경로를 수집합니다. 로컬 Security Rules와 내보낸 JSON의 child 경로를 순회하면서 조건 없는 읽기·쓰기 허용을 확인하고, 데이터 경로와 값의 타입을 기록합니다. 실제 데이터 값은 리포트에 포함하지 않습니다. Firebase 항목을 열면 리포트 안에서 하위 경로를 검색할 수 있습니다.
-
-프로젝트의 로컬 파일을 APK 또는 소스 분석에 함께 전달합니다.
-
-```bash
-python3 -m asap scan ./sample.apk -o results/firebase \
-  --firebase-rules ./database.rules.json \
-  --firebase-data ./firebase-export.json
-```
-
-분석 입력 안에서는 `database.rules.json`·`firebase.rules.json` 규칙 파일과 `firebase-export.json`·`database-export.json`·`rtdb-export.json` 데이터 파일을 자동으로 인식합니다. 옵션으로 직접 첨부하는 파일은 이름이 달라도 됩니다. 웹 대시보드에서는 [설정 파일](docs/toolchain.md#firebase-local-inputs)로 전달합니다.
-
-로컬 파일을 분석하며 Firebase 서버에 요청을 보내지 않습니다. 트리는 최대 4,096개 노드·64단계까지 순회하며, 순회 중단·잘못된 입력·평가하지 못한 규칙 조건은 분석 범위 진단에 표시합니다.
 
 ## 리포트
 

@@ -42,15 +42,106 @@ Workspace information is stored locally. Finding review statuses and notes are s
 
 ## Analysis modules
 
-| Module | Rules | Checks |
-|---|---:|---|
-| SQL_Injection | 3 | SQL queries, query parameters, and Content Provider access |
-| WebView | 10 | URI loading, JavaScript bridges, file access, and WebView security settings |
-| DeepLink | 4 | URI handlers, App Links configuration, and Intent forwarding |
-| HardCoded | 5 | Embedded credentials, tokens, API keys, and private keys |
-| Permission | 7 | Permissions, exported components, debugging, and PendingIntent settings |
-| Insecure_DataStorage | 12 | Preferences, cryptography, keys, IVs, backups, and Firebase database paths and rules |
-| Insecure_Logging | 2 | Sensitive application and HTTP logging |
+All seven modules run together by default. Expand a module to see its checks.
+
+<details>
+<summary>SQL_Injection · 3 rules</summary>
+
+| Rule | Check |
+|---|---|
+| `SQL001` | External input used in dynamic SQL expressions within the same method |
+| `SQL002` | Dynamically constructed SQL arguments |
+| `SQL003` | Exported Content Providers without declared read or write permissions |
+
+</details>
+
+<details>
+<summary>WebView · 10 rules</summary>
+
+| Rule | Check |
+|---|---|
+| `WV001` | External input passed to WebView loading APIs |
+| `WV002` | JavaScript native bridge exposure through `addJavascriptInterface()` |
+| `WV003` | Cross-origin access enabled for file URLs |
+| `WV004` | TLS error handlers that call `proceed()` |
+| `WV005` | Web content debugging explicitly enabled |
+| `WV006` | Mixed content explicitly allowed |
+| `WV007` | Local file access explicitly enabled |
+| `WV008` | Wildcard origins or targets in web messaging APIs |
+| `WV009` | URI validation based on partial string comparisons |
+| `WV010` | Cleartext traffic allowed in the manifest or Network Security Config |
+
+</details>
+
+<details>
+<summary>DeepLink · 4 rules</summary>
+
+| Rule | Check |
+|---|---|
+| `DL001` | Registered custom URI schemes |
+| `DL002` | Web link intent filters without `autoVerify=true` |
+| `DL003` | External Intent data forwarded to component launch APIs |
+| `DL004` | Calls that remove Intent launch security protection |
+
+</details>
+
+<details>
+<summary>HardCoded · 5 rules</summary>
+
+| Rule | Check |
+|---|---|
+| `HC001` | String constants assigned to identifiers with sensitive names |
+| `HC002` | Embedded PEM private key markers |
+| `HC003` | Constants matching recognized secret token formats |
+| `HC004` | Google API key identifiers and service context in the same file |
+| `HC005` | Embedded credentials in URL user information |
+
+</details>
+
+<details>
+<summary>Permission · 7 rules</summary>
+
+| Rule | Check |
+|---|---|
+| `PM001` | Application debugging enabled in the manifest |
+| `PM002` | Exported components without declared permission boundaries |
+| `PM003` | Custom permissions with weak or unspecified protection levels |
+| `PM004` | Declared sensitive permissions and SDK applicability |
+| `PM005` | Missing explicit `exported` settings for intent-filter components targeting API 31 or later |
+| `PM006` | Mutable PendingIntent creation |
+| `PM007` | Local network permission declarations and API 37 target conditions |
+
+</details>
+
+<details>
+<summary>Insecure_DataStorage · 12 rules</summary>
+
+| Rule | Check |
+|---|---|
+| `DS001` | Weak cryptographic algorithms or deterministic cipher modes |
+| `DS002` | MD5 or SHA-1 digest usage |
+| `DS003` | Constant or zero-filled IV and nonce expressions |
+| `DS004` | Legacy world-readable or world-writable storage modes |
+| `DS005` | Sensitive values written to preferences |
+| `DS006` | Application backup settings and rule references |
+| `DS007` | Deprecated Security-Crypto API usage |
+| `DS008` | Constant key material passed to `SecretKeySpec` |
+| `DS009` | Firebase database hosts, references, and child paths in source and configuration |
+| `DS010` | Unconditional read grants and child inheritance in provided Firebase Rules |
+| `DS011` | Unconditional write grants and child inheritance in provided Firebase Rules |
+| `DS012` | Root and child object/array paths and value types in provided local Firebase JSON exports |
+
+</details>
+
+<details>
+<summary>Insecure_Logging · 2 rules</summary>
+
+| Rule | Check |
+|---|---|
+| `LG001` | Sensitive identifiers or interpolated values in log arguments |
+| `LG002` | HTTP header or body logging enabled in `HttpLoggingInterceptor` |
+
+</details>
 
 See the [rule catalog](docs/rule-catalog.md), or run `python3 -m asap rules`.
 
@@ -80,22 +171,6 @@ python3 -m asap scan tests/fixtures/demo -o results/demo
 ```
 
 Configuration files control modules, exclusions, limits, tool paths, and suppressions. Start with [config.example.json](examples/config.example.json) and pass `--config my-config.json`. Use `--no-decompile` to inspect recoverable XML and assets without invoking decompilers; DEX coverage is reported as incomplete.
-
-### Firebase Realtime Database
-
-The `Insecure_DataStorage` module inventories Firebase database hosts and source-level `getReference()` / `child()` paths. It also walks local Security Rules and exported JSON through their child paths, identifying unconditional read/write grants and listing exported paths and value types. Scalar data values are omitted from the report. Open a Firebase finding to search its child paths in the report.
-
-Attach your project's local files to an APK or source scan:
-
-```bash
-python3 -m asap scan ./sample.apk -o results/firebase \
-  --firebase-rules ./database.rules.json \
-  --firebase-data ./firebase-export.json
-```
-
-Inside scanned inputs, rules named `database.rules.json` or `firebase.rules.json` and data named `firebase-export.json`, `database-export.json`, or `rtdb-export.json` are recognized automatically. Explicit attachments can use any filename. Dashboard scans accept the same files through [configuration](docs/toolchain.md#firebase-local-inputs).
-
-Analysis uses local files and makes no Firebase requests. Tree traversal is limited to 4,096 nodes and 64 levels; incomplete traversal, malformed inputs, and unevaluated rule conditions appear in coverage diagnostics.
 
 ## Reports
 
