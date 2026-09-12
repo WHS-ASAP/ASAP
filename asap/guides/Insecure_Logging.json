@@ -1,0 +1,48 @@
+{
+  "category": "Insecure_Logging",
+  "summary": "민감 값의 로그 인자와 HTTP 로깅 설정을 구분합니다. BODY뿐 아니라 HEADERS도 검토하고, 헤더 마스킹이 본문 보호를 의미하지 않음을 표시합니다.",
+  "review_questions": [
+    "배포 빌드에서 개인정보·자격 증명이 로그 인자나 예외 메시지로 전달되나요?",
+    "OkHttp BODY/HEADERS 설정이 실제 배포에 활성화되는지 확인했나요?",
+    "Authorization·Cookie 외에 본문과 URL의 민감 데이터도 제외했나요?",
+    "마스킹 함수·커스텀 Logger가 모든 경로에 실제 적용되는지 확인했나요?"
+  ],
+  "safe_patterns": [
+    "가능하면 민감 값 대신 고정 이벤트 이름과 비민감 상태를 기록합니다.",
+    "배포 빌드 로그를 최소화하고 민감 헤더·본문·URL 값을 각 경계에서 제거합니다.",
+    "동일 interceptor에 설정한 redactHeader와 별개로 본문 데이터 정책을 유지합니다."
+  ],
+  "limitations": [
+    "로깅 설정 존재만으로 실행, 로그 저장, 제삼자의 접근을 입증하지 않습니다.",
+    "동일 이름의 receiver와 메서드 관찰은 분기·재할당·객체 동일성 증명이 아닙니다.",
+    "apply/also의 암시적 receiver나 인터프로시저 설정 전달은 완전히 분석하지 않습니다.",
+    "기본 BASIC/NONE 제외는 다른 로그 경로까지 안전하다는 의미가 아닙니다.",
+    "receiver 타입 단서는 현재 메서드의 단일 선언이나 최상위 생성식으로 제한하며, 중첩 인자·이전 메서드·동명 변수 충돌·임의 fluent 반환형은 확인되지 않은 상태로 둡니다."
+  ],
+  "references": [
+    {
+      "title": "Log Info Disclosure",
+      "url": "https://developer.android.com/privacy-and-security/risks/log-info-disclosure",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2024-09-24"
+    },
+    {
+      "title": "OkHttp Logging Interceptor README",
+      "url": "https://raw.githubusercontent.com/square/okhttp/master/okhttp-logging-interceptor/README.md",
+      "publisher": "Square / OkHttp maintainers",
+      "accessed_at": "2026-09-12"
+    },
+    {
+      "title": "MASVS-STORAGE-2",
+      "url": "https://mas.owasp.org/MASVS/controls/MASVS-STORAGE-2/",
+      "publisher": "OWASP Foundation",
+      "accessed_at": "2026-09-12"
+    }
+  ],
+  "implemented_changes": [
+    "민감한 값이 로그 인자로 전달되는 표현식을 확인합니다.",
+    "HTTP 로깅의 Java setter와 Kotlin level 속성에서 BODY·HEADERS 설정을 확인합니다.",
+    "같은 메서드·receiver의 redactHeader 호출을 기록하고 헤더 마스킹과 본문 보호를 구분합니다."
+  ]
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="asap-token" content="CSRF_TOKEN">
+  <meta name="asap-workspace" content="WORKSPACE_ID">
+  <title>ASAP · APK 워크스페이스</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/workspace.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">워크스페이스 본문으로 건너뛰기</a>
+<main class="workspace-main" id="main-content">
+  <header class="topbar"><a class="brand" href="/" aria-label="APK 워크스페이스 목록"><span class="brand-mark" aria-hidden="true">A</span><span>ASAP<small>APK WORKSPACES</small></span><b>3.0</b></a><a class="button secondary" href="/">모든 APK</a></header>
+  <section class="heading"><div><span class="eyebrow">APK WORKSPACE</span><h1 id="workspace-title">APK 불러오는 중</h1><p id="workspace-subtitle"></p></div><div class="actions"><span class="badge" id="workspace-state"></span><button class="button secondary" id="archive-workspace" disabled>보관</button><button class="button" id="rescan" disabled>다시 분석</button></div></section>
+  <div id="workspace-feedback" class="notice" role="status" hidden></div>
+  <section class="metrics"><article class="metric"><span>분석 이력</span><strong id="workspace-runs">0</strong><small>동일 APK의 실행 기록</small></article><article class="metric"><span>최근 활성 항목</span><strong id="workspace-active">—</strong><small id="workspace-coverage">완료된 분석 없음</small></article><article class="metric"><span>높은 심각도 후보</span><strong id="workspace-high">—</strong><small>High / Critical · 정적 관찰</small></article><article class="metric"><span>APK 크기</span><strong id="workspace-size">—</strong><small id="workspace-package">패키지 확인 전</small></article></section>
+  <section class="overview-grid workspace-overview">
+    <article class="panel"><div class="panel-title"><h2>APK 정보</h2><span>파일 단위 격리</span></div><dl class="artifact-info" id="artifact-info"></dl></article>
+    <form class="panel workspace-settings" id="workspace-settings"><div class="panel-title"><h2>워크스페이스 관리</h2><span>이 APK에만 저장</span></div><label for="workspace-name">표시 이름</label><input id="workspace-name" maxlength="200" required><label for="workspace-note">검토 메모</label><textarea id="workspace-note" rows="3" maxlength="4000" placeholder="검토 범위, 담당자, 확인할 내용을 기록하세요."></textarea><button class="button secondary" id="save-workspace" type="submit">변경 저장</button></form>
+  </section>
+  <section class="panel module-section" aria-labelledby="modules-title"><div class="panel-title"><h2 id="modules-title">모듈별 검토</h2><span id="modules-status">분석 결과 준비 중</span></div><p class="section-description">모듈을 선택하면 이 APK의 관찰 결과와 공식 자료에 기반한 검토 안내를 볼 수 있습니다.</p><div class="module-grid" id="module-grid"></div></section>
+  <section class="panel module-detail" id="module-detail" aria-labelledby="module-title" hidden><div class="panel-title"><h2 id="module-title"></h2><a class="button secondary" id="module-report" hidden>리포트에서 검토</a></div><p id="module-summary"></p><div id="module-finding-list"></div><div class="guide-columns"><div><h3>확인할 사항</h3><ul id="module-questions"></ul><h3>권장 구현</h3><ul id="module-safe"></ul></div><div><h3>검사 항목</h3><ul id="module-changes"></ul><h3>분석 한계</h3><ul id="module-limitations"></ul></div></div><details class="module-rules"><summary>모듈 규칙과 참고 자료</summary><div id="module-rules"></div><div class="guide-references" id="module-references"></div></details></section>
+  <section class="panel workspace-history" aria-labelledby="history-title"><div class="panel-title"><h2 id="history-title">이 APK의 분석 이력</h2><span id="history-count"></span></div><p class="section-description">실행 기록을 선택해 해당 시점의 리포트를 확인하세요. 모듈 요약은 가장 최근에 완료된 분석을 표시합니다.</p><div id="workspace-jobs"></div></section>
+  <footer><span>ASAP · APK별 정적 검토</span><span>원본 APK는 설치·실행하지 않습니다.</span><span>43개 규칙 · 7개 모듈</span></footer>
+</main>
+</body></html>

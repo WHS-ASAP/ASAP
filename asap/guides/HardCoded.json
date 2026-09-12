@@ -1,0 +1,55 @@
+{
+  "category": "HardCoded",
+  "summary": "앱에 포함된 상수·개인키·토큰 형태를 구분하고 실제 비밀 여부와 서비스 제한을 따로 검토합니다. Google 키 접두사나 Firebase 파일명만으로 공개 가능성·유효성을 확정하지 않습니다.",
+  "review_questions": [
+    "상수가 서버 자격 증명, 기기별 암호 키, 공개 프로젝트 식별자 중 무엇인가요?",
+    "Firebase 전용 API 제한과 앱 제한을 소유자가 확인했나요?",
+    "Gemini Developer API 키가 APK나 클라이언트 설정에 포함되어 있나요?",
+    "키 교체 후 이전 설치 버전과 서버 정책이 함께 갱신되나요?"
+  ],
+  "safe_patterns": [
+    "서버용 비밀은 서버에서 관리하고 앱에 배포하지 않습니다.",
+    "기기별 암호 키는 Android Keystore에서 생성·사용하고 용도와 사용자 인증 조건을 제한합니다.",
+    "Firebase 전용 식별 키는 API 제한과 Security Rules·App Check·IAM을 각각 관리합니다."
+  ],
+  "limitations": [
+    "상수 형식 검사는 키의 유효성·권한·실제 노출을 검사하지 않습니다.",
+    "같은 파일의 Firebase/Gemini 표시는 특정 키의 API 연결 관계를 입증하지 않습니다.",
+    "난독화·분할 문자열·네이티브 코드·런타임 비밀 전달은 완전히 분석하지 않습니다."
+  ],
+  "references": [
+    {
+      "title": "Hardcoded Cryptographic Secrets",
+      "url": "https://developer.android.com/privacy-and-security/risks/hardcoded-cryptographic-secrets",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2024-09-24"
+    },
+    {
+      "title": "Learn about and manage API keys for Firebase",
+      "url": "https://firebase.google.com/docs/projects/api-keys",
+      "publisher": "Google / Firebase",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2026-09-10"
+    },
+    {
+      "title": "Using Gemini API keys",
+      "url": "https://ai.google.dev/gemini-api/docs/api-key",
+      "publisher": "Google AI for Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2026-09-02"
+    },
+    {
+      "title": "Android Keystore system",
+      "url": "https://developer.android.com/privacy-and-security/keystore",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2026-03-06"
+    }
+  ],
+  "implemented_changes": [
+    "민감한 이름의 상수, 개인키 표시, 토큰 형식과 URL의 사용자 정보를 확인합니다.",
+    "Google API 식별 키는 Firebase·Gemini·미확인 서비스 문맥과 함께 정보 항목으로 기록합니다.",
+    "키의 유효성·API 제한은 미검증 상태로 표시하며 비밀 값은 리포트에서 마스킹합니다."
+  ]
+}

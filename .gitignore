@@ -1,6 +1,15 @@
 .DS_Store
-apk_dir/
-java_src/
-Analyze_Web/
-smali_src/
-instance/
+# Runtime and build outputs
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+.asap-workspace/
+results/
+asap-results/
+*.apk
+*.apks
+*.xapk

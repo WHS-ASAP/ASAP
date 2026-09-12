@@ -1,0 +1,13 @@
+{
+  "public": {
+    "items": {
+      "itemA": {"title": "SYNTHETIC_EXPORT_VALUE_8726"}
+    }
+  },
+  "users": {
+    "fixtureUser": {
+      "profile": {"name": "SYNTHETIC_PRIVATE_NAME_9261"},
+      "tags": ["SYNTHETIC_TAG_6291", "SYNTHETIC_TAG_6292"]
+    }
+  }
+}

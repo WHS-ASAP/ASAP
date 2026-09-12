@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:asap:report:3.0.0",
+  "title": "ASAP 3 report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "tool",
+    "scan",
+    "inventory",
+    "coverage",
+    "findings",
+    "diagnostics",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0.0"
+    },
+    "tool": {
+      "type": "object"
+    },
+    "scan": {
+      "type": "object"
+    },
+    "inventory": {
+      "type": "object"
+    },
+    "coverage": {
+      "type": "object"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "level",
+          "code",
+          "message",
+          "path"
+        ]
+      }
+    },
+    "summary": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "required": [
+        "path",
+        "line",
+        "end_line",
+        "snippet",
+        "role"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "snippet": {
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "observation",
+            "local_assignment"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "finding": {
+      "type": "object",
+      "required": [
+        "rule_id",
+        "category",
+        "title",
+        "severity",
+        "confidence",
+        "kind",
+        "message",
+        "remediation",
+        "cwe",
+        "masvs",
+        "fingerprint",
+        "baseline_state",
+        "evidence",
+        "references",
+        "suppressed",
+        "suppression_reason",
+        "properties"
+      ],
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "SQL_Injection",
+            "WebView",
+            "DeepLink",
+            "HardCoded",
+            "Permission",
+            "Insecure_DataStorage",
+            "Insecure_Logging"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "confidence": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "review",
+            "configuration",
+            "inventory",
+            "compatibility"
+          ]
+        },
+        "message": {
+          "type": "string"
+        },
+        "remediation": {
+          "type": "string"
+        },
+        "cwe": {
+          "type": "string"
+        },
+        "masvs": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "baseline_state": {
+          "enum": [
+            "new",
+            "unchanged"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "suppressed": {
+          "type": "boolean"
+        },
+        "suppression_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "properties": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

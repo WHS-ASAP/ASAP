@@ -1,0 +1,50 @@
+{
+  "category": "Permission",
+  "summary": "권한 선언, 실행 기기 API 범위, 실제 허용 상태를 구분합니다. 앱 고유 권한의 CAMERA 같은 접미사를 Android 시스템 권한으로 해석하지 않습니다.",
+  "review_questions": [
+    "이 권한이 현재 기능에 필요한지, 시스템 선택기로 대체 가능한지 확인했나요?",
+    "권한의 maxSdkVersion과 앱 minSdkVersion이 겹치는 실행 기기 범위가 있나요?",
+    "컴포넌트 노출과 권한 선언 외에 실제 작업의 인증·인가가 있는지 확인했나요?",
+    "소스 Manifest가 아니라 배포 APK의 병합 결과와 SDK 조건을 확인했나요?"
+  ],
+  "safe_patterns": [
+    "기능 사용 시점에 필요한 최소 권한만 요청하고 거부 상태를 처리합니다.",
+    "권한 이름 전체와 선언 소유자를 확인하며 signature 또는 knownSigner의 실제 인증서 경계를 검토합니다.",
+    "targetSdkVersion을 실행 기기의 Android 버전으로 간주하지 않습니다."
+  ],
+  "limitations": [
+    "선언만으로 runtime grant, AppOps, 실제 데이터 접근, 과도한 권한 여부를 알 수 없습니다.",
+    "maxSdkVersion 속성은 API 19 이전 기기에서 동일하게 적용된다고 가정하지 않습니다.",
+    "패키지 서명, 인증서 허용 목록, 설치 기기 상태는 검증하지 않습니다.",
+    "maxSdkVersion의 리소스 참조·잘못된 숫자는 미해결 상태로 남기며, 속성 생략이나 상한 없음으로 해석하지 않습니다."
+  ],
+  "references": [
+    {
+      "title": "Permissions on Android",
+      "url": "https://developer.android.com/guide/topics/permissions/overview",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2026-09-01"
+    },
+    {
+      "title": "<uses-permission>",
+      "url": "https://developer.android.com/guide/topics/manifest/uses-permission-element",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2025-02-10"
+    },
+    {
+      "title": "<permission>",
+      "url": "https://developer.android.com/guide/topics/manifest/permission-element",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2025-02-10"
+    }
+  ],
+  "implemented_changes": [
+    "debuggable, exported 컴포넌트, 사용자 정의 권한의 보호 수준과 Mutable PendingIntent를 확인합니다.",
+    "Android 시스템 권한의 전체 이름을 기준으로 민감 권한과 로컬 네트워크 권한 선언을 기록합니다.",
+    "권한의 maxSdkVersion과 앱의 minSdkVersion을 비교해 실행 기기 API 범위를 표시합니다.",
+    "maxSdkVersion의 생략·숫자 리터럴·미해결 상태를 구분하고 10진수와 16진수 상한을 처리합니다."
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "suppressions": [
+    {
+      "rule_id": "DS002",
+      "path": "**/ChecksumOnly.java",
+      "reason": "Example only: owner verified this digest is a non-security checksum; replace with your actual reviewed scope.",
+      "expires": "2026-12-31"
+    }
+  ]
+}

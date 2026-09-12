@@ -1,0 +1,6 @@
+{
+  "jadx": "/absolute/path/to/jadx/bin/jadx",
+  "apktool": "/absolute/path/to/apktool.jar",
+  "decompile": true,
+  "workers": 4
+}

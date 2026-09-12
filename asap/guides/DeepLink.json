@@ -1,0 +1,38 @@
+{
+  "category": "DeepLink",
+  "summary": "링크 라우팅, 앱 내부 인가, Intent 전달을 각각 검토합니다. custom scheme 및 autoVerify 선언은 입력 경계 정보이며 도메인 검증이나 안전한 실행의 증거가 아닙니다.",
+  "review_questions": [
+    "웹 링크의 autoVerify 선언과 실제 기기에서 확인한 도메인 검증 상태를 구분했는가?",
+    "한 intent-filter 안의 여러 data 요소가 조합되는 범위를 의도했는가?",
+    "링크로 열린 화면이 로그인 상태·작업 권한·데이터 접근 범위를 다시 확인하는가?",
+    "외부 Intent 전체를 전달하는가, 고정 대상의 새 Intent에 필요한 값만 복사하는가?",
+    "IntentSanitizer 반환값을 실제로 사용하며 허용 대상·data·type·flags 정책을 검토했는가?",
+    "Android 16 보호 및 Dynamic App Links를 배포 대상 OS·Google 서비스·서버 정책에 맞게 검토했는가?"
+  ],
+  "safe_patterns": [
+    "소유 도메인의 App Links를 구성하고 배포 서명과 연결된 도메인 검증 상태를 소유자가 확인합니다.",
+    "민감한 화면은 링크 경로와 무관하게 인증·인가를 확인하고 허용된 데이터 형식만 받습니다.",
+    "외부 Intent를 전달할 때는 필요한 필드만 새 Intent로 옮기고 고정 대상 및 최소 권한 플래그를 사용합니다.",
+    "IntentSanitizer의 제한적인 정책과 반환값 사용을 함께 검토합니다.",
+    "removeLaunchSecurityProtection 보호 해제는 제거 가능한지 우선 검토합니다."
+  ],
+  "limitations": [
+    "autoVerify=true는 검증 요청이며 assetlinks.json의 내용·서명 일치·기기 검증 성공은 확인하지 않습니다.",
+    "고정 대상 Intent도 입력 검증·인가가 미검증이므로 검토 항목을 유지합니다. 로컬 변수는 이후 객체 변이를 추적하지 못하므로 고정 대상 완화 근거로 쓰지 않습니다.",
+    "sanitizer 이름 또는 호출만으로 AndroidX 타입이나 정책의 안전성을 확정하지 않습니다.",
+    "Android 16 기본 보호의 런타임 적용과 Android 15 이상 Dynamic App Links 서버 정책은 APK 정적 분석만으로 확인할 수 없습니다."
+  ],
+  "references": [
+    {"title": "Unsafe use of deep links", "url": "https://developer.android.com/privacy-and-security/risks/unsafe-use-of-deeplinks", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2024-10-24"},
+    {"title": "About App Links", "url": "https://developer.android.com/training/app-links/about", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2026-09-01"},
+    {"title": "Add Intent filters for App Links", "url": "https://developer.android.com/training/app-links/add-applinks", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2026-09-01"},
+    {"title": "Intent redirection", "url": "https://developer.android.com/privacy-and-security/risks/intent-redirection", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2025-03-10"},
+    {"title": "IntentSanitizer", "url": "https://developer.android.com/reference/androidx/core/content/IntentSanitizer", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2026-06-24"},
+    {"title": "Intent", "url": "https://developer.android.com/reference/android/content/Intent", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2026-08-28"}
+  ],
+  "implemented_changes": [
+    "커스텀 스킴, 웹 링크의 autoVerify, intent-filter별 data·host·scheme 선언을 기록합니다.",
+    "외부 Intent의 전달 경로와 직접 생성한 고정 대상 Intent의 문맥을 구분합니다.",
+    "IntentSanitizer 반환값 연결과 Intent launch 보호 해제 호출을 확인합니다."
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "category": "Insecure_DataStorage",
+  "summary": "민감 데이터 저장, 키 관리, IV/nonce, 백업 정책과 Firebase Realtime Database 경로·규칙을 검토합니다. 로컬 Rules와 내보낸 JSON의 child 경로를 순회할 수 있습니다.",
+  "review_questions": [
+    "저장하는 값이 꼭 필요한지, 만료·삭제·재인증 정책이 있나요?",
+    "암호화 래퍼가 인증된 암호화, 고유한 nonce/IV와 적절한 키 수명주기를 구현하나요?",
+    "cloud-backup과 device-transfer에서 민감 저장소를 각각 제외했나요?",
+    "AndroidX Security-Crypto 마이그레이션에서 기존 데이터 복호화·재저장·복원 호환성을 보존하나요?",
+    "Firebase의 각 데이터 경로에 필요한 읽기·쓰기 권한이 적용되며 상위 경로에 불필요한 공개 허용이 없나요?",
+    "분석한 로컬 Rules와 데이터가 해당 APK 프로젝트에 속하며 실제 배포 설정과 일치하나요?"
+  ],
+  "safe_patterns": [
+    "민감 저장을 최소화하고 필요한 경우 인증된 암호화와 Android Keystore 기반 키 관리를 적용합니다.",
+    "API 31+ target의 Android 12+ 백업 규칙과 이전 OS용 규칙을 분리해 관리합니다.",
+    "암호 API 교체는 기존 데이터와 키의 수명주기를 보존하는 계획으로 진행합니다.",
+    "Firebase의 읽기·쓰기 권한은 필요한 경로와 사용자로 제한하고 데이터 형식 검증도 함께 관리합니다."
+  ],
+  "limitations": [
+    "암호화 함수명은 구현·키 강도·평문 배제를 입증하지 않습니다.",
+    "DS006은 백업 XML 참조와 선언을 기록하며 XML 내용이나 실제 전송을 평가하지 않습니다.",
+    "allowBackup=false의 기기 간 전송 동작은 target SDK와 OEM에 의존합니다.",
+    "Security-Crypto deprecation은 기존 데이터의 취약성 증거가 아닙니다.",
+    "Firebase 호스트·SDK 경로는 소스에서 수집한 정보이며 서버 접근 결과가 아닙니다.",
+    "Firebase Rules의 동적 조건과 실제 배포 상태는 평가하지 않습니다. .write 허용이 있어도 .validate 제약은 별도로 적용됩니다.",
+    "로컬 JSON은 최대 4,096개 노드·64단계까지 순회합니다. 중단·잘못된 입력·미평가 조건은 분석 범위 진단에 표시됩니다.",
+    "내보낸 데이터의 스칼라 값은 리포트에 포함하지 않지만 경로 이름에는 레코드 식별자가 포함될 수 있습니다."
+  ],
+  "references": [
+    {
+      "title": "Cryptography",
+      "url": "https://developer.android.com/privacy-and-security/cryptography",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2026-03-06"
+    },
+    {
+      "title": "Android Keystore system",
+      "url": "https://developer.android.com/privacy-and-security/keystore",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2026-03-06"
+    },
+    {
+      "title": "Back up user data with Auto Backup",
+      "url": "https://developer.android.com/identity/data/autobackup",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2026-02-26"
+    },
+    {
+      "title": "Security — Security-Crypto 1.1 release notes",
+      "url": "https://developer.android.com/jetpack/androidx/releases/security#security-crypto",
+      "publisher": "Google / Android Developers",
+      "accessed_at": "2026-09-12",
+      "updated_at": "2026-09-09"
+    },
+    {
+      "title": "Realtime Database Security Rules core syntax",
+      "url": "https://firebase.google.com/docs/database/security/core-syntax",
+      "publisher": "Google / Firebase",
+      "accessed_at": "2026-09-12"
+    },
+    {
+      "title": "Read and Write Data on Android",
+      "url": "https://firebase.google.com/docs/database/android/read-and-write",
+      "publisher": "Google / Firebase",
+      "accessed_at": "2026-09-12"
+    },
+    {
+      "title": "Structure Your Database",
+      "url": "https://firebase.google.com/docs/database/web/structure-data",
+      "publisher": "Google / Firebase",
+      "accessed_at": "2026-09-12"
+    }
+  ],
+  "implemented_changes": [
+    "암호 모드, 레거시 digest, 고정 IV·nonce와 암호 키 생성 인자의 상수를 확인합니다.",
+    "레거시 공개 저장 모드와 민감 값의 preferences 저장 표현식을 확인합니다.",
+    "allowBackup과 백업 규칙 참조, target SDK별 적용 조건과 기기 간 전송 조건을 기록합니다.",
+    "Security-Crypto API 사용을 확인하고 암호화 함수명의 관찰과 실제 보호 효과를 구분합니다.",
+    "Firebase 호스트와 getReference()/child() 경로를 소스에서 수집합니다.",
+    "로컬 Firebase Rules의 child 경로와 상위 경로에서 상속되는 조건 없는 읽기·쓰기 허용을 확인합니다.",
+    "로컬 Firebase 내보내기 JSON을 순회하고 스칼라 값 없이 child 경로와 타입을 기록합니다."
+  ]
+}

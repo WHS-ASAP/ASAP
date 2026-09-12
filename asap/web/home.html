@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="asap-token" content="CSRF_TOKEN">
+  <title>ASAP 3.0 · Android Security Workspace</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/home.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">본문으로 건너뛰기</a>
+  <main class="home-main" id="workspace">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="ASAP 3.0 홈">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>ASAP<small>ANDROID SECURITY REVIEW</small></span>
+        <b>3.0</b>
+      </a>
+      <span><span class="status-dot" aria-hidden="true"></span> LOCAL WORKSPACE · 127.0.0.1</span>
+    </header>
+
+    <section class="home-hero" aria-labelledby="home-title">
+      <span class="eyebrow">ANDROID STATIC ANALYSIS</span>
+      <h1 id="home-title">APK별로 모아 보고,<br>모듈별로 검토하세요.</h1>
+      <p>APK마다 독립된 워크스페이스를 만듭니다. 같은 파일의 분석 이력, 모듈 결과와 검토 메모를 한곳에서 관리하세요.</p>
+    </section>
+
+    <div class="notice">
+      <b>로컬 정적 분석</b>
+      <span>APK의 코드와 Manifest를 분석하고, 검토할 위치와 설정을 보여줍니다.</span>
+    </div>
+
+    <section class="upload-panel" id="drop-zone" aria-labelledby="upload-title">
+      <h2 id="upload-title">APK를 여기에 놓으세요</h2>
+      <p id="upload-formats">APK · APKS · XAPK / 최대 512 MiB</p>
+      <label for="apk-input" class="button file-picker">
+        로컬 APK 선택
+        <input id="apk-input" type="file" accept=".apk,.apks,.xapk" aria-describedby="upload-formats upload-hint">
+      </label>
+      <small id="upload-hint">같은 APK는 기존 공간에 이력이 추가됩니다. DEX 분석에는 로컬 JADX가 필요합니다.</small>
+      <div id="upload-status" class="upload-status" role="status" aria-live="polite" aria-atomic="true"></div>
+      <progress id="upload-progress" max="100" value="0" aria-label="APK 업로드 진행률" hidden></progress>
+    </section>
+
+    <section class="panel" aria-labelledby="history-title">
+      <div class="panel-title">
+        <h2 id="history-title">APK 워크스페이스</h2>
+        <span id="job-count">불러오는 중</span>
+      </div>
+      <div class="workspace-filters"><input id="workspace-search" type="search" placeholder="APK 이름, 패키지, 해시 검색" aria-label="APK 워크스페이스 검색"><select id="workspace-filter" aria-label="워크스페이스 보관 상태"><option value="active">활성 워크스페이스</option><option value="archived">보관됨</option><option value="all">전체</option></select></div><div id="jobs" class="workspace-grid"></div>
+    </section>
+
+    <footer>
+      <span>ASAP 3.0 · APP in Security</span>
+      <span>APK 워크스페이스 · 7개 분석 모듈</span>
+      <span>HTML · JSON · SARIF</span>
+    </footer>
+  </main>
+</body>
+</html>

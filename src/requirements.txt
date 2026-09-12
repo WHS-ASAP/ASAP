@@ -1,6 +1,0 @@
-playwright
-beautifulsoup4
-tqdm
-requests
-flask
-flask_sqlalchemy

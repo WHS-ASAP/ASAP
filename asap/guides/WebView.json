@@ -1,0 +1,38 @@
+{
+  "category": "WebView",
+  "summary": "웹 콘텐츠의 출처, native bridge, 파일 접근, TLS 및 메시지 경계를 함께 검토합니다. 설정 또는 API 호출 하나만으로 실제 악용 가능성을 판단하지 않습니다.",
+  "review_questions": [
+    "외부 URI를 파싱한 뒤 scheme과 host 전체를 검증하는가?",
+    "bridge가 노출되는 모든 프레임의 콘텐츠와 탐색 수명주기를 통제하는가?",
+    "postWebMessage의 메시지 내용과 targetOrigin 인자를 구분했는가?",
+    "메시지 listener의 허용 origin, sourceOrigin, frame 문맥 및 메시지 구조를 검토했는가?",
+    "배포 APK의 디버깅·파일 접근·혼합 콘텐츠·TLS 오류 처리 설정을 확인했는가?"
+  ],
+  "safe_patterns": [
+    "Uri 파싱 결과의 https scheme과 허용된 host를 정확히 비교하고 필요한 경우 port·path도 별도 정책으로 제한합니다.",
+    "필요 없는 JavaScript와 bridge를 비활성화하고 신뢰하지 않는 웹 콘텐츠에는 native 기능을 노출하지 않습니다.",
+    "메시지 origin에는 필요한 HTTPS 출처를 지정하고 전달 데이터의 형식과 허용 작업을 검증합니다.",
+    "로컬 리소스에는 WebViewAssetLoader 기반 HTTPS 경로를 검토하며 파일 출처의 교차 접근 허용을 제거합니다.",
+    "TLS 오류에서는 SslErrorHandler.cancel()로 요청을 취소합니다."
+  ],
+  "limitations": [
+    "정확한 WebView receiver 타입, 검증 분기의 지배 관계, 이후 탐색 및 서버 응답은 분석하지 않습니다.",
+    "완전한 origin 값의 별표와 제한된 서브도메인 문자열의 일부인 별표를 구분합니다. 임의 문자열 변환의 결과는 추정하지 않습니다.",
+    "SDK의 기본값과 명시적인 true 설정을 구분하며 설치된 WebView 구현의 기능 지원은 확인하지 않습니다.",
+    "URI 검증 함수 또는 AssetLoader가 존재해도 모든 로딩 경로의 안전성을 증명하지 않습니다."
+  ],
+  "references": [
+    {"title": "Webviews – Unsafe URI Loading", "url": "https://developer.android.com/privacy-and-security/risks/unsafe-uri-loading", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2024-09-24"},
+    {"title": "WebView – Native bridges", "url": "https://developer.android.com/privacy-and-security/risks/insecure-webview-native-bridges", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2024-10-15"},
+    {"title": "WebViewCompat", "url": "https://developer.android.com/reference/androidx/webkit/WebViewCompat", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2026-09-09"},
+    {"title": "WebSettings", "url": "https://developer.android.com/reference/android/webkit/WebSettings", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2026-08-03"},
+    {"title": "WebViewAssetLoader", "url": "https://developer.android.com/reference/androidx/webkit/WebViewAssetLoader", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2026-08-06"},
+    {"title": "SslErrorHandler", "url": "https://developer.android.com/reference/android/webkit/SslErrorHandler", "publisher": "Google · Android Developers", "accessed_at": "2026-09-12", "updated_at": "2026-08-03"}
+  ],
+  "implemented_changes": [
+    "외부 입력의 URL 로딩, JavaScript bridge, 파일 접근과 교차 출처 접근 설정을 확인합니다.",
+    "TLS 오류 처리, 디버깅, 혼합 콘텐츠, 평문 트래픽 허용 설정을 확인합니다.",
+    "웹 메시지의 targetOrigin과 허용 출처를 검사하고 URI 문자열 검증 표현식을 기록합니다.",
+    "파일 접근 설정에는 명시적 값과 target SDK에 따른 기본값 조건을 함께 기록합니다."
+  ]
+}
