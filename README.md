@@ -126,7 +126,7 @@ python3 -m asap diff results/sample/report.json results/next/report.json
 
 ## Contributor version 3.0
 
-- Jeongahn Jang ([@jeongahn](https://github.com/jeongahn))
+- Jeongahn Jang ([@jh4nks](https://github.com/jh4nks))
 
 ## License
 
