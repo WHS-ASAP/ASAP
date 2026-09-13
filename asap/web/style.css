@@ -78,6 +78,7 @@ select:focus-visible, textarea:focus-visible, summary:focus-visible,
 .sidebar-foot small { display: block; color: var(--muted); font-family: inherit; font-size: 11px; letter-spacing: 0; margin-top: 10px; }
 .status-dot { display: inline-block; width: 6px; height: 6px; background: var(--accent); margin: 0 6px 1px 0; }
 main { padding: 0 32px; min-width: 0; max-width: 1760px; width: 100%; }
+.app-shell > main { margin-inline: auto; }
 .topbar {
   min-height: 86px; padding: 16px 0; border-bottom: 1px solid var(--line);
   display: flex; align-items: center; justify-content: space-between;

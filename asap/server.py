@@ -13,6 +13,7 @@ import secrets
 import threading
 from urllib.parse import urlsplit, parse_qs
 import uuid
+from zipfile import BadZipFile
 from .config import Config
 from .engine import scan
 from .reporting import write_reports
@@ -21,6 +22,58 @@ from .storage import Store
 WEB = Path(__file__).with_name('web')
 MAX_UPLOAD = 512*1024*1024
 MAX_JSON = 16*1024
+
+
+def analysis_failure_message(exc: Exception, cfg: Config) -> str:
+    """Explain known failures without publishing parser text or host paths."""
+    if isinstance(exc, BadZipFile):
+        return 'APK 압축 파일을 읽을 수 없습니다. 파일이 손상되거나 다운로드가 완료되지 않았는지 확인한 뒤 다시 업로드하세요.'
+    if isinstance(exc, FileNotFoundError):
+        return '분석에 필요한 파일을 찾을 수 없습니다. 원본 APK를 다시 업로드하고 설정한 도구가 설치되어 있는지 확인하세요.'
+    if isinstance(exc, PermissionError):
+        return '분석 파일을 읽거나 결과를 저장할 권한이 없습니다. 워크스페이스의 읽기·쓰기 권한과 도구 실행 권한을 확인하세요.'
+    if isinstance(exc, ValueError):
+        # Only exact, application-owned messages may select a public explanation.
+        # Never interpolate the exception text: it may contain APK data or paths.
+        limits = {
+            'archive file count limit exceeded': ('APK 내부 파일 수', 'max_files'),
+            'source file count limit exceeded': ('분석 대상 소스 파일 수', 'max_files'),
+            'archive entry size limit exceeded': ('APK 내부의 개별 파일 크기', 'max_entry_bytes'),
+            'archive compression ratio limit exceeded': ('APK 내부 파일의 압축률', 'max_compression_ratio'),
+            'archive expanded size limit exceeded': ('APK 압축 해제 후 전체 크기', 'max_archive_bytes'),
+            'nested APK budget exceeded': ('분할 APK의 합계 크기', 'max_archive_bytes'),
+            'aggregate source byte limit exceeded': ('분석 대상 소스의 합계 크기', 'max_source_bytes'),
+            'archive text aggregate source byte limit exceeded': ('APK 내부 텍스트의 합계 크기', 'max_source_bytes'),
+        }
+        message = str(exc)
+        if message in limits:
+            label, key = limits[message]
+            unit = ' bytes' if key.endswith('_bytes') else ''
+            return (f'{label}가 설정 한도를 초과했습니다 ({key}={getattr(cfg, key)}{unit}). '
+                    'APK의 크기와 구성을 확인하고, 필요한 경우 설정 파일의 해당 한도를 조정한 뒤 서버를 다시 시작하여 재분석하세요.')
+        if message == 'directory traversal file budget exceeded':
+            return (f'소스 디렉터리의 파일 수가 탐색 한도를 초과했습니다 (max_files={cfg.max_files}, '
+                    f'탐색 한도={cfg.max_files * 4}). 불필요한 파일을 분석 입력에서 제거하거나 설정의 max_files를 조정한 뒤 재분석하세요.')
+        known = {
+            'unsafe archive path': 'APK 내부에 안전하게 처리할 수 없는 파일 경로가 있습니다. 원본 APK의 무결성을 확인한 뒤 다시 업로드하세요.',
+            'ambiguous archive path': 'APK 내부에 모호한 파일 경로가 있습니다. 원본 APK의 무결성을 확인한 뒤 다시 업로드하세요.',
+            'reserved archive path': 'APK 내부에 지원하지 않는 예약 파일명이 있습니다. 원본 APK의 파일 구성을 확인하세요.',
+            'duplicate or case-colliding archive entry': 'APK 내부에 중복되거나 대소문자만 다른 파일 경로가 있습니다. 원본 APK의 파일 구성을 확인하세요.',
+            'archive links and special files are forbidden': 'APK 내부에 지원하지 않는 링크 또는 특수 파일이 있습니다. 일반 파일로 구성된 원본 APK를 사용하세요.',
+            'encrypted archives are not supported': '암호화된 APK 압축 파일은 지원하지 않습니다. 암호화되지 않은 원본 APK를 업로드하세요.',
+            'input does not exist': '업로드한 APK 파일을 찾을 수 없습니다. 원본 APK를 다시 업로드하세요.',
+            'input must be a source directory, APK, APKS, or XAPK': '지원하는 입력은 APK, APKS, XAPK 또는 소스 디렉터리입니다. 입력 파일 형식을 확인하세요.',
+            'split archive contains no APKs': 'APKS/XAPK 파일 안에 APK가 없습니다. 원본 앱 패키지를 다시 업로드하세요.',
+            'split APK limit exceeded': 'APKS/XAPK 파일의 APK 수가 최대 128개를 초과했습니다. 필요한 앱의 분할 패키지만 포함된 입력을 사용하세요.',
+            'Retained APK changed before analysis': '저장된 APK가 업로드 당시 파일과 달라졌습니다. 원본 APK를 다시 업로드하세요.',
+            'Input must be a regular file': '입력 APK가 일반 파일이 아닙니다. 원본 APK 파일을 다시 업로드하세요.',
+            'JADX lib/*.jar not found beside Windows launcher': 'JADX 실행에 필요한 lib/*.jar 파일을 찾을 수 없습니다. JADX 배포 파일을 다시 설치하고 jadx 설정을 확인하세요.',
+            'supply the path to apktool.jar on Windows': 'Windows에서는 apktool 설정에 apktool.jar 경로를 지정하세요.',
+        }
+        if message in known:
+            return known[message]
+    return f'Analysis failed ({type(exc).__name__}). Check input integrity, configured limits and tool paths.'
+
 
 class Dashboard:
     def __init__(self,workspace: Path,cfg: Config):
@@ -46,8 +99,7 @@ class Dashboard:
             write_reports(result,self.store.root/'reports'/id)
             self.store.update(id,'completed',active=result.summary['active'],coverage=result.coverage['status'])
         except Exception as exc:
-            # Do not publish parser messages containing untrusted content or host paths.
-            self.store.update(id,'failed',f'Analysis failed ({type(exc).__name__}). Check input integrity, configured limits and tool paths.')
+            self.store.update(id,'failed',analysis_failure_message(exc,self.cfg))
 
 
 def make_server(workspace: Path,port: int,cfg: Config) -> ThreadingHTTPServer:

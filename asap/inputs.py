@@ -101,6 +101,7 @@ class PreparedInput:
         self.counts = {'selected_files':0, 'excluded_files':0, 'vendor_files':0, 'oversized_files':0,
                        'binary_xml_decoded':0, 'unreadable_files':0, 'source_bytes':0}
         self.sources: list[Source] = []
+        self._collection_stopped = False
         self.firebase_attachment_paths = {
             Path(value).expanduser().resolve()
             for value in (config.firebase_rules, config.firebase_data) if value
@@ -108,6 +109,11 @@ class PreparedInput:
 
     def warn(self, code: str, message: str, path: str = '') -> None:
         self.diagnostics.append({'level':'warning', 'code':code,'message':message,'path':path})
+
+    def _stop_collection(self, code: str, message: str, path: str = '') -> None:
+        if not self._collection_stopped:
+            self.warn(code, message + ' Remaining source files were skipped; collected files are still analyzed.', path)
+        self._collection_stopped = True
 
     def __enter__(self) -> 'PreparedInput':
         try:
@@ -168,8 +174,8 @@ class PreparedInput:
                 self.warn('FIREBASE_ATTACHMENT_UNREADABLE', 'Unable to read the configured Firebase attachment.', logical_path)
 
     def _add(self, path: str, data: bytes) -> None:
-        if self.counts['selected_files'] >= self.cfg.max_files:
-            raise ValueError('source file count limit exceeded')
+        if self._collection_stopped:
+            return
         if len(data) > self.cfg.max_file_bytes:
             self.counts['oversized_files'] += 1
             self.warn('FILE_TOO_LARGE','File skipped by configured size limit.',path)
@@ -178,10 +184,10 @@ class PreparedInput:
             self.counts['excluded_files'] += 1
             return
         language = TEXT_EXT.get(Path(path).suffix.lower(), 'text')
+        binary_xml = language == 'xml' and data[:2] == b'\x03\x00'
         try:
-            if language == 'xml' and data[:2] == b'\x03\x00':
+            if binary_xml:
                 text = decode_axml(data)
-                self.counts['binary_xml_decoded'] += 1
             else:
                 text = data.decode('utf-8-sig')
                 if '\x00' in text: raise ValueError('binary text')
@@ -190,22 +196,34 @@ class PreparedInput:
             self.warn('DECODE_FAILED',f'Unsupported or malformed encoding ({type(exc).__name__}).',path)
             return
         package = re.search(r'^\s*package\s+([\w.]+)', text, re.M) if language in ('java','kotlin') else None
-        if not self.cfg.include_vendor and package and package[1].startswith(VENDOR):
+        smali_class = re.search(r'^\s*\.class\s+[^\n]*?L([^;]+);', text, re.M) if language == 'smali' else None
+        namespace = package[1] if package else smali_class[1].replace('/', '.') if smali_class else ''
+        if not self.cfg.include_vendor and namespace.startswith(VENDOR):
             self.counts['vendor_files'] += 1
             return
+        if self.counts['selected_files'] >= self.cfg.max_files:
+            self._stop_collection('SOURCE_FILES_LIMIT', f'Source file limit reached (max_files={self.cfg.max_files}).', path)
+            return
+        if self.counts['source_bytes'] + len(data) > self.cfg.max_source_bytes:
+            self._stop_collection('SOURCE_BYTES_LIMIT', f'Source byte limit reached (max_source_bytes={self.cfg.max_source_bytes} bytes).', path)
+            return
         self.counts['source_bytes'] += len(data)
-        if self.counts['source_bytes'] > self.cfg.max_source_bytes:
-            raise ValueError('aggregate source byte limit exceeded')
         self.counts['selected_files'] += 1
+        self.counts['binary_xml_decoded'] += int(binary_xml)
         self.sources.append(Source(path,text,language,hashlib.sha256(data).hexdigest()))
 
     def _directory(self, root: Path, prefix: str = '') -> None:
+        if self._collection_stopped:
+            return
         visited = 0
         for parent, dirs, files in os.walk(root, followlinks=False):
-            dirs[:] = sorted(d for d in dirs if d not in {'.git','node_modules','.gradle','.venv','__pycache__'} and not (Path(parent)/d).is_symlink())
-            for filename in sorted(files):
+            dirs[:] = sorted((d for d in dirs if d not in {'.git','node_modules','.gradle','.venv','__pycache__'} and not (Path(parent)/d).is_symlink()),
+                             key=lambda d: (d not in {'resources', 'res'}, d))
+            for filename in sorted(files, key=lambda name: (name != 'AndroidManifest.xml', name)):
                 visited += 1
-                if visited > self.cfg.max_files * 4: raise ValueError('directory traversal file budget exceeded')
+                if visited > self.cfg.max_files * 4:
+                    self._stop_collection('SOURCE_TRAVERSAL_LIMIT', f'Directory traversal limit reached (max_files * 4={self.cfg.max_files * 4}).', prefix)
+                    return
                 file = Path(parent)/filename
                 if file.is_symlink():
                     self.warn('SYMLINK_SKIPPED','Symbolic links are not followed.',prefix+file.relative_to(root).as_posix())
@@ -222,6 +240,8 @@ class PreparedInput:
                         self.warn('FILE_TOO_LARGE','File skipped by configured size limit.',name)
                         continue
                     with file.open('rb') as f: self._add(name, f.read(self.cfg.max_file_bytes+1))
+                    if self._collection_stopped:
+                        return
                 except OSError:
                     self.counts['unreadable_files'] += 1
                     self.warn('READ_FAILED','Unable to read selected source file.',name)
@@ -229,9 +249,10 @@ class PreparedInput:
     def _apk(self, apk: Path, work: Path, prefix: str, display_name: str | None = None) -> None:
         work.mkdir(parents=True, exist_ok=True)
         self.metadata['artifacts'].append({'name':display_name or apk.name,'sha256':sha256_file(apk)})
-        raw_sources: list[tuple[str,bytes]] = []
+        # Keep entry references instead of a second in-memory copy of raw assets.
+        # The source budget is applied when each fallback file is accepted.
+        raw_sources: list[zipfile.ZipInfo] = []
         has_dex = False
-        raw_bytes = 0
         with zipfile.ZipFile(apk) as z:
             entries = archive_entries(z, self.cfg)
             for info in entries:
@@ -241,43 +262,95 @@ class PreparedInput:
                 if name.startswith('lib/') and name.endswith('.so'):
                     self.metadata['native_libraries'].append({'path':prefix+name,'bytes':info.file_size,'analysis':'not_performed'})
                 if Path(name).suffix.lower() in TEXT_EXT and info.file_size <= self.cfg.max_file_bytes:
-                    raw_bytes += info.file_size
-                    if raw_bytes + self.counts['source_bytes'] > self.cfg.max_source_bytes:
-                        raise ValueError('archive text aggregate source byte limit exceeded')
-                    raw_sources.append((prefix+'apk/'+name,z.read(info)))
+                    raw_sources.append(info)
                 elif Path(name).suffix.lower() in TEXT_EXT:
                     self.warn('FILE_TOO_LARGE','Archive text file skipped by size limit.',prefix+name)
         jadx = self.cfg.jadx or shutil.which('jadx')
         apktool = self.cfg.apktool or shutil.which('apktool')
         decompiled = False
+
+        def retain_manifest(out: Path) -> None:
+            # Tool output normally supplies a decoded manifest. If it does not,
+            # retain the APK manifest before a large source tree fills the budget.
+            if any((out / name).is_file() for name in ('AndroidManifest.xml', 'resources/AndroidManifest.xml')):
+                return
+            if any(s.path.startswith(prefix) and s.path.endswith('/AndroidManifest.xml') for s in self.sources):
+                return
+            manifest = next((info for info in raw_sources if info.filename == 'AndroidManifest.xml'), None)
+            if manifest is not None:
+                with zipfile.ZipFile(apk) as z:
+                    self._add(prefix + 'apk/AndroidManifest.xml', z.read(manifest))
+
+        def skipped_tool(name: str) -> None:
+            self.metadata.setdefault('tools', []).append({'name':name, 'status':'skipped_source_limit'})
+            self.warn('TOOL_SKIPPED_SOURCE_LIMIT', f'{name} was skipped because the source collection limit was reached.', prefix)
+
+        def tool_collection_full() -> bool:
+            if not self._collection_stopped:
+                if self.counts['selected_files'] >= self.cfg.max_files:
+                    self._stop_collection('SOURCE_FILES_LIMIT', f'Source file limit reached (max_files={self.cfg.max_files}).', prefix)
+                elif self.counts['source_bytes'] >= self.cfg.max_source_bytes:
+                    self._stop_collection('SOURCE_BYTES_LIMIT', f'Source byte limit reached (max_source_bytes={self.cfg.max_source_bytes} bytes).', prefix)
+            return self._collection_stopped
+
         if self.cfg.decompile and jadx:
-            out = work/'jadx'
-            try:
-                code, state = run_tool(tool_command(jadx,'jadx',['-d',str(out),str(apk)]),work,self.cfg.tool_timeout)
-                self.metadata.setdefault('tools',[]).append({'name':'jadx','status':state,'exit_code':code})
-                if out.exists():
-                    self._directory(out, prefix+'jadx/')
-                    decompiled = any(s.language in ('java','kotlin') and s.path.startswith(prefix+'jadx/') for s in self.sources)
-                if code: self.warn('JADX_PARTIAL','JADX failed or produced partial output.',prefix)
-            except (OSError,ValueError):
-                self.warn('JADX_UNAVAILABLE','JADX could not be started. Check doctor and tool paths.',prefix)
+            if tool_collection_full():
+                skipped_tool('jadx')
+            else:
+                out = work/'jadx'
+                try:
+                    code, state = run_tool(tool_command(jadx,'jadx',['-d',str(out),str(apk)]),work,self.cfg.tool_timeout)
+                except (OSError,ValueError):
+                    self.warn('JADX_UNAVAILABLE','JADX could not be started. Check doctor and tool paths.',prefix)
+                else:
+                    self.metadata.setdefault('tools',[]).append({'name':'jadx','status':state,'exit_code':code})
+                    if out.exists():
+                        retain_manifest(out)
+                        self._directory(out, prefix+'jadx/')
+                        decompiled = any(s.language in ('java','kotlin') and s.path.startswith(prefix+'jadx/') for s in self.sources)
+                    if code: self.warn('JADX_PARTIAL','JADX failed or produced partial output.',prefix)
         if has_dex and not decompiled:
             self.warn('DEX_NOT_ANALYZED','DEX code was not decompiled; code-rule coverage is incomplete. Install/configure JADX.',prefix)
         # A configured Apktool is optional for smali and decoded resources.
         if self.cfg.decompile and apktool:
-            out = work/'apktool'
-            try:
-                code, state = run_tool(tool_command(apktool,'apktool',['d','-f','-o',str(out),str(apk)]),work,self.cfg.tool_timeout)
-                self.metadata.setdefault('tools',[]).append({'name':'apktool','status':state,'exit_code':code})
-                if out.exists(): self._directory(out,prefix+'apktool/')
-                if code: self.warn('APKTOOL_PARTIAL','Apktool failed or produced partial output.',prefix)
-            except (OSError,ValueError):
-                self.warn('APKTOOL_UNAVAILABLE','Apktool could not be started.',prefix)
+            if tool_collection_full():
+                skipped_tool('apktool')
+            else:
+                out = work/'apktool'
+                try:
+                    code, state = run_tool(tool_command(apktool,'apktool',['d','-f','-o',str(out),str(apk)]),work,self.cfg.tool_timeout)
+                except (OSError,ValueError):
+                    self.warn('APKTOOL_UNAVAILABLE','Apktool could not be started.',prefix)
+                else:
+                    self.metadata.setdefault('tools',[]).append({'name':'apktool','status':state,'exit_code':code})
+                    if out.exists():
+                        retain_manifest(out)
+                        self._directory(out,prefix+'apktool/')
+                    if code: self.warn('APKTOOL_PARTIAL','Apktool failed or produced partial output.',prefix)
         # Prefer decoded resources from tools over duplicate raw XML; retain text assets.
-        for name,data in raw_sources:
-            suffix = name.split('apk/',1)[-1]
-            duplicates = [s for s in self.sources if s.path.startswith(prefix) and (s.path.endswith('/'+suffix) or
-                          (suffix == 'AndroidManifest.xml' and s.path.endswith('/AndroidManifest.xml')))]
-            if not duplicates: self._add(name,data)
+        if not self._collection_stopped:
+            raw_names = {info.filename for info in raw_sources}
+            duplicate_suffixes: set[str] = set()
+
+            def index_source(path: str) -> None:
+                if path.startswith(prefix):
+                    for separator in re.finditer('/', path):
+                        suffix = path[separator.end():]
+                        if suffix in raw_names:
+                            duplicate_suffixes.add(suffix)
+
+            for source in self.sources:
+                index_source(source.path)
+            with zipfile.ZipFile(apk) as z:
+                for info in sorted(raw_sources, key=lambda item: (item.filename != 'AndroidManifest.xml', item.filename)):
+                    if info.filename in duplicate_suffixes:
+                        continue
+                    name = prefix + 'apk/' + info.filename
+                    before = len(self.sources)
+                    self._add(name, z.read(info))
+                    if self._collection_stopped:
+                        break
+                    if len(self.sources) > before:
+                        index_source(name)
         if self.metadata['native_libraries']:
             self.warn('NATIVE_NOT_ANALYZED','Native libraries are inventoried only; JNI/Flutter native behavior is outside this engine.',prefix)

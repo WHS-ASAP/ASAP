@@ -94,7 +94,7 @@
     const rows=[['대상 SDK',targets.length?targets.join(', '):'미확인'],['언어 / 파일',Object.entries(data.coverage.languages||{}).map(([k,v])=>`${k} ${v}`).join(' · ')||'없음'],['활성 규칙',`${data.coverage.enabled_rule_count??43}개 / 7개 카테고리`],['기기 실행','수행하지 않음'],['외부 서비스 요청','엔진에서 수행하지 않음']];
     $('scope-list').replaceChildren(...rows.flatMap(([k,v])=>[el('dt',k),el('dd',v)]));
     const diagnostics=data.diagnostics||[];$('diagnostics-count').textContent=`검사 진단 ${diagnostics.length}건`;
-    $('diagnostics-panel').open=diagnostics.length>0;$('diagnostics-list').replaceChildren();
+    $('diagnostics-list').replaceChildren();
     for(const d of diagnostics){const n=el('div',undefined,'diag-item');n.append(el('code',d.code),el('span',`${d.message}${d.path?' · '+d.path:''}`));$('diagnostics-list').append(n);}
     if(!diagnostics.length)$('diagnostics-list').append(el('p','추가 진단 없음. 분석 한계는 위 범위 설명을 참고하세요.','muted'));
     $('manifest-count').textContent=`${manifests.length}개 Manifest`;$('inventory-content').replaceChildren();
@@ -216,6 +216,10 @@
     if(data.scan.apk_sha256)payload.apk_sha256=data.scan.apk_sha256;
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=el('a');const url=URL.createObjectURL(blob);a.href=url;a.download='asap-review-decisions.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   };
+  if(location.protocol==='file:'){
+    $('report-home').href='#main-content';
+    $('report-home').setAttribute('aria-label','ASAP 리포트 맨 위로 이동');
+  }
   $('all-findings').onclick=()=>{category='';history.replaceState(null,'',location.pathname+location.search);render();};
   for(const id of ['search','severity','confidence','review-status','only-new','show-suppressed'])$(id).addEventListener('input',renderQueue);
   $('close-dialog').onclick=()=>$('detail-dialog').close();

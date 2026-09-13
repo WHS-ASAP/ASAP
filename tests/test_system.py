@@ -119,7 +119,10 @@ class ArchiveTests(unittest.TestCase):
     def test_source_byte_budget(self):
         with TemporaryDirectory() as td:
             p=Path(td)/'sample.apk';p.write_bytes(apk_bytes())
-            with self.assertRaises(ValueError):scan(p,Config(decompile=False,max_source_bytes=100))
+            result=scan(p,Config(decompile=False,max_source_bytes=100))
+            self.assertEqual(result.coverage['status'],'partial')
+            self.assertLessEqual(result.coverage['source_bytes'],100)
+            self.assertIn('SOURCE_BYTES_LIMIT',{d['code'] for d in result.diagnostics})
     def test_source_symlink_skipped(self):
         with TemporaryDirectory() as td:
             p=Path(td);(p/'target.java').write_text('class A {}');(p/'link.java').symlink_to(p/'target.java')

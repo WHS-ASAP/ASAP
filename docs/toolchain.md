@@ -60,6 +60,12 @@ Use `--no-decompile` for a CLI scan, or `"decompile": false` in configuration, t
 
 The [full configuration example](../examples/config.example.json) lists category selection, exclusions, worker count, input limits, and suppressions. `tool_timeout` defaults to 600 seconds. Decompiler output is temporary; reports are written to the selected output directory.
 
+## Analysis limits
+
+`max_source_bytes` (256 MiB by default) and `max_files` (50,000 by default) bound the source text collected for analysis. When source collection reaches a limit, ASAP keeps the collected results and marks coverage as partial. The report identifies the reached limit; `--strict` returns exit code 2 for these diagnostics. Archive structure and extraction limits are checked before source collection and can reject the input.
+
+To collect more source text, set `max_source_bytes` in bytes in your configuration file and rerun the scan with `--config`. Dashboard configuration is read when the server starts, so restart it after changing the file. The same APK's new scan is added to its workspace history.
+
 ## Firebase local inputs
 
 Attach local Firebase Realtime Database Security Rules and exported data to the analysis input. These files are optional and are processed by `Insecure_DataStorage` alongside source-level database references.
